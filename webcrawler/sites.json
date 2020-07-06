@@ -1,0 +1,108 @@
+{
+    "uol": {
+        "0": {
+            "host": "www.uol.com.br", 
+            "url": "https://www.uol.com.br/",
+            "title": "uol"
+        }
+    },
+    "imdb": {
+        "0": {
+            "host": "www.imdb.com", 
+            "url": "https://www.imdb.com/list/ls041166918/",
+            "title": "imdb"
+        }
+    },
+    "megatorrentshd": {
+        "0": {
+            "host": "www.megatorrentshd.org", 
+            "url": "http://www.megatorrentshd.org/",
+            "title": "megatorrentshd"
+        }
+    },
+    "uptodown": {
+        "0": {
+            "host": "br.uptodown.com", 
+            "url": "https://br.uptodown.com/windows",
+            "title": "uptodown"
+        }
+    },
+    "correios": {
+        "0": {
+            "host": "www.correios.com.br", 
+            "url": "http://www.correios.com.br/",
+            "title": "correios"
+        }
+    },
+    "androidpolice": {
+        "0": {
+            "host": "www.androidpolice.com", 
+            "url": "https://www.androidpolice.com/",
+            "title": "androidpolice"
+        }
+    },
+    "eusouandroid": {
+        "0": {
+            "host": "eusouandroid.co", 
+            "url": "https://eusouandroid.co/",
+            "title": "androidpolice"
+        }
+    },
+    "change": {
+        "0": {
+            "host": "www.change.org", 
+            "url": "https://www.change.org/",
+            "title": "change"
+        }
+    },
+    "americanas": {
+        "0": {
+            "host": "www.americanas.com.br", 
+            "url": "https://www.americanas.com.br/",
+            "title": "americanas"
+        }
+    },
+    "aliexpress": {
+        "0": {
+            "host": "pt.aliexpress.com", 
+            "url": "https://pt.aliexpress.com/",
+            "title": "aliexpress"
+        }
+    },
+    "amazon": {
+        "0": {
+            "host": "www.frontendfront.com", 
+            "url": "https://www.frontendfront.com/",
+            "title": "frontendfront"
+        }
+    },
+    "tecmundo": {
+        "0": {
+            "host": "www.computerworld.com.br", 
+            "url": "https://www.computerworld.com.br/",
+            "title": "computerworld"
+        }
+    },
+    "techtudo": {
+        "0": {
+            "host": "www.techtudo.com.br", 
+            "url": "https://www.techtudo.com.br/",
+            "title": "techtudo"
+        }
+    },
+    "olhardigital": {
+        "0": {
+            "host": "www.olhardigital.com.br", 
+            "url": "https://www.olhardigital.com.br/",
+            "title": "olhardigital"
+        }
+    },
+    "oficinadanet": {
+        "0": {
+            "host": "www.oficinadanet.com.br", 
+            "url": "https://www.oficinadanet.com.br/",
+            "title": "oficinadanet"
+        }
+    }
+     
+}

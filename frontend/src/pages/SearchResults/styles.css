@@ -1,0 +1,60 @@
+#menubar {
+    display: flex;
+}
+
+.arrow-left-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80px;
+    width: 80px;  
+}
+
+.arrow-left-icon button {
+    cursor: pointer;
+    background-color: white;
+    border-radius: 50px;
+    padding: 10px;
+    transition: background-color 0.3s;
+}
+
+.arrow-left-icon button:hover {
+    background-color: #ececec;
+}
+
+#separator {
+    border: 1px solid #ececec;
+    margin-top: 20px;
+}
+
+.results {
+    margin-left: 100px;
+}
+
+.results li {
+    margin-top: 20px;
+    list-style-type: none;
+}
+
+.results li h3 {
+    color: #1a0dab;
+    font-weight: normal;
+    font-size: 20px;
+}
+
+.results li span {
+    font-size: 14px;
+    color: #4d5156;
+}
+
+.results li a {
+    text-decoration: none;
+}
+
+.results li a:hover {
+    text-decoration: underline;
+}
+
+.results li cite {
+    color: #202124;
+}

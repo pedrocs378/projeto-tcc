@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 
 import './styles.css'
@@ -6,10 +6,25 @@ import './styles.css'
 import SearchBar from '../../components/SearchBar'
 
 export default function Search() {
+    const [text, setText] = useState("")
     const history = useHistory()
 
     function handleSearch() {
-        history.push('/search')
+        if (text) {
+            const textToSearch = text.split(' ').join('+')
+            history.push('/search/' + textToSearch)
+        }
+    }
+
+    function onTyping(event) {
+        if (event === 13) {
+            if (text) {
+                const textToSearch = text.split(' ').join('+')
+                history.push('/search/' + textToSearch)
+            }
+        } else {
+            setText(event.target.value)
+        }
     }
 
     return (
@@ -18,7 +33,7 @@ export default function Search() {
                 <main>
                     <div className="search-group">
                         <h1>Google</h1>
-                        <SearchBar hiddenButton />
+                        <SearchBar hiddenButton onChange={onTyping} />
                         <input type="button" id="btn-search" value="Pesquisar" onClick={handleSearch} />
                     </div>
                 </main>

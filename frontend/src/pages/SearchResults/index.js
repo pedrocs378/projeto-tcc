@@ -84,12 +84,13 @@ const results = [
     },
 ]
 
-export default function SearchResults() {
+export default function SearchResults(props) {
+    const [text, setText] = useState("")
     const [page, setPage] = useState(1)
     const [pageResults, setPageResults] = useState([])
 
     const history = useHistory()
-
+    
     let cont = 0
     useEffect(() => {
         if (results.length > 0) {
@@ -106,13 +107,27 @@ export default function SearchResults() {
             }
             pageResultsAux.totalPages = page
             setPageResults(pageResultsAux)
-            console.log(pageResultsAux)
         }
     }, [cont])
 
+    useEffect(() => {
+        const textToSearch = props.match.params.query
+        setText(textToSearch)
+    }, [text])
 
-    function handleChange(event, page) {
+    function handlePageChange(event, page) {
         setPage(page)
+    }
+
+    function onTyping(event) {
+        if (event === 13) {
+            if (text) {
+                const textToSearch = text.split(' ').join('+')
+                history.push('/search/' + textToSearch)
+            }
+        } else {
+            setText(event.target.value)
+        }
     }
 
     return (
@@ -126,7 +141,7 @@ export default function SearchResults() {
                     </span>
                 </div>
                 <div className="searchbar">
-                    <SearchBar hiddenIcon />
+                    <SearchBar hiddenIcon value={text.includes('+') ? text.split('+').join(' ') : text} onChange={onTyping} />
                 </div>
             </div>
             <div id="separator" />
@@ -146,7 +161,8 @@ export default function SearchResults() {
                                             </a>               
                                             <span>{result.desc}</span>
                                         </li> : null 
-                                )})
+                                )
+                            })
                         }                                                           
                     </ul>
                 </div>
@@ -156,16 +172,17 @@ export default function SearchResults() {
                     <MemoryRouter initialEntries={['/search']} initialIndex={0}>
                         <Route>
                             {() => {
+
                                 return (
                                     <Pagination 
                                         count={pageResults.totalPages}
                                         page={page}
-                                        onChange={handleChange}
+                                        onChange={handlePageChange}
                                         color="primary" 
                                         renderItem={(item) => (
                                             <PaginationItem 
                                                 component={Link}
-                                                to={'/search/' + item.page}
+                                                to={'/search?q='+text.split(' ').join('+') + '/' + item.page}
                                                 {...item}
                                             />
                                         )}

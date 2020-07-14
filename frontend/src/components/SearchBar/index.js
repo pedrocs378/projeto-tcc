@@ -37,14 +37,18 @@ export default function SearchBar(props) {
                 { props.value ? 
                     <input 
                         type="text" 
-                        id="search" 
+                        name="search" 
+                        autoFocus
+                        autoComplete="off"
                         value={props.value} 
                         onChange={handleDigit} 
                         onKeyPress={onPressEnter} 
                     /> : 
                     <input 
                         type="text" 
-                        id="search" 
+                        name="search" 
+                        autoFocus
+                        autoComplete="off"
                         placeholder="Digite Algo..." 
                         onChange={handleDigit} 
                         onKeyPress={onPressEnter} 

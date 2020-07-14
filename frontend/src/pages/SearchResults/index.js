@@ -8,80 +8,94 @@ import PaginationItem from '@material-ui/lab/PaginationItem'
 import './styles.css'
 
 import SearchBar from '../../components/SearchBar'
+import SearchNotFound from '../../components/SearchNotFound'
 
 const results = [
-    {
-        id: 0,
-        url: 'http://www.google.com',
-        title: 'Google',
-        desc: 'Search the worlds information, including webpages, images, videos and more.'
-    },
-    {
-        id: 1,
-        url: 'https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwi_6cufsbnqAhUhJLkGHQADCQYQFjABegQIARAB&url=https%3A%2F%2Fwww.google.com%2F%3Fhl%3Dpt_br&usg=AOvVaw2LUYq2HB3rrKwdSYM0-Zvl',
-        title: 'Google',
-        desc: 'Pesquisa · Imagens · Maps · Play · YouTube · Notícias · Gmail · Drive · Mais · Agenda · Tradutor · Google Mobile · Livros · Shopping · Blogger · Fotos · Vídeos ...'
-    },
-    {
-        id: 2,
-        url: 'https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwi_6cufsbnqAhUhJLkGHQADCQYQFjACegQIBBAB&url=https%3A%2F%2Fadssettings.google.com%2Fauthenticated%3Fhl%3Dpt-BR&usg=AOvVaw2sfhum3LHP2y7HNo5K3aXV',
-        title: 'Fazer login nas Contas do Google',
-        desc: 'Use sua Conta do Google. E-mail ou telefone. Esqueceu seu e-mail? Digite o texto que você ouve ou vê. Não está no seu computador? Use o modo visitante ...'
-    },
-    {
-        id: 3,
-        url: 'https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwi_6cufsbnqAhUhJLkGHQADCQYQFjADegQIBRAB&url=https%3A%2F%2Fmyaccount.google.com%2Fintro%3Fhl%3Dpt-BR&usg=AOvVaw2hauLPVV_ljaApq6-LF-mM',
-        title: 'Conta do Google',
-        desc: 'Quando você faz login na sua Conta do Google, pode ver e gerenciar suas ... de privacidade para ajudar o Google a atender melhor suas necessidades.'
-    },
-    {
-        id: 4,
-        url: 'https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwi_6cufsbnqAhUhJLkGHQADCQYQFjAEegQIEBAB&url=https%3A%2F%2Fcanaltech.com.br%2Fapps%2Fgoogle-play-store-recebe-novos-detalhes-visuais-nos-menus-de-categorias-167575%2F&usg=AOvVaw2OxvbZf1pJfGdlKnnZrf7b',
-        title: 'Google Play Store recebe novos detalhes visuais nos menus ...',
-        desc: 'Os aplicativos do Google constantemente mudam de visual em testes que, não raro, limitam-se a apenas uma pequena parcela de celulares ...'
-    },
-    {
-        id: 5,
-        url: 'https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwi_6cufsbnqAhUhJLkGHQADCQYQFjAFegQIBhAB&url=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dcom.google.android.googlequicksearchbox%26hl%3Dpt_BR&usg=AOvVaw2WpR3TC46VcEl0-jbbq1oo',
-        title: 'Google',
-        desc: 'Site da Google'
-    },
-    {
-        id: 6,
-        url: 'http://play.google.com/store',
-        title: 'Google',
-        desc: 'Site da Google'
-    },
-    {
-        id: 7,
-        url: 'http://www.google.com',
-        title: 'Google',
-        desc: 'Site da Google'
-    },
-    {
-        id: 8,
-        url: 'http://www.google.com',
-        title: 'Google',
-        desc: 'Site da Google'
-    },
-    {
-        id: 9,
-        url: 'http://www.google.com',
-        title: 'Google',
-        desc: 'Site da Google'
-    },
-    {
-        id: 10,
-        url: 'http://www.google.com',
-        title: 'Google',
-        desc: 'Site da Google'
-    },
-    {
-        id: 11,
-        url: 'http://www.google.com',
-        title: 'Google',
-        desc: 'Site da Google'
-    },
+    // {
+    //     id: 0,
+    //     url: 'http://www.google.com',
+    //     title: 'Google',
+    //     desc: 'Search the worlds information, including webpages, images, videos and more.'
+    // },
+    // {
+    //     id: 1,
+    //     url: 'https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwi_6cufsbnqAhUhJLkGHQADCQYQFjABegQIARAB&url=https%3A%2F%2Fwww.google.com%2F%3Fhl%3Dpt_br&usg=AOvVaw2LUYq2HB3rrKwdSYM0-Zvl',
+    //     title: 'Google',
+    //     desc: 'Pesquisa · Imagens · Maps · Play · YouTube · Notícias · Gmail · Drive · Mais · Agenda · Tradutor · Google Mobile · Livros · Shopping · Blogger · Fotos · Vídeos ...'
+    // },
+    // {
+    //     id: 2,
+    //     url: 'https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwi_6cufsbnqAhUhJLkGHQADCQYQFjACegQIBBAB&url=https%3A%2F%2Fadssettings.google.com%2Fauthenticated%3Fhl%3Dpt-BR&usg=AOvVaw2sfhum3LHP2y7HNo5K3aXV',
+    //     title: 'Fazer login nas Contas do Google',
+    //     desc: 'Use sua Conta do Google. E-mail ou telefone. Esqueceu seu e-mail? Digite o texto que você ouve ou vê. Não está no seu computador? Use o modo visitante ...'
+    // },
+    // {
+    //     id: 3,
+    //     url: 'https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwi_6cufsbnqAhUhJLkGHQADCQYQFjADegQIBRAB&url=https%3A%2F%2Fmyaccount.google.com%2Fintro%3Fhl%3Dpt-BR&usg=AOvVaw2hauLPVV_ljaApq6-LF-mM',
+    //     title: 'Conta do Google',
+    //     desc: 'Quando você faz login na sua Conta do Google, pode ver e gerenciar suas ... de privacidade para ajudar o Google a atender melhor suas necessidades.'
+    // },
+    // {
+    //     id: 4,
+    //     url: 'https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwi_6cufsbnqAhUhJLkGHQADCQYQFjAEegQIEBAB&url=https%3A%2F%2Fcanaltech.com.br%2Fapps%2Fgoogle-play-store-recebe-novos-detalhes-visuais-nos-menus-de-categorias-167575%2F&usg=AOvVaw2OxvbZf1pJfGdlKnnZrf7b',
+    //     title: 'Google Play Store recebe novos detalhes visuais nos menus ...',
+    //     desc: 'Os aplicativos do Google constantemente mudam de visual em testes que, não raro, limitam-se a apenas uma pequena parcela de celulares ...'
+    // },
+    // {
+    //     id: 5,
+    //     url: 'https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwi_6cufsbnqAhUhJLkGHQADCQYQFjAFegQIBhAB&url=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dcom.google.android.googlequicksearchbox%26hl%3Dpt_BR&usg=AOvVaw2WpR3TC46VcEl0-jbbq1oo',
+    //     title: 'Google',
+    //     desc: 'Site da Google'
+    // },
+    // {
+    //     id: 6,
+    //     url: 'http://play.google.com/store',
+    //     title: 'Google',
+    //     desc: 'Site da Google'
+    // },
+    // {
+    //     id: 7,
+    //     url: 'http://www.google.com',
+    //     title: 'Google',
+    //     desc: 'Site da Google'
+    // },
+    // {
+    //     id: 8,
+    //     url: 'http://www.google.com',
+    //     title: 'Google',
+    //     desc: 'Site da Google'
+    // },
+    // {
+    //     id: 9,
+    //     url: 'http://www.google.com',
+    //     title: 'Google',
+    //     desc: 'Site da Google'
+    // },
+    // {
+    //     id: 10,
+    //     url: 'http://www.google.com',
+    //     title: 'Google',
+    //     desc: 'Site da Google'
+    // },
+    // {
+    //     id: 11,
+    //     url: 'http://www.google.com',
+    //     title: 'Google',
+    //     desc: 'Site da Google'
+    // },
+    // {
+    //     id: 12,
+    //     url: 'https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwi_6cufsbnqAhUhJLkGHQADCQYQFjAEegQIEBAB&url=https%3A%2F%2Fcanaltech.com.br%2Fapps%2Fgoogle-play-store-recebe-novos-detalhes-visuais-nos-menus-de-categorias-167575%2F&usg=AOvVaw2OxvbZf1pJfGdlKnnZrf7b',
+    //     title: 'Google Play Store recebe novos detalhes visuais nos menus ...',
+    //     desc: 'Os aplicativos do Google constantemente mudam de visual em testes que, não raro, limitam-se a apenas uma pequena parcela de celulares ...'
+    // },
+    // {
+    //     id: 13,
+    //     url: 'https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwi_6cufsbnqAhUhJLkGHQADCQYQFjAEegQIEBAB&url=https%3A%2F%2Fcanaltech.com.br%2Fapps%2Fgoogle-play-store-recebe-novos-detalhes-visuais-nos-menus-de-categorias-167575%2F&usg=AOvVaw2OxvbZf1pJfGdlKnnZrf7b',
+    //     title: 'Google Play Store recebe novos detalhes visuais nos menus ...',
+    //     desc: 'Os aplicativos do Google constantemente mudam de visual em testes que, não raro, limitam-se a apenas uma pequena parcela de celulares ...'
+    // },
+    
 ]
 
 export default function SearchResults(props) {
@@ -112,22 +126,13 @@ export default function SearchResults(props) {
 
     useEffect(() => {
         const textToSearch = props.match.params.query
-        setText(textToSearch)
-    }, [text])
+        if (text === textToSearch) {
+            setText(textToSearch)
+        }
+    }, [text, props.match.params.query])
 
     function handlePageChange(event, page) {
         setPage(page)
-    }
-
-    function onTyping(event) {
-        if (event === 13) {
-            if (text) {
-                const textToSearch = text.split(' ').join('+')
-                history.push('/search/' + textToSearch)
-            }
-        } else {
-            setText(event.target.value)
-        }
     }
 
     return (
@@ -141,54 +146,60 @@ export default function SearchResults(props) {
                     </span>
                 </div>
                 <div className="searchbar">
-                    <SearchBar hiddenIcon value={text.includes('+') ? text.split('+').join(' ') : text} onChange={onTyping} />
+                    <SearchBar hiddenIcon 
+                        value={text.includes('+') ? text.split('+').join(' ') : text} 
+                    />
                 </div>
             </div>
             <div id="separator" />
             <div id="resultsbar">
-                <div className="results">
-                    <ul>
-                        {
-                            pageResults.map(result => {
-                                return (
-                                    result.page === page ?
-                                        <li key={result.id}>
-                                            <a href={result.url}>
-                                                <cite>
-                                                    {result.url.split('/')[2]}
-                                                </cite>
-                                                <h3>{result.title}</h3>
-                                            </a>               
-                                            <span>{result.desc}</span>
-                                        </li> : null 
-                                )
-                            })
-                        }                                                           
-                    </ul>
-                </div>
+                {
+                    results.length > 0 ?
+                        <div className="results">
+                            <ul>
+                                {
+                                    pageResults.map(result => {
+                                        return (
+                                            result.page === page ?
+                                                <li key={result.id}>
+                                                    <a href={result.url}>
+                                                        <cite>
+                                                            {result.url.split('/')[2]}
+                                                        </cite>
+                                                        <h3>{result.title}</h3>
+                                                    </a>               
+                                                    <span>{result.desc}</span>
+                                                </li> : null 
+                                        )
+                                    })
+                                }                                                           
+                            </ul>
+                        </div>
+                    : 
+                    <SearchNotFound 
+                        value={props.match.params.query.includes('+') ? props.match.params.query.split('+').join(' ') : props.match.params.query}
+                    />
+                }             
             </div>
+            
+            
             <div className="pagination">
                 { results.length > 0 ? 
                     <MemoryRouter initialEntries={['/search']} initialIndex={0}>
-                        <Route>
-                            {() => {
-
-                                return (
-                                    <Pagination 
-                                        count={pageResults.totalPages}
-                                        page={page}
-                                        onChange={handlePageChange}
-                                        color="primary" 
-                                        renderItem={(item) => (
-                                            <PaginationItem 
-                                                component={Link}
-                                                to={'/search?q='+text.split(' ').join('+') + '/' + item.page}
-                                                {...item}
-                                            />
-                                        )}
+                        <Route>                                                      
+                            <Pagination 
+                                count={pageResults.totalPages}
+                                page={page}
+                                onChange={handlePageChange}
+                                color="primary" 
+                                renderItem={(item) => (
+                                    <PaginationItem 
+                                        // component={Link}
+                                        // to={'/search/'+text.split(' ').join('+') + '/' + item.page}
+                                        {...item}
                                     />
-                                )
-                            }}
+                                )}
+                            />                                                      
                         </Route>
                     </MemoryRouter> : 
                     <Pagination style={{display: 'none'}} color="primary" /> 

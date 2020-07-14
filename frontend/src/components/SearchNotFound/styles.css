@@ -1,0 +1,17 @@
+#not-found-container {
+    width: 50%;
+}
+
+.warning-card p {
+    display: block;
+    margin: 16px 0;
+    padding-top: 5px;
+    font-family: arial, sans-serif;
+    font-size: medium;
+    font-weight: normal;
+}
+
+.warning-card p em {
+    font-weight: bold;
+    font-style: normal;
+}

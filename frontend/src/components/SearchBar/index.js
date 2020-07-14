@@ -1,19 +1,32 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { useHistory } from 'react-router-dom'
 import { FiSearch } from 'react-icons/fi'
 
 import './styles.css'
 
 export default function SearchBar(props) {
+    const [text, setText] = useState("")
+    const history = useHistory()
 
     function onPressEnter(event) {
         if(event.which === 13) {
-            props.onChange(13)
+            handleSearch()
         }
     }
 
     function handleDigit(event) {
-        props.onChange(event)
+        if (props.onChange) {
+            props.onChange(event)
+        }
+        setText(event.target.value)
     } 
+
+    function handleSearch() {
+        if (text) {
+            const textToSearch = text.split(' ').join('+')
+            history.push('/search/' + textToSearch)
+        }
+    }
 
     return (
         <div className="box-search">
@@ -39,7 +52,7 @@ export default function SearchBar(props) {
                 }          
             </div>
             <div className={ props.hiddenButton ? "icon-hidden" : "icon-button" }>
-                <button>
+                <button onClick={handleSearch}>
                     <span>
                         <FiSearch size={18} color="#4285f4" />
                     </span>

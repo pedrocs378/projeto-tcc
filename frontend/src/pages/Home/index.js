@@ -16,15 +16,8 @@ export default function Search() {
         }
     }
 
-    function onTyping(event) {
-        if (event === 13) {
-            if (text) {
-                const textToSearch = text.split(' ').join('+')
-                history.push('/search/' + textToSearch)
-            }
-        } else {
-            setText(event.target.value)
-        }
+    function handleSetText(event) {
+        setText(event.target.value)
     }
 
     return (
@@ -33,7 +26,7 @@ export default function Search() {
                 <main>
                     <div className="search-group">
                         <h1>Google</h1>
-                        <SearchBar hiddenButton onChange={onTyping} />
+                        <SearchBar hiddenButton onChange={handleSetText} />
                         <input type="button" id="btn-search" value="Pesquisar" onClick={handleSearch} />
                     </div>
                 </main>

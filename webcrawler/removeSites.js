@@ -1,8 +1,15 @@
-let firebase = require('firebase/app')
-let sites = require('./sites.json')
-require('firebase/database')
+const mongoose = require('mongoose')
+const Url = require('./src/models/Url')
 
-const firebaseConfig = require('./src/firebaseConfig')
+const sites = require('./sites.json')
 
-firebase.initializeApp(firebaseConfig)
-firebase.database().ref('sites/').remove()
+mongoose.connect('mongodb+srv://pedrocs378:pedro741852@cluster0.tkqge.gcp.mongodb.net/webcrawler?retryWrites=true&w=majority', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+async function store() {
+    const url = await Url.create(sites)
+    console.log(url)
+}
+
+store()

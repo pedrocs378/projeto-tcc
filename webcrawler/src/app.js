@@ -1,15 +1,17 @@
 const express = require('express')
+const mongoose = require('mongoose')
 const cors = require('cors')
 const { errors } = require('celebrate')
-const routes = require('./routes')
 
-const firebase = require('firebase/app')
-const firebaseConfig = require('./firebaseConfig')
-require('firebase/database')
+const routes = require('./routes')
+const uri = require('./uri.js')
 
 const app = express()
 
-firebase.initializeApp(firebaseConfig)
+mongoose.connect(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
 
 app.use(cors())
 app.use(express.json())

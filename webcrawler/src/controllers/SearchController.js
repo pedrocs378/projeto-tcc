@@ -13,37 +13,37 @@ module.exports = {
         const ref = firebase.database().ref('/sites/')
         let words = q.split(' ')
         let dados = []
-        
+
         let urls = []
 
         let stream = fs.createWriteStream(path.join(__dirname, '../files/searchResult.txt'))
         stream.write('\n' + q.toUpperCase() + '\n')
 
-        ref.once('value', function(snapshot) {
-            snapshot.forEach(function(childSnapshot) {
-                childSnapshot.forEach(function(child){
-                    urls.push(child.val().url)              
-                
-                })               
-            })   
-            
-            for(let i = 0; i < urls.length; i++) {
+        ref.once('value', function (snapshot) {
+            snapshot.forEach(function (childSnapshot) {
+                childSnapshot.forEach(function (child) {
+                    urls.push(child.val().url)
+
+                })
+            })
+
+            for (let i = 0; i < urls.length; i++) {
 
                 request(urls[i], function (err, response, body) {
-    
+
                     if (!err) {
-    
+
                         $ = cheerio.load(body)
-    
+
                         if ($) {
-                            if($('body')) {
+                            if ($('body')) {
                                 $('body').find('p').each((index, element) => {
-                                    
-                                    let text = $(element).text()                                       
+
+                                    let text = $(element).text()
                                     let textArray = text.split(' ')
-                                    
+
                                     if (text) {
-                                        for(let w = 0; w < textArray.length; w++) {
+                                        for (let w = 0; w < textArray.length; w++) {
                                             if (textArray[w] == q) {
                                                 dados.push({
                                                     url: urls[i],
@@ -52,20 +52,20 @@ module.exports = {
                                                 stream.write('url: ' + urls[i] + ' | text: ' + text + '\n')
                                                 console.log('ELEMENTO ADICIONADO')
                                                 break
-                                            }   
+                                            }
                                         }
-                                                                                                      
+
                                     }
-                                                                                                 
+
                                 })
-                            }    
+                            }
                         }
                     }
-                })  
-            }   
-            res.json(dados)         
-        })        
-        
+                })
+            }
+            res.json(dados)
+        })
+
     }
 }
 
@@ -75,7 +75,7 @@ module.exports = {
 // if($('div p')) {
 //     $('body').find('div p').each((key, element) => {
 //         let text = $(element).text()
-        
+
 //         text = text.split(' ')
 //         text.forEach((element, index) => {
 //             if (element === word) {
@@ -91,7 +91,7 @@ module.exports = {
 // if($('div h1')) {
 //     $('body').find('div h1').each((key, element) => {
 //         let text = $(element).text()
-        
+
 //         text = text.split(' ')
 //         text.forEach((element, index) => {
 //             if (element === word) {
@@ -107,7 +107,7 @@ module.exports = {
 // if($('div h2')) {
 //     $('body').find('div h2').each((key, element) => {
 //         let text = $(element).text()
-        
+
 //         text = text.split(' ')
 //         text.forEach((element, index) => {
 //             if (element === word) {
@@ -123,7 +123,7 @@ module.exports = {
 // if($('li p')) {
 //     $('body').find('li p').each((key, element) => {
 //         let text = $(element).text()
-        
+
 //         text = text.split(' ')
 //         text.forEach((element, index) => {
 //             if (element === word) {
@@ -139,7 +139,7 @@ module.exports = {
 // if($('ul li p')) {
 //     $('body').find('ul li p').each((key, element) => {
 //         let text = $(element).text()
-        
+
 //         text = text.split(' ')
 //         text.forEach((element, index) => {
 //             if (element === word) {
@@ -155,7 +155,7 @@ module.exports = {
 // if($('li')) {
 //     $('body').find('li').each((key, element) => {
 //         let text = $(element).text()
-        
+
 //         text = text.split(' ')
 //         text.forEach((element, index) => {
 //             if (element === word) {
@@ -171,7 +171,7 @@ module.exports = {
 // if($('ul li')) {
 //     $('body').find('ul li em').each((key, element) => {
 //         let text = $(element).text()
-        
+
 //         text = text.split(' ')
 //         text.forEach((element, index) => {
 //             if (element === word) {

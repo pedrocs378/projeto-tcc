@@ -40,6 +40,7 @@ export default function SearchBar(props) {
                         name="search" 
                         autoFocus
                         autoComplete="off"
+                        title="Pesquisar"
                         value={props.value} 
                         onChange={handleDigit} 
                         onKeyPress={onPressEnter} 
@@ -49,6 +50,7 @@ export default function SearchBar(props) {
                         name="search" 
                         autoFocus
                         autoComplete="off"
+                        title="Pesquisar"
                         placeholder="Digite Algo..." 
                         onChange={handleDigit} 
                         onKeyPress={onPressEnter} 

@@ -10,7 +10,7 @@
     width: 80px;  
 }
 
-.arrow-left-icon button {
+.arrow-left-icon .button {
     cursor: pointer;
     background-color: white;
     border-radius: 50px;
@@ -18,7 +18,7 @@
     transition: background-color 0.3s;
 }
 
-.arrow-left-icon button:hover {
+.arrow-left-icon .button:hover {
     background-color: #ececec;
 }
 

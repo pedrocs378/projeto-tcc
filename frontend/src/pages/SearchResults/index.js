@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { MemoryRouter, Route } from 'react-router'
-import { useHistory } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { FiArrowLeft } from 'react-icons/fi'
 import Pagination from '@material-ui/lab/Pagination'
 import PaginationItem from '@material-ui/lab/PaginationItem'
@@ -49,8 +49,6 @@ export default function SearchResults(props) {
     const [text, setText] = useState("")
     const [page, setPage] = useState(1)
     const [pageResults, setPageResults] = useState([])
-
-    const history = useHistory()
     
     const cont = useRef(0)
     useEffect(() => {
@@ -84,22 +82,20 @@ export default function SearchResults(props) {
 
     return (
         <div id="results-container">
-            <div id="menubar">
+            <header id="menubar">
                 <div className="arrow-left-icon">
-                    <span>
-                        <button onClick={() => history.push('/')}>
-                            <FiArrowLeft size={25} />
-                        </button>
-                    </span>
+                    <Link className="button" to="/">
+                        <FiArrowLeft size={25} color="black" />
+                    </Link>
                 </div>
                 <div className="searchbar">
                     <SearchBar hiddenIcon 
                         value={text.includes('+') ? text.split('+').join(' ') : text} 
                     />
                 </div>
-            </div>
-            <div id="separator" />
-            <div id="resultsbar">
+            </header>
+            <div id="separator" />  
+            <main id="resultsbar">
                 {
                     results.length > 0 ? 
                     <Results page={page} pageResults={pageResults} /> : 
@@ -107,9 +103,8 @@ export default function SearchResults(props) {
                         value={props.match.params.query.includes('+') ? props.match.params.query.split('+').join(' ') : props.match.params.query}
                     />
                 }             
-            </div>
-            
-            
+            </main>
+                        
             <div className="pagination">
                 { results.length > 0 ? 
                     <MemoryRouter initialEntries={['/search']} initialIndex={0}>

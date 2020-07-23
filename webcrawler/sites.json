@@ -1,6 +1,8 @@
-{
-    "title": "Correios: encomendas, rastreamento, telegramas, cep, cartas ...",
-    "url": "http://www.correios.com.br/",
-    "host": "www.correios.com.br",
-    "desc": "Coleta dos Correios. Para complementar o atendimento aos clientes com contrato, os Correios oferecem o serviço ..."
-}
+[
+    {
+        "title": "Correios: encomendas, rastreamento, telegramas, cep, cartas ...",
+        "url": "http://www.correios.com.br/",
+        "host": "www.correios.com.br",
+        "desc": "Coleta dos Correios. Para complementar o atendimento aos clientes com contrato, os Correios oferecem o serviço ..."
+    }
+]

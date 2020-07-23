@@ -12,4 +12,11 @@ async function store() {
     console.log(url)
 }
 
-store()
+async function remove() {
+    await Url.deleteMany(async (err) => {
+        await Url.create(sites)
+    })
+}
+
+remove()
+// store()

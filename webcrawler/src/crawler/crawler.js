@@ -2,46 +2,36 @@ const Url = require('../models/Url')
 
 const request = require('request')
 const cheerio = require('cheerio')
+const seenreq = require('seenreq')
+const Crawler = require('crawler')
 const fs = require('fs')
 const path = require('path')
 
 const sites = require('../../sites.json')
+const uri = require('../uri.js')
 
-module.exports = function executeCrawler(urls) {
+module.exports = function executeCrawler(urls, callback) {
 
-    urls.forEach(({ url }) => {
+    const data = []
+
+    for(let i = 0; i < urls.length; i++) {
         
-        request(url, (err, res, body) => {
+        request(urls[i], (err, res, body) => {
+
             if (!err) {
 
                 let $ = cheerio.load(body)
-
+                
                 if ($) {
-                    if ($('body')) {
-                        $('body').find('a').each(async (key, element) => {
-                            let link = $(element).attr('href')
-
-                            if (link && (link.split(':')[0] === 'http' || link.split(':')[0] === 'https')) {
-                                if (link.trim().startsWith('/')) {
-                                    link = res.href + link.trim()
-                                }
-
-                                if (link.split('/')[0] === 'undefined') {
-                                    if (link.split('/')[1]) {
-                                        
-                                    }
-                                }
-
-                                if (!(link.includes('clicklogger'))) {
-                                    
-                                }
-                            }
-                        })
-                    }
+                    data.push($('title').text())
                 }
+
             }
+
         })
-    })
+    }
+
+    callback(data)
 
 }
 

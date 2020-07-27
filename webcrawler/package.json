@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/app.js"
+    "start": "nodemon --trace-warnings src/app.js"
   },
   "author": "",
   "license": "ISC",
@@ -19,6 +19,7 @@
     "mongoose": "^5.9.7",
     "puppeteer": "^2.1.1",
     "request": "^2.88.2",
+    "request-promise": "^4.2.6",
     "seenreq": "^3.0.0",
     "seenreq-repo-mongo": "^1.0.2"
   },

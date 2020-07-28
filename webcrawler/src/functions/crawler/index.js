@@ -2,6 +2,7 @@ const Url = require('../../models/Url')
 
 const rp = require('request-promise')
 const cheerio = require('cheerio')
+const { parseHTML } = require('cheerio')
 
 const data = []
 
@@ -9,11 +10,12 @@ module.exports = function executeCrawler(urls, callback) {
 
     let i = 0
 
-    function next() {
+    async function next() {
         if (i < urls.length) {
             let options = {
                 uri: urls[i],
-                transform: body => cheerio.load(body)
+                json: true,
+                transform: (body, res) => cheerio.load(body) 
             }
 
             rp(options)
@@ -25,20 +27,23 @@ module.exports = function executeCrawler(urls, callback) {
 
                         if ($('body')) {
                             $('body').find('a').each((key, element) => {
+                                let titleAux = $('head').find('title').text()
+                                let title = $(element).attr('title') ? $(element).attr('title') : titleAux
                                 let link = $(element).attr('href')
 
-                                urls.push(link)
+                                urls.push({title, link})
                             })
                         }
+
                     }
                     return urls
                 })
                 .then(urls => {
                     const newUrls = []
 
-                    urls.forEach(url => {
-                        if (url && (url.split(':')[0] === 'http' || url.split(':')[0] === 'https')) {
-                            newUrls.push(url)
+                    urls.forEach(({ title, link }) => {
+                        if(link && (link.split(':')[0] === 'http' || link.split(':')[0] === 'https')) {
+                            newUrls.push({ title, link})
                         }
                     })
 
@@ -46,16 +51,23 @@ module.exports = function executeCrawler(urls, callback) {
 
                 })
                 .then((urls) => {
-                    urls.map(url => data.push(url))
 
+                    urls.map(({ title, link }) => {
+                        data.push({
+                            title,
+                            url: link,
+                            host: link.split('/')[2],
+                            desc: 'Descrição'
+                        })
+                    })
                     ++i
 
                     return next()
                 })
         } else {
-            console.log(data)
+            const savedData = await Url.create(data)
 
-            callback(data)
+            callback(savedData)
         }
     }
 

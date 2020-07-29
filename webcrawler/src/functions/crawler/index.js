@@ -2,7 +2,6 @@ const Url = require('../../models/Url')
 
 const rp = require('request-promise')
 const cheerio = require('cheerio')
-const { parseHTML } = require('cheerio')
 
 const data = []
 
@@ -14,7 +13,6 @@ module.exports = function executeCrawler(urls, callback) {
         if (i < urls.length) {
             let options = {
                 uri: urls[i],
-                json: true,
                 transform: (body, res) => cheerio.load(body) 
             }
 
@@ -26,13 +24,10 @@ module.exports = function executeCrawler(urls, callback) {
                     if ($) {
 
                         if ($('body')) {
-                            $('body').find('a').each((key, element) => {
-                                let titleAux = $('head').find('title').text()
-                                let title = $(element).attr('title') ? $(element).attr('title') : titleAux
-                                let link = $(element).attr('href')
-
-                                urls.push({title, link})
-                            })
+                            handleSearchTags($, 'body', 'a', urls)
+                            handleSearchTags($, 'body', 'div a', urls)
+                            handleSearchTags($, 'body', 'li a', urls)
+                            handleSearchTags($, 'body', 'ul > li a', urls)
                         }
 
                     }
@@ -42,8 +37,8 @@ module.exports = function executeCrawler(urls, callback) {
                     const newUrls = []
 
                     urls.forEach(({ title, link }) => {
-                        if(link && (link.split(':')[0] === 'http' || link.split(':')[0] === 'https')) {
-                            newUrls.push({ title, link})
+                        if(link && (link.split(':')[0] === 'http' || link.split(':')[0] === 'https')) {                       
+                            newUrls.push({ title, link })
                         }
                     })
 
@@ -52,25 +47,65 @@ module.exports = function executeCrawler(urls, callback) {
                 })
                 .then((urls) => {
 
-                    urls.map(({ title, link }) => {
-                        data.push({
-                            title,
-                            url: link,
-                            host: link.split('/')[2],
-                            desc: 'Descrição'
-                        })
-                    })
-                    ++i
+                    handleSaveData(urls).then(() => {
 
-                    return next()
+                        ++i
+
+                        return next()
+
+                    })
+
                 })
         } else {
-            const savedData = await Url.create(data)
 
-            callback(savedData)
+            callback(data)
         }
     }
 
     return next()
+
+}
+
+function handleSearchTags($, strTag = '', strTagLink = '', arrUrls) {
+
+    $(strTag).find(strTagLink).each((key, element) => {
+        let titleAux = $('head').find('title').text()
+        let title = $(element).attr('title') ? $(element).attr('title') : titleAux
+        let link = $(element).attr('href')
+
+        arrUrls.push({ title, link })
+    })
+
+}
+
+function handleSaveData(urlData) {
+    let i = 0
+
+    return new Promise((resolve, reject) => {
+
+        async function next() {
+            if (i < urlData.length) {
+                const dataExist = await Url.find({ url: urlData[i].link })
+
+                if (dataExist.length === 0) {
+                    data.push(await Url.create({
+                        title: urlData[i].title,
+                        url: urlData[i].link,
+                        host: urlData[i].link.split('/')[2],
+                        desc: 'Descrição'
+                    }))
+                }
+
+                ++i
+
+                next()
+            } else {
+                resolve(data)
+            }
+        }
+
+        next()
+
+    })
 
 }

@@ -13,9 +13,7 @@ async function store() {
 }
 
 async function remove() {
-    await Url.deleteMany(async (err) => {
-        await Url.create(sites)
-    })
+    await Url.deleteMany()
 }
 
 remove()

@@ -12,13 +12,15 @@ module.exports = {
 
         const data = await Url.find({})
 
-        if (data.length === 0) {
-            const dataCreated = await Url.create(sites)
+        if (data.length > 0) {
 
-            return res.json(dataCreated)
+            return res.json(data)
+
+        } else {
+
+            throw new Error("Não foi possivel encontrar dados no banco!")
+            
         }
-
-        return res.json(data)
 
     },
 
@@ -26,17 +28,22 @@ module.exports = {
 
         const data = await Url.find({})
 
-        if (data) {
+        if (data.length === 0) {
+            const dataCreated = await Url.create(sites)
+            const urls = dataCreated.map(({ url }) => url)
 
+            executeCrawler(urls, (data) => {
+                return res.json(data)
+            })
+
+        } else {
             const urls = data.map(({ url }) => url)
 
             executeCrawler(urls, (data) => {
                 return res.json(data)
             })
-        
-        } else {
-            throw new Error("Não foi possivel encontrar dados no banco!")
-        }            
+
+        }         
 
     }
 }

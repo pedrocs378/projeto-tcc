@@ -1,11 +1,7 @@
 const Url = require('../models/Url')
 
-const request = require('request')
-const rp = require('request-promise')
-const cheerio = require('cheerio')
-
 const sites = require('../../sites.json')
-const executeCrawler = require('../functions/crawler')
+const handleRunCrawler = require('../functions/crawler')
 
 module.exports = {
     async index(req, res) {
@@ -32,14 +28,14 @@ module.exports = {
             const dataCreated = await Url.create(sites)
             const urls = dataCreated.map(({ url }) => url)
 
-            executeCrawler(urls, (data) => {
+            handleRunCrawler(urls, (data) => {
                 return res.json(data)
             })
 
         } else {
             const urls = data.map(({ url }) => url)
 
-            executeCrawler(urls, (data) => {
+            handleRunCrawler(urls, (data) => {
                 return res.json(data)
             })
 

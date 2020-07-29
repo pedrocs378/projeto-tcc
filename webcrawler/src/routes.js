@@ -7,6 +7,6 @@ const routes = express.Router()
 
 routes.get('/', CrawlerController.init)
 routes.get('/list', CrawlerController.index)
-routes.get('/search', SearchController.init)
+routes.get('/search', SearchController.search)
 
 module.exports = routes

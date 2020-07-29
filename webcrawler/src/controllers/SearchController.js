@@ -6,65 +6,25 @@ const cheerio = require('cheerio')
 const fs = require('fs')
 const path = require('path')
 
+const handleMakeSearch = require('../functions/search')
+
 module.exports = {
-    init(req, res) {
+    search(req, res) {
         const { q = "" } = req.query
 
-        const ref = firebase.database().ref('/sites/')
-        let words = q.split(' ')
-        let dados = []
+        let words = q.toLowerCase()
 
-        let urls = []
+        if (words) {
 
-        let stream = fs.createWriteStream(path.join(__dirname, '../files/searchResult.txt'))
-        stream.write('\n' + q.toUpperCase() + '\n')
+            handleMakeSearch(words, (results) => {
+                
+                console.log(results)
 
-        ref.once('value', function (snapshot) {
-            snapshot.forEach(function (childSnapshot) {
-                childSnapshot.forEach(function (child) {
-                    urls.push(child.val().url)
+                return res.json(results)
 
-                })
             })
 
-            for (let i = 0; i < urls.length; i++) {
-
-                request(urls[i], function (err, response, body) {
-
-                    if (!err) {
-
-                        $ = cheerio.load(body)
-
-                        if ($) {
-                            if ($('body')) {
-                                $('body').find('p').each((index, element) => {
-
-                                    let text = $(element).text()
-                                    let textArray = text.split(' ')
-
-                                    if (text) {
-                                        for (let w = 0; w < textArray.length; w++) {
-                                            if (textArray[w] == q) {
-                                                dados.push({
-                                                    url: urls[i],
-                                                    text
-                                                })
-                                                stream.write('url: ' + urls[i] + ' | text: ' + text + '\n')
-                                                console.log('ELEMENTO ADICIONADO')
-                                                break
-                                            }
-                                        }
-
-                                    }
-
-                                })
-                            }
-                        }
-                    }
-                })
-            }
-            res.json(dados)
-        })
+        }
 
     }
 }

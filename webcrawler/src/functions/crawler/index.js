@@ -5,7 +5,7 @@ const cheerio = require('cheerio')
 
 const data = []
 
-module.exports = function executeCrawler(urls, callback) {
+module.exports = function handleRunCrawler(urls, callback) {
 
     let i = 0
 

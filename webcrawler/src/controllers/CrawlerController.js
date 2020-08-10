@@ -6,11 +6,31 @@ const handleRunCrawler = require('../functions/crawler')
 module.exports = {
     async index(req, res) {
 
-        const data = await Url.find({})
+        const datas = await Url.find({})
 
-        if (data.length > 0) {
+        if (datas.length > 0) {
+            let pages = 1
+            let cont = 0
 
-            return res.json(data)
+            const dataPaginated = datas.map(({ _id, title, url, host, desc }) => {
+                cont++
+
+                if (cont === 9) {
+                    pages++
+                    cont = 0
+                }
+
+                return {
+                    _id,
+                    title,
+                    url,
+                    host,
+                    desc,
+                    pages
+                }           
+            })
+
+            return res.json({dataPaginated, pages})
 
         } else {
 

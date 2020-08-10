@@ -1,9 +1,10 @@
 const mongoose = require('mongoose')
 const Url = require('./src/models/Url')
 
+const uri = require('./src/uri')
 const sites = require('./sites.json')
 
-mongoose.connect('mongodb+srv://pedrocs378:pedro741852@cluster0.tkqge.gcp.mongodb.net/webcrawler?retryWrites=true&w=majority', {
+mongoose.connect(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })

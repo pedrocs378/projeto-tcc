@@ -13,7 +13,7 @@ const UrlSchema = new Schema({
         type: String,
         required: true
     },
-    desc: {
+    textInfo: {
         type: String,
         required: true
     }

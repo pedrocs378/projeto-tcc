@@ -1,107 +1,126 @@
 const Url = require('../../models/Url')
 
-const Crawler = require("crawler");
 const rp = require('request-promise')
 const cheerio = require('cheerio')
+const puppeteer = require('puppeteer')
 
 const data = []
 
-module.exports = function handleRunCrawler(dataUrl, callback) {
+module.exports = async function handleRunCrawler(dataUrl, callback) {
 
-    let i = 0
-    let interval
+    const browser = await puppeteer.launch();
+    console.log('Puppeteer - BROWSER INICIADO')
 
-    async function next() {
-        if (i < dataUrl.length) {
-            let options = {
-                uri: dataUrl[i],
-                transform: (body, res) => cheerio.load(body) 
+    const page = await browser.newPage();
+    console.log('Puppeteer - NOVA PAGINA CRIADA')
+
+    await page.goto(dataUrl[0]);
+    console.log('Puppeteer - PAGINA ENCAMINHADA PARA: ' + dataUrl[0])
+
+    const pageTittle = await page.title()
+    console.log(pageTittle)
+
+    const listOfSickness = "a.list-group-item-action"
+    await page.waitForSelector(listOfSickness)
+    console.log('Puppeteer - VERIFICADO O SELETOR: ' + listOfSickness)
+
+    const itemData = await page.evaluate(listOfSickness => {
+        const anchors = Array.from(document.querySelectorAll(listOfSickness))
+
+        return anchors.map(async (anchor) => {
+            const dataExist = await Url.find({ url: anchor.href })
+
+            if (dataExist.length === 0) {
+                return { 
+                    title: anchor.textContent,
+                    url: anchor.href,
+                    host: anchor.host
+                } 
+            } else {
+                return {
+                    status: 400
+                }
             }
+        })
+    }, listOfSickness)
+    console.log('Puppeteer - URLS GRAVADAS')
 
-            rp(options)
-                .then($ => {
+    await browser.close()
+    console.log('Puppeteer - BROWSER FECHADO')
+    
+    getDataInfoAndPushToArray(itemData, callback)
 
-                    const urls = []
+    // rp(options)
+    //     .then(data => {
+    //         const urls = []
 
-                    if ($) {
-                        handleSearchTags($, '.list-group', 'a.list-group-item', urls)
-                    }
-                    return urls
-                })
-                .then(urls => {
+    //         if ($) {
+    //             handleSearchTags($, '.list-group', 'a.list-group-item', urls)
+    //         }
+    //         console.log(data)
+    //         getDataInfoAndPushToArray(urls, callback)
 
-                    const newUrls = []
+    //     })
+    //     .then(urls => {
 
-                    urls.forEach(({ title, link }) => {
-                        if (link && (link.split(':')[0] === 'http' || link.split(':')[0] === 'https')) {
-                            newUrls.push({ title, link })
+    //         const newUrls = []
+
+    //         urls.forEach((link) => {
+    //             if (link && (link.split(':')[0] === 'http' || link.split(':')[0] === 'https')) {
+    //                 newUrls.push(link)
+    //             }
+    //         })
+
+    //         getDataInfoAndPushToArray(newUrls, callback)
+    //     })
+    //     .catch((err) => {
+    //         console.log(err)
+    //     })
+
+}
+
+function getDataInfoAndPushToArray(itemData, cb) {
+
+    console.log('getDataInfoAndPushToArray - FUNCAO INICIADA')
+    
+    let i = 0
+    function next() {
+        if (i < itemData.length) {
+            console.log('getDataInfoAndPushToArray > next() - IT' + i)
+            if (itemData[i].url) {
+                rp(itemData[i].url, async (err, res, body) => {
+                    if (!err) {
+                        let $ = cheerio.load(body)
+
+                        if ($) {
+                            const title = $('head').find('title').text()
+                            const textInfo = $('.item-page').find('p').text()
+
+                            if (title && textInfo) {
+                                data.push(await Url.create({
+                                    title,
+                                    url: itemData[i].url,
+                                    host: itemData[i].host,
+                                    textInfo
+                                }))                      
+                            }
+
+                            ++i
+
+                            return next()
+
                         }
-                    })
 
-                    return newUrls
-
+                    }
                 })
-                .then((urls) => {
-
-                    handleSaveData(urls).then(() => {
-                        ++i
-
-                        return next()
-
-                    })
-
-
-                })
-            
+            }
         } else {
-            callback(data)
+            console.log('getDataInfoAndPushToArray - FUNCAO FINALIZADA')
+            cb(data)
         }
+    
     }
 
     return next()
-
-}
-
-function handleSearchTags($, strTag = '', strTagLink = '', arrUrls) {
-
-    if ($(strTag)) {
-        $(strTag).find(strTagLink).each((key, element) => {
-            let title = $(element).find('strong').text()
-            let link = $(element).attr('href')
-
-            urls.push({ title, link })
-        })
-    }
-
-}
-
-function handleSaveData(urlData) {
-    let i = 0
-
-    return new Promise((resolve, reject) => {
-
-        async function next() {
-            if (i < urlData.length) {
-                const dataExist = await Url.find({ url: urlData[i].link })
-                if (dataExist.length === 0) {
-                    data.push(await Url.create({
-                        title: urlData[i].title,
-                        url: urlData[i].link,
-                        host: urlData[i].link.split('/')[2],
-                        desc: 'Descrição'
-                    }))
-                }
-
-                ++i
-
-                next()
-            } else {
-                resolve(data)
-            }
-        }
-
-        next()
-
-    })
 
 }

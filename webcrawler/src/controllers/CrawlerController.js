@@ -1,5 +1,7 @@
 const Url = require('../models/Url')
 
+const puppeteer = require('puppeteer')
+
 const sites = require('../../sites.json')
 const handleRunCrawler = require('../functions/crawler')
 
@@ -48,15 +50,15 @@ module.exports = {
             const dataCreated = await Url.create(sites)
             const urls = dataCreated.map(({ url }) => url)
 
-            handleRunCrawler(urls, (data) => {
-                return res.json(data)
+            handleRunCrawler(urls, (savedData) => {
+                return res.json(savedData)
             })
 
         } else {
             const urls = data.map(({ url }) => url)
 
-            handleRunCrawler(urls, (data) => {
-                return res.json(data)
+            handleRunCrawler(urls, (savedData) => {
+                return res.json(savedData)
             })
 
         }         

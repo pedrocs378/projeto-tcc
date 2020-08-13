@@ -1,6 +1,7 @@
 .results li {
     margin-top: 20px;
     list-style-type: none;
+    width: 50rem;
 }
 
 .results li h3 {
@@ -10,8 +11,9 @@
 }
 
 .results li span {
-    font-size: 14px;
+    font-size: px;
     color: #4d5156;
+    
 }
 
 .results li a {

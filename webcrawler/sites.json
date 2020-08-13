@@ -1,8 +1,9 @@
 [
     {
-        "title": "Saúde de A a Z",
+        "title": "Saúde de A - Z",
         "url": "http://saude.gov.br/saude-de-a-z",
-        "host": "www.saude.gov.br",
-        "textInfo": "Saúde de A a Z. Glossário com os principais temas, ações, políticas, programas do Ministério da Saúde na prevenção e promoção da saúde. Sintomas ..."
+        "host": "saude.gov.br",
+        "textInfo": "Glossário com os principais temas, ações, políticas, programas do Ministério da Saúde na prevenção ...",
+        "tags": ["glossario", "com", "os", "principais", "temas", "acoes", "politicas", "programas", "do", "ministerio", "da", "saude", "na", "prevencao"]
     }
 ]

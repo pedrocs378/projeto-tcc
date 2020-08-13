@@ -12,9 +12,9 @@ module.exports = {
 
         if (datas.length > 0) {
             let pages = 1
-            let cont = 0
+            let cont = 0 
 
-            const dataPaginated = datas.map(({ _id, title, url, host, desc }) => {
+            const dataPaginated = datas.map(({ _id, title, url, host, textInfo, tags }) => {
                 cont++
 
                 if (cont === 9) {
@@ -27,7 +27,8 @@ module.exports = {
                     title,
                     url,
                     host,
-                    desc,
+                    textInfo,
+                    tags,
                     pages
                 }           
             })
@@ -46,18 +47,34 @@ module.exports = {
 
         const data = await Url.find({})
 
+        const browser = await puppeteer.launch();
+        console.log('Puppeteer - BROWSER INICIADO')
+
+        const page = await browser.newPage();
+        console.log('Puppeteer - NOVA PAGINA CRIADA')
+
         if (data.length === 0) {
             const dataCreated = await Url.create(sites)
             const urls = dataCreated.map(({ url }) => url)
 
-            handleRunCrawler(urls, (savedData) => {
+            console.log('handleRunCrawler - INICIANDO CRAWLER...')
+            handleRunCrawler(page, urls, async (savedData) => {
+                await browser.close()
+                console.log('Puppeteer - BROWSER FECHADO')
+
+                console.log('handleRunCrawler - CRAWLER FINALIZADO')
                 return res.json(savedData)
             })
 
         } else {
             const urls = data.map(({ url }) => url)
 
-            handleRunCrawler(urls, (savedData) => {
+            console.log('handleRunCrawler - INICIANDO CRAWLER...')
+            handleRunCrawler(page, urls, async (savedData) => {
+                await browser.close()
+                console.log('Puppeteer - BROWSER FECHADO')
+
+                console.log('handleRunCrawler - CRAWLER FINALIZADO')
                 return res.json(savedData)
             })
 

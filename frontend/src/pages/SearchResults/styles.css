@@ -12,18 +12,20 @@
 
 .arrow-left-icon .button {
     cursor: pointer;
-    background-color: white;
+    background-color: var(--color-arrow-background);
     border-radius: 50px;
     padding: 10px;
+    margin-right: 2px;
+    margin-left: 1px;
     transition: background-color 0.3s;
 }
 
 .arrow-left-icon .button:hover {
-    background-color: #ececec;
+    background-color: var(--color-arrow-icon);
 }
 
 #separator {
-    border: 1px solid #ececec;
+    border: 1px solid var(--color-line-search-results);
     margin-top: 20px;
 }
 
@@ -37,7 +39,7 @@
 }
 
 .results li h3 {
-    color: #1a0dab;
+    color: var(--color-link-result);
     font-weight: normal;
     font-size: 20px;
 }

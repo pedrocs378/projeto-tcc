@@ -1,5 +1,19 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap');
 
+:root{
+  --color-logo-search: #373f51;
+  --color-button-search: #343a40;
+  --color-button-background-search: #e9ecef;
+  --color-button-search-hover: #dee2e6;
+  --color-search-bar: #ffffff;
+  --color-link-result: #1a0dab;
+  --color-arrow-icon: #ececec; 
+  --color-arrow-background: #ffffff;
+  --color-line-search-results: #e9ecef;
+  --color-transition-box: #dfe1e5;
+  --color-icon-button: #ffffff;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -7,11 +21,18 @@
   border-width: 0;
 }
 
+
 body {
   font: 400 14px Roboto, sans-serif;
+  height: 100vh;
+}
+
+body {
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
 }
 
 input, button {
   font: 400 15px Roboto, sans-serif;
 }
-

@@ -1,0 +1,1 @@
+module.exports = uri = 'mongodb+srv://lucasfernando0970:lucas123@cluster0.tkqge.gcp.mongodb.net/webcrawler?retryWrites=true&w=majority'

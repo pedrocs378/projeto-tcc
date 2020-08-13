@@ -31,34 +31,6 @@
     margin-left: 100px;
 }
 
-.results li {
-    margin-top: 20px;
-    list-style-type: none;
-}
-
-.results li h3 {
-    color: #1a0dab;
-    font-weight: normal;
-    font-size: 20px;
-}
-
-.results li span {
-    font-size: 14px;
-    color: #4d5156;
-}
-
-.results li a {
-    text-decoration: none;
-}
-
-.results li a:hover {
-    text-decoration: underline;
-}
-
-.results li cite {
-    color: #202124;
-}
-
 .pagination {
     width: 40%;
     height: 70px;

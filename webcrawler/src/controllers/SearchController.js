@@ -1,145 +1,50 @@
-const firebase = require('firebase/app')
-
-const request = require('request')
-const cheerio = require('cheerio')
-
-const fs = require('fs')
-const path = require('path')
-
-const handleMakeSearch = require('../functions/search')
+const Url = require('../models/Url')
 
 module.exports = {
-    search(req, res) {
+    async search(req, res) {
         const { q = "" } = req.query
+        const allDatas = await Url.find({})
 
-        let words = q.toLowerCase()
+        const textSearched = q.normalize('NFD')
+            .replace(/([\u0300-\u036f]|[^0-9a-zA-Z\s])/g, '')
+            .toLowerCase()
 
-        if (words) {
+        if (textSearched) {
 
-            handleMakeSearch(words, (results) => {
-                
-                console.log(results)
+            const dataSearched = []
+            let page = 1
+            let cont = 0 
 
-                return res.json(results)
+            allDatas.forEach(data => {
 
+                if (data.tags.includes(textSearched)) {
+                    let indexTag = data.tags.indexOf(textSearched)
+                    let indexTextInfo = data.textInfo.indexOf(textSearched)
+           
+                    dataSearched.push({
+                        _id: data._id,
+                        tags: data.tags[indexTag],
+                        title: data.title,
+                        url: data.url,
+                        host: data.host,
+                        textInfo: data.textInfo.substring(indexTextInfo - 100, indexTextInfo + 100),
+                        page
+                    })
+
+                    if (cont === 9) {
+                        page++
+                        cont = 0
+                    }
+
+                    cont++
+
+                }
             })
 
+            const totalPages = page
+            
+            return res.json({ dataSearched, totalPages })
         }
-
+        
     }
 }
-
-
-
-// 
-// if($('div p')) {
-//     $('body').find('div p').each((key, element) => {
-//         let text = $(element).text()
-
-//         text = text.split(' ')
-//         text.forEach((element, index) => {
-//             if (element === word) {
-//                 dados.push({
-//                     url,
-//                     text
-//                 })   
-//             }
-//         })
-//     })
-// }
-
-// if($('div h1')) {
-//     $('body').find('div h1').each((key, element) => {
-//         let text = $(element).text()
-
-//         text = text.split(' ')
-//         text.forEach((element, index) => {
-//             if (element === word) {
-//                 dados.push({
-//                     url,
-//                     text
-//                 })   
-//             }
-//         })
-//     })
-// }
-
-// if($('div h2')) {
-//     $('body').find('div h2').each((key, element) => {
-//         let text = $(element).text()
-
-//         text = text.split(' ')
-//         text.forEach((element, index) => {
-//             if (element === word) {
-//                 dados.push({
-//                     url,
-//                     text
-//                 })   
-//             }
-//         })
-//     })
-// }
-
-// if($('li p')) {
-//     $('body').find('li p').each((key, element) => {
-//         let text = $(element).text()
-
-//         text = text.split(' ')
-//         text.forEach((element, index) => {
-//             if (element === word) {
-//                 dados.push({
-//                     url,
-//                     text
-//                 })   
-//             }
-//         })
-//     })
-// }
-
-// if($('ul li p')) {
-//     $('body').find('ul li p').each((key, element) => {
-//         let text = $(element).text()
-
-//         text = text.split(' ')
-//         text.forEach((element, index) => {
-//             if (element === word) {
-//                 dados.push({
-//                     url,
-//                     text
-//                 })   
-//             }
-//         })
-//     })
-// }
-
-// if($('li')) {
-//     $('body').find('li').each((key, element) => {
-//         let text = $(element).text()
-
-//         text = text.split(' ')
-//         text.forEach((element, index) => {
-//             if (element === word) {
-//                 dados.push({
-//                     url,
-//                     text
-//                 })  
-//             }
-//         })
-//     })
-// }
-
-// if($('ul li')) {
-//     $('body').find('ul li em').each((key, element) => {
-//         let text = $(element).text()
-
-//         text = text.split(' ')
-//         text.forEach((element, index) => {
-//             if (element === word) {
-//                 dados.push({
-//                     url,
-//                     text
-//                 })   
-//             }
-//         })
-//     })
-// }

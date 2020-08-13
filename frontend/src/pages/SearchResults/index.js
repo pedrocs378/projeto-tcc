@@ -54,8 +54,8 @@ export default function SearchResults(props) {
     
     useEffect(() => {
         async function loadResults() {
-            const { data } = await api.get('/list')
-            console.log(data.dataPaginated.length)
+            const { data } = await api.get('/search?q=' + props.match.params.query)
+            console.log(data.dataSearched.length)
             setResults(data)
         }
         loadResults()
@@ -83,8 +83,8 @@ export default function SearchResults(props) {
             <div id="separator" />  
             <main id="resultsbar">
                 {
-                    results.dataPaginated
-                        ? <Results page={page} pageResults={results.dataPaginated} /> 
+                    results.dataSearched
+                        ? <Results page={page} pageResults={results.dataSearched} /> 
                         : <SearchNotFound 
                             value={props.match.params.query.includes('+') ? props.match.params.query.split('+').join(' ') : props.match.params.query}
                     />
@@ -92,11 +92,11 @@ export default function SearchResults(props) {
             </main>
                         
             <div className="pagination">
-                { results.dataPaginated ? 
+                { results.dataSearched ? 
                     <MemoryRouter initialEntries={['/search']} initialIndex={0}>
                         <Route>                                                      
                             <Pagination 
-                                count={results.pages}
+                                count={results.totalPages}
                                 page={page}
                                 onChange={handlePageChange}
                                 color="primary" 

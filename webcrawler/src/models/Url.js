@@ -16,6 +16,10 @@ const UrlSchema = new Schema({
     textInfo: {
         type: String,
         required: true
+    },
+    tags: {
+        type: Array,
+        required: true
     }
 })
 

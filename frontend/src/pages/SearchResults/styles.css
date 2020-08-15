@@ -1,8 +1,8 @@
-#menubar {
+#results-container #menubar {
     display: flex;
 }
 
-#menubar .arrow-left-icon {
+#results-container #menubar .arrow-left-icon {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -10,7 +10,7 @@
     width: 80px;  
 }
 
-#menubar .arrow-left-icon .button {
+#results-container #menubar .arrow-left-icon .button {
     cursor: pointer;
     background-color: white;
     border-radius: 50px;
@@ -18,28 +18,26 @@
     transition: background-color 0.3s;
 }
 
-#menubar .arrow-left-icon .button:hover {
+#results-container #menubar .arrow-left-icon .button:hover {
     background-color: #ececec;
 }
 
-#menubar .loading {
+#results-container #menubar .loading {
     margin-left: 20px;
     margin-top: 20px;
 }
 
-#separator {
+#results-container #separator {
     border: 1px solid #ececec;
     margin-top: 20px;
 }
 
-#resultsbar {
+#results-container #resultsbar {
     margin-left: 100px;
 }
-
-#resultsbar .pagination {
+#results-container #resultsbar .pagination {
     width: 40%;
     height: 70px;
     display: block;
-    margin-left: 100px;
     margin-top: 30px;
 }

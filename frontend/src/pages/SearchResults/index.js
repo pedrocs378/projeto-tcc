@@ -56,7 +56,7 @@ export default function SearchResults(props) {
     
     useEffect(() => {
         async function loadResults() {
-            let timer = setInterval(updateTimer, 1)
+            const timer = setInterval(updateTimer, 1)
 
             setLoaded(false)
             const { data } = await api.get('/search?q=' + props.match.params.query)
@@ -122,7 +122,6 @@ export default function SearchResults(props) {
                             </MemoryRouter> 
                             : <Pagination style={{ display: 'none' }} />
                     }
-
                 </main> 
                 : null
             }

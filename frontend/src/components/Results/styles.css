@@ -27,3 +27,11 @@
 .results li cite {
     color: #202124;
 }
+
+.results p {
+    margin-top: 10px;
+    position: relative;
+    overflow: hidden;
+    color: #70757a;
+    font-size: 14px;
+}

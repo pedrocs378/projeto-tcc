@@ -57,10 +57,12 @@ export default function SearchResults(props) {
     useEffect(() => {
         async function loadResults() {
             let timer = setInterval(updateTimer, 1)
+
             setLoaded(false)
             const { data } = await api.get('/search?q=' + props.match.params.query)
             setResults(data)
             setLoaded(true)
+
             clearInterval(timer)
         }
 
@@ -82,15 +84,11 @@ export default function SearchResults(props) {
                         <FiArrowLeft size={25} color="black" />
                     </Link>
                 </div>
-                <div className="searchbar">
-                    <SearchBar 
-                        hiddenIcon
-                    />
-                </div>
+                <SearchBar hiddenIcon />    
                 { !loaded 
                     ? <ReactLoading className="loading" type="spinningBubbles" color="gray" height={35} width={35} /> 
-                    : null }
-                
+                    : null 
+                } 
             </header>
             <div id="separator" />  
             { loaded ? 

@@ -2,7 +2,7 @@
     display: flex;
 }
 
-.arrow-left-icon {
+#menubar .arrow-left-icon {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -10,7 +10,7 @@
     width: 80px;  
 }
 
-.arrow-left-icon .button {
+#menubar .arrow-left-icon .button {
     cursor: pointer;
     background-color: white;
     border-radius: 50px;
@@ -18,8 +18,13 @@
     transition: background-color 0.3s;
 }
 
-.arrow-left-icon .button:hover {
+#menubar .arrow-left-icon .button:hover {
     background-color: #ececec;
+}
+
+#menubar .loading {
+    margin-left: 20px;
+    margin-top: 20px;
 }
 
 #separator {
@@ -31,15 +36,10 @@
     margin-left: 100px;
 }
 
-.pagination {
+#resultsbar .pagination {
     width: 40%;
     height: 70px;
     display: block;
     margin-left: 100px;
     margin-top: 30px;
-}
-
-.loading {
-    margin-left: 20px;
-    margin-top: 20px;
 }

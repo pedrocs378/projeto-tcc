@@ -23,7 +23,7 @@
 #page-home .button {
     color: var(--color-button-search);
     background-color: var(--color-button-background-search);
-    padding: 10px 16px;
+    padding: 0.625rem 1rem;
     border-radius: 0.7rem;
     text-align: center;
     justify-content: center;

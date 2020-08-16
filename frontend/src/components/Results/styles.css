@@ -1,6 +1,5 @@
 .results li {
-    width: 100%;
-    width: 50rem;
+    width: 100vw;
 }
 
 .results li {
@@ -18,7 +17,7 @@
 
 .results li span {
     font-size: 0.9rem;
-    color: var(--color-search-results-content);
+    color: var(--color-search-result-site);
 }
 
 .results li a {
@@ -30,13 +29,28 @@
 }
 
 .results li cite {
-    color: #202124;
+    color: var(--color-search-results-content);
 }
 
 .results p {
-    margin-top: 10px;
+    margin-top: 1rem;
     position: relative;
     overflow: hidden;
-    color: #70757a;
-    font-size: 14px;
+    color: var(--color-results-found);
+    font-size: 0.9rem;
+}
+
+@media(min-width: 768px){
+
+    .results li {
+        margin-top: 18px;
+        width: 650px;
+        margin-right: 16px;
+    }
+
+    .results p {
+        margin-top: 18px;
+        font-size: 14px;
+    }
+
 }

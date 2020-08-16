@@ -2,7 +2,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 60px;
+    border-radius: 3.75rem;
     border: 0.01rem solid var(--color-search-box-edge);
     width: 23rem;
     height: 2.8rem;

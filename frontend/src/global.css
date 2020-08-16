@@ -30,6 +30,6 @@ body {
   width: 100vw;
 }
 
-input, button {
-  font: 400 0.9rem Roboto, sans-serif;
+input, button, h1, p {
+  font: 400 15px Roboto, sans-serif;
 }

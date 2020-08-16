@@ -2,10 +2,20 @@ import React from 'react'
 
 import './styles.css'
 
-export default function Results({ pageResults, page }) {
+export default function Results({ pageResults, page, time }) {
+
+
+    function handleConvertNumber(number) {
+        return number.toLocaleString('pt-BR')
+    }
+
+    function handleConvertTime(value) {
+        return value.toFixed(2)
+    }
 
     return (
         <div className="results">
+            <p>Found {handleConvertNumber(pageResults.length)} results ({handleConvertTime(time)} seconds) </p>
             <ul>
                 {
                     pageResults.map(result => {

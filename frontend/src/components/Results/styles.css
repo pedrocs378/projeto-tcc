@@ -30,16 +30,13 @@
 }
 
 .results li cite {
-    color: var(--color-search-result-site);
+    color: #202124;
 }
 
-@media(min-width: 768px){
-
-    .results li {
-        margin-top: 18px;
-        list-style-type: none;
-        width: 650px;
-        margin-right: 16px;
-    }
-
+.results p {
+    margin-top: 10px;
+    position: relative;
+    overflow: hidden;
+    color: #70757a;
+    font-size: 14px;
 }

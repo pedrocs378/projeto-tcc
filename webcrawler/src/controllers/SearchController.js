@@ -42,8 +42,9 @@ module.exports = {
             })
 
             const totalPages = page
+            const length = dataSearched.length
             
-            return res.json({ dataSearched, totalPages })
+            return res.json({ dataSearched, totalPages, length })
         }
         
     }

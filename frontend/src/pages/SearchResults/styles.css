@@ -1,8 +1,8 @@
-#menubar {
+#results-container #menubar {
     display: flex;
 }
 
-.arrow-left-icon {
+#results-container #menubar .arrow-left-icon {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -12,7 +12,7 @@
     margin-left: 2rem;
 }
 
-.arrow-left-icon .button {
+#results-container #menubar .arrow-left-icon .button {
     cursor: pointer;
     background-color: var(--color-arrow-background);
     border-radius: 3.12rem;

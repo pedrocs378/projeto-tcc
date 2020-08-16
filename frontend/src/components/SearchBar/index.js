@@ -33,29 +33,19 @@ export default function SearchBar(props) {
             <div className={ props.hiddenIcon ? "icon-hidden" : "icon-search" }>
                 <FiSearch size={16} color="#9AA0A6" />
             </div>
-            <div className="search-term">
-                { props.value ? 
-                    <input 
-                        type="text" 
-                        name="search" 
-                        autoFocus
-                        autoComplete="off"
-                        title="Pesquisar"
-                        value={props.value} 
-                        onChange={handleDigit} 
-                        onKeyPress={onPressEnter} 
-                    /> : 
-                    <input 
-                        type="text" 
-                        name="search" 
-                        autoFocus
-                        autoComplete="off"
-                        title="Pesquisar"
-                        placeholder="Digite Algo..." 
-                        onChange={handleDigit} 
-                        onKeyPress={onPressEnter} 
-                    />
-                }          
+            <div className="search-term">  
+                {/* { props.value ? changeText(props.value) : null }                  */}
+                <input 
+                    type="text" 
+                    name="search" 
+                    autoFocus
+                    autoComplete="off"
+                    title="Pesquisar"
+                    placeholder="Digite Algo..." 
+                    value={text}
+                    onChange={handleDigit} 
+                    onKeyPress={onPressEnter} 
+                />         
             </div>
             <div className={ props.hiddenButton ? "icon-hidden" : "icon-button" }>
                 <button onClick={handleSearch}>

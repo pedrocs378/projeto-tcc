@@ -1,18 +1,19 @@
-#page-home main{
+#page-home {
     width: 100vw; 
-}
-
-#page-home .search-group {
+    height: 100vh;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-top: 15rem;
-    margin: 16rem 1rem;
 }
 
-#page-home .search-group h1 {
-    font-size: 2.7rem;
+#page-home main {
+    display: flex;
+    flex-direction: column;   
+    align-items: center;
+}
+
+#page-home main h1 {
+    font-size: 3rem;
     color: var( --color-logo-search);
     font-weight: normal;
     display: flex;
@@ -23,41 +24,21 @@
 #page-home .button {
     color: var(--color-button-search);
     background-color: var(--color-button-background-search);
-    padding: 0.625rem 1rem;
+    padding: 0.625rem 2rem;
     border-radius: 0.7rem;
-    text-align: center;
-    justify-content: center;
-    margin-top: 0.6rem;
     cursor: pointer;
+    height: 45px;
 }
 
 #page-home .button:hover {
     border: 1px solid var(--color-button-search-hover);
 }
 
+
 @media(min-width: 768px){
 
-    #page-home main{
-        width: 100%; 
-    }
-
-    #page-home .search-group h1 {
-        font-size: 80px;
-        font-weight: normal;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    #page-home .search-group{
-        display: flex;
-    }
-
-    #page-home .button {
-        width: 120px;
-        justify-content: center;
-        text-align: center;
-        margin-top: 16px;
+    #page-home main h1 {
+        font-size: 4rem;
     }
 
 }

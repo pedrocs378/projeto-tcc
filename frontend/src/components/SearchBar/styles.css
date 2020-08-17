@@ -1,99 +1,61 @@
 .box-search {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-around;
     border-radius: 3.75rem;
     border: 0.01rem solid var(--color-search-box-edge);
-    width: 23rem;
+    width: 20rem;
     height: 2.8rem;
-    margin: 2rem 0.93rem;
-}
-
-.icon-search {
-    width: 3rem;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-}
-
-.search-term {
-    width: 26rem; 
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-}
-
-.search-term input {
-    width: 17.5rem;
-    margin-left: 0.9rem;
-    padding: 0.7rem;
-    border-radius: 4.5rem;
+    padding: 0.01rem;
+    margin: 2rem 0;
 }
 
 .box-search:hover {
-    box-shadow: 0 0 0.5rem var(--color-transition-box);
+    box-shadow: 0 0 0.8rem var(--color-transition-box);
 }
 
-.icon-button {
+.box-search .icon-search {
+    display: none;
+
+}
+
+.box-search .search-term {
+    width: 90%;   
+}
+
+.box-search .search-term input {
+    width: 90%;
+    margin-left: 20px;
+}
+
+.box-search .icon-button {
+    height: 100%;
     width: 4.3rem;
     display: flex;
-    justify-content: flex-end;
-    margin-top: 0.1rem;
-    margin-left: 1rem;
-    margin-right: 2rem;
+    align-items: center;
+    justify-content: center;
 }
 
-.icon-button button {
+.box-search .icon-button button {
     background-color: var(--color-icon-button);
     cursor: pointer;
-    margin-right: -0.1rem;
 }
 
-.icon-hidden {
+.box-search .icon-hidden {
     display: none;
 }
 
-@media(min-width: 768px){
-
-    .box-search{
-        width: 610px;
-        margin: 32px 15px;
+@media (min-width: 1100px) {
+    .box-search { 
+        width: 30rem;
     }
-    
-    .icon-search {
-        width: 48px;
+
+    .box-search .icon-search {
+        height: 100%;
+        width: 2.8rem;
+        margin-left: 5px;
         display: flex;
-        justify-content: flex-end;
+        justify-content: center;
         align-items: center;
     }
-    
-    .search-term {
-        width: 640px; 
-        margin-left: 16px;
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-    }
-    
-    .search-term input {
-        width: 505px;
-        margin-left: -10px;
-        padding: 12px;
-        margin-top: 1px;
-        border-radius: 14px;
-    }
-
-    .icon-button {
-        width: 80px;
-        margin-top: 1px;
-        margin-left: 16px;
-        margin-right: -16px;
-        display: flex;
-        justify-content: flex-end;
-    }
-    
-    .icon-button button {
-        margin-right: 48px;
-    }
-
 }

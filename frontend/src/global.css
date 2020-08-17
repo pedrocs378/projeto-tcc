@@ -1,13 +1,15 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap');
 
-:root{
+:root {
+  font-size: 100%;
+
   --color-logo-search: #023e8a;
   --color-button-search: #343a40;
-  --color-button-background-search: #e9ecef;
-  --color-button-search-hover: #dee2e6;
+  --color-button-background-search: #f3f3f3;
+  --color-button-search-hover: #dadada;
   --color-search-bar: #ffffff;
   --color-link-result: #1a0dab;
-  --color-arrow-icon: #ececec; 
+  --color-arrow-icon: #c2bebe; 
   --color-arrow-background: #ffffff;
   --color-line-search-results: #e9ecef;
   --color-transition-box: #dfe1e5;
@@ -16,6 +18,7 @@
   --color-search-results-content: #4d5156;
   --color-search-result-site: #202124;
   --color-results-found: #70757a;
+  --color-backgroud-arrow-icon: #ececec;
 }
 
 * {
@@ -25,12 +28,11 @@
   border-width: 0;
 }
 
-body {
-  font: 400 0.8rem Roboto, sans-serif;
+html, body, #root {
   height: 100vh;
-  width: 100vw;
 }
 
-input, button, h1, p {
+
+input, button, h1, h3, p, span {
   font: 400 15px Roboto, sans-serif;
 }

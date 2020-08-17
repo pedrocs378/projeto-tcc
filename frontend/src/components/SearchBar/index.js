@@ -30,11 +30,13 @@ export default function SearchBar(props) {
 
     return (
         <div className="box-search">
-            <div className={ props.hiddenIcon ? "icon-hidden" : "icon-search" }>
+            <div 
+                className={ props.hiddenIcon ? "icon-hidden" : "icon-search" }
+                style={ !props.hiddenIcon ? { marginLeft: -10 } : null }
+            >
                 <FiSearch size={16} color="#9AA0A6" />
             </div>
-            <div className="search-term">  
-                {/* { props.value ? changeText(props.value) : null }                  */}
+            <div className="search-term" style={ !props.hiddenIcon ? { marginLeft: -50 } : null }  >  
                 <input 
                     type="text" 
                     name="search" 

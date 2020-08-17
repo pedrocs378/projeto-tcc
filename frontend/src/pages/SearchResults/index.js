@@ -74,7 +74,7 @@ export default function SearchResults(props) {
 
     function handlePageChange(event, page) {
         setPage(page)
-    }
+    } 
 
     return (
         <div id="results-container">

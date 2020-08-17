@@ -22,13 +22,11 @@ export default function Search() {
 
     return (
         <div id="page-home">
-            <div className="content">
-                <main className="search-group">
-                    <h1>Search Engine</h1>
-                    <SearchBar hiddenButton onChange={handleSetText} />
-                    <input type="button" name="btnK" className="button" value="Pesquisar" onClick={handleSearch} />
-                </main>
-            </div>
+            <main className="search-group">
+                <h1>Search Engine</h1>
+                <SearchBar hiddenButton onChange={handleSetText} />
+                <input type="button" name="btnK" className="button" value="Pesquisar" onClick={handleSearch} />
+            </main>
         </div>
     )
 }

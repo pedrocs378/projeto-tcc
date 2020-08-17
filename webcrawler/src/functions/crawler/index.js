@@ -46,7 +46,7 @@ function getDataInfoAndPushToArray(itemData, cb) {
             
             if (!itemExists) {
                 rp(itemData[i].url, async (err, res, body) => {
-                    if (!err) {
+                    if ((!err) && (res.statusCode !== 404)) {
                         let $ = cheerio.load(body)
 
                         if ($) {
@@ -69,14 +69,19 @@ function getDataInfoAndPushToArray(itemData, cb) {
                                     tags: textInfoTags
                                 }))                      
                             }
-
+                            
                             ++i
 
                             return next()
 
                         }
+                    } else {
+                        console.log('getDataInfoAndPushToArray - ERRO: NÃO FOI POSSIVEL ACESSAR A URL: ' + itemData[i].url + '\nSTATUS CODE - ' + res.statusCode)
+                        ++i
 
+                        return next()
                     }
+
                 })
             } else {
                 ++i

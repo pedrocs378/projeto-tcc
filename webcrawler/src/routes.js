@@ -5,8 +5,7 @@ const SearchController = require('./controllers/SearchController')
 
 const routes = express.Router()
 
-routes.get('/', CrawlerController.init)
-routes.get('/list', CrawlerController.index)
+routes.post('/crawler', CrawlerController.init)
 routes.get('/search', SearchController.search)
 
 module.exports = routes

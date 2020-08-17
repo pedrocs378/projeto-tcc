@@ -33,6 +33,6 @@ html, body, #root {
 }
 
 
-input, button, h1, h3, p, span {
+input, button, h1, h3, p, span, cite {
   font: 400 15px Roboto, sans-serif;
 }

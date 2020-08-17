@@ -8,7 +8,7 @@ export default function SearchNotFound(props) {
         <div id="not-found-container">
             <div className="warning-card">
                 <p>
-                    Sua pesquisa: " <em>{props.value}</em> " não encontrou nenhum resultado correspondente.
+                    Sua pesquisa: "<em>{props.value}</em>" não encontrou nenhum resultado correspondente.
                 </p>
             </div>
         </div>

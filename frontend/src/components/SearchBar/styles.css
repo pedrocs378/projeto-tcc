@@ -16,7 +16,6 @@
 
 .box-search .icon-search {
     display: none;
-
 }
 
 .box-search .search-term {
@@ -24,9 +23,9 @@
 }
 
 .box-search .search-term input {
-    width: 90%;
-    margin-left: 20px;
-}
+        width: 90%;
+        margin-left: 1.875rem;
+    }
 
 .box-search .icon-button {
     height: 100%;
@@ -57,5 +56,10 @@
         display: flex;
         justify-content: center;
         align-items: center;
+    }
+
+    .box-search .search-term input {
+        width: 90%;
+        margin-left: 1.25rem;
     }
 }

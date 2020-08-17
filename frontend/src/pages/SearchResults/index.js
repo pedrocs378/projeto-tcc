@@ -64,6 +64,7 @@ export default function SearchResults(props) {
             setResults(data)
             setLoaded(true)
 
+            setPage(1)
             clearInterval(timer)
         }
 

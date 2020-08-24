@@ -61,5 +61,6 @@
     .box-search .search-term input {
         width: 90%;
         margin-left: 1.25rem;
+        height: 38px;
     }
 }

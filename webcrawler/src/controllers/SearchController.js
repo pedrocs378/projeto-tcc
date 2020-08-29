@@ -1,5 +1,7 @@
 const Url = require('../models/Url')
 
+const analyzeText = require('../functions/search')
+
 module.exports = {
     async search(req, res) {
         const { q = "" } = req.query
@@ -11,38 +13,7 @@ module.exports = {
 
         if (textSearched) {
 
-            const dataSearched = []
-            let page = 1
-            let cont = 0 
-
-            allDatas.forEach(data => {
-
-                if (data.tags.includes(textSearched)) {
-                    let indexTag = data.tags.indexOf(textSearched)
-                    let indexTextInfo = data.textInfo.indexOf(textSearched)
-           
-                    dataSearched.push({
-                        _id: data._id,
-                        tags: data.tags[indexTag],
-                        title: data.title,
-                        url: data.url,
-                        host: data.host,
-                        textInfo: data.textInfo.substring(indexTextInfo - 100, indexTextInfo + 100),
-                        page
-                    })
-
-                    if (cont === 9) {
-                        page++
-                        cont = 0
-                    }
-
-                    cont++
-
-                }
-            })
-
-            const totalPages = page
-            const length = dataSearched.length
+            const { dataSearched, totalPages, length } = analyzeText(textSearched, allDatas)
             
             return res.json({ dataSearched, totalPages, length })
         }

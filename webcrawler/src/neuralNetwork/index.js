@@ -1,4 +1,14 @@
-const Url = require('../../models/Url')
+const Url = require('../models/Url')
+const { json } = require('express')
+
+module.exports = async (req, res) => {
+
+    const dados = await Url.find({})
+	res.json(dados.map(dados => {
+		return {title: dados.title, tags: dados.tags}
+	}))
+
+}
 
 //_______________ FUNÇÕES _______________//
 

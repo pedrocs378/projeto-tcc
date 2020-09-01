@@ -20,7 +20,11 @@ const UrlSchema = new Schema({
     tags: {
         type: Array,
         required: true
-    }
+    },
+    tagsWithoutStopwords: [{
+        name: String,
+        value: Number
+    }]
 })
 
 module.exports = model('Url', UrlSchema)

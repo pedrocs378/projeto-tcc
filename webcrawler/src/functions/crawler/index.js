@@ -1,4 +1,5 @@
 const Url = require('../../models/Url')
+const Stopword = require('../../models/Stopword')
 
 const rp = require('request-promise')
 const cheerio = require('cheerio')
@@ -35,9 +36,18 @@ module.exports = async function handleRunCrawler(page, dataUrl, callback) {
 
 }
 
-function getDataInfoAndPushToArray(itemData, cb) {
+async function getDataInfoAndPushToArray(itemData, cb) {
 
     console.log('getDataInfoAndPushToArray - FUNCAO INICIADA')
+    const stopwords = await Stopword.find({})
+    const stopwordsParsed = stopwords.map(({ word }) => {
+        return word
+            .normalize('NFD')
+            .replace(/([\u0300-\u036f]|[^0-9a-zA-Z\s])/g, '')
+            .toLowerCase()
+    })
+
+    // console.log(stopwordsParsed)
 
     let i = 0
     async function next() {
@@ -58,7 +68,9 @@ function getDataInfoAndPushToArray(itemData, cb) {
                                 .toLowerCase()
                             
                             const textInfoTags = textInfoParsed.split(' ')
-
+                            const tagsWithoutStopwords = textInfoTags.map(tag => {
+                                return !(stopwordsParsed.includes(tag.trim())) ? { name: tag, value: Math.random() } : null
+                            }) 
 
                             if (title && textInfo) {
                                 data.push(await Url.create({
@@ -66,7 +78,8 @@ function getDataInfoAndPushToArray(itemData, cb) {
                                     url: itemData[i].url,
                                     host: itemData[i].host,
                                     textInfo,
-                                    tags: textInfoTags
+                                    tags: textInfoTags,
+                                    tagsWithoutStopwords: tagsWithoutStopwords.filter(el => el != null)
                                 }))                      
                             }
                             

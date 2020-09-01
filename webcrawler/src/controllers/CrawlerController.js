@@ -1,9 +1,11 @@
 const Url = require('../models/Url')
+const Stopword = require('../models/Stopword')
 
 const puppeteer = require('puppeteer')
 
 const sites = require('../../sites.json')
 const handleRunCrawler = require('../functions/crawler')
+const addStopwords = require('../functions/stopwords')
 
 module.exports = {
     async index(req, res) {
@@ -46,6 +48,12 @@ module.exports = {
     async init(req, res) {
 
         const data = await Url.find({})
+        const stopwords = await Stopword.find({})
+
+        if (stopwords.length === 0 ) {
+            console.log('addStopwords - INSERINDO STOPWORDS...')
+            addStopwords()
+        }
 
         const browser = await puppeteer.launch();
         console.log('Puppeteer - BROWSER INICIADO')
@@ -63,7 +71,7 @@ module.exports = {
                 console.log('Puppeteer - BROWSER FECHADO')
 
                 console.log('handleRunCrawler - CRAWLER FINALIZADO')
-                return res.json(savedData)
+                return res.status(200).send()
             })
 
         } else {
@@ -75,7 +83,7 @@ module.exports = {
                 console.log('Puppeteer - BROWSER FECHADO')
 
                 console.log('handleRunCrawler - CRAWLER FINALIZADO')
-                return res.json(savedData)
+                return res.status(200).send()
             })
 
         }         

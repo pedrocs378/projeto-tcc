@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
-const Url = require('./src/models/Url')
 
+const Stopword = require('./src/models/Stopword')
 const uri = require('./src/uri')
 
 mongoose.connect(uri, {
@@ -8,8 +8,8 @@ mongoose.connect(uri, {
     useUnifiedTopology: true
 })
 
-async function remove() {
-    await Url.deleteMany()
+async function addStopwords() {
+    await Stopword.deleteMany()
 }
 
-remove()
+addStopwords()

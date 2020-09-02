@@ -12,7 +12,7 @@ mongoose.connect(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
-// CORS
+
 app.use(cors())
 app.use(express.json())
 app.use(routes)

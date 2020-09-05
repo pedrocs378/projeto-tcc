@@ -47,8 +47,6 @@ async function getDataInfoAndPushToArray(itemData, cb) {
             .toLowerCase()
     })
 
-    // console.log(stopwordsParsed)
-
     let i = 0
     async function next() {
         if (i < itemData.length) {
@@ -61,7 +59,11 @@ async function getDataInfoAndPushToArray(itemData, cb) {
 
                         if ($) {
                             const title = $('head').find('title').text()
-                            const textInfo = $('.item-page').find('p').text()
+                            const textItemPage = $('.item-page').text()
+                            const textInfo = textItemPage
+                                .replace(/([\n{2,}]|[\t{2,}]|[→{1,}])/g, ' ')
+                                .replace(/\s{2,}/g, ' ')
+                            // const textInfo = $('.item-page').find('p').text()
                             const textInfoParsed = textInfo
                                 .normalize('NFD')
                                 .replace(/([\u0300-\u036f]|[^0-9a-zA-Z\s])/g, '')

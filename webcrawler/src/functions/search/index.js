@@ -4,6 +4,7 @@ module.exports = function analyseText(textSearched, datas) {
 
     const textSplited = textSearched.split(' ')
     const dataSearched = []
+    const results = []
 
     let page = 1
     let cont = 0 
@@ -42,7 +43,7 @@ module.exports = function analyseText(textSearched, datas) {
     } else {
         datas.forEach(data => {
 
-            if (data.tags.includes(textSearched)) {
+            if (data.tagsWithoutStopwords.includes(textSearched)) {
                 const indexTag = data.tags.indexOf(textSearched)
                 const textInfoParsed = data.textInfo
                     .normalize('NFD')

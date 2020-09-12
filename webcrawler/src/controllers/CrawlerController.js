@@ -47,7 +47,6 @@ module.exports = {
 
     async init(req, res) {
 
-        const data = await Url.find({})
         const stopwords = await Stopword.find({})
 
         if (stopwords.length === 0 ) {
@@ -61,32 +60,16 @@ module.exports = {
         const page = await browser.newPage();
         console.log('Puppeteer - NOVA PAGINA CRIADA')
 
-        if (data.length === 0) {
-            const dataCreated = await Url.create(sites)
-            const urls = dataCreated.map(({ url }) => url)
+        console.log('handleRunCrawler - INICIANDO CRAWLER...')
+        handleRunCrawler(page, async () => {
+            await browser.close()
+            console.log('Puppeteer - BROWSER FECHADO')
 
-            console.log('handleRunCrawler - INICIANDO CRAWLER...')
-            handleRunCrawler(page, urls, async (savedData) => {
-                await browser.close()
-                console.log('Puppeteer - BROWSER FECHADO')
+            console.log('handleRunCrawler - CRAWLER FINALIZADO')
+            return res.status(200).send()
+        })
 
-                console.log('handleRunCrawler - CRAWLER FINALIZADO')
-                return res.status(200).send()
-            })
-
-        } else {
-            const urls = data.map(({ url }) => url)
-
-            console.log('handleRunCrawler - INICIANDO CRAWLER...')
-            handleRunCrawler(page, urls, async (savedData) => {
-                await browser.close()
-                console.log('Puppeteer - BROWSER FECHADO')
-
-                console.log('handleRunCrawler - CRAWLER FINALIZADO')
-                return res.status(200).send()
-            })
-
-        }         
+              
 
     }
 }

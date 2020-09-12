@@ -6,10 +6,12 @@ const cheerio = require('cheerio')
 
 const data = []
 
-module.exports = async function handleRunCrawler(page, dataUrl, callback) {
+module.exports = async function handleRunCrawler(page, callback) {
 
-    await page.goto(dataUrl[0]);
-    console.log('Puppeteer - PAGINA ENCAMINHADA PARA: ' + dataUrl[0])
+    const url = 'http://saude.gov.br/saude-de-a-z'
+
+    await page.goto(url);
+    console.log('Puppeteer - PAGINA ENCAMINHADA PARA: ' + url)
 
     const pageTittle = await page.title()
     console.log(pageTittle)
@@ -70,9 +72,26 @@ async function getDataInfoAndPushToArray(itemData, cb) {
                                 .toLowerCase()
                             
                             const textInfoTags = textInfoParsed.split(' ')
-                            const tagsWithoutStopwords = textInfoTags.map(tag => {
-                                return !(stopwordsParsed.includes(tag.trim())) ? { name: tag, value: Math.random() } : null
+
+
+
+                            const tagsWithoutStopwords = textInfoTags.map((tag) => {
+                                if (!(stopwordsParsed.includes(tag))) {
+                                    // const tagsAlreadySaved = await Url.find({ name: tag }, '-_id tagsWithoutStopwords')
+                                    // console.log('TAGS_ALREADY_SAVED:', tagsAlreadySaved)
+
+                                    return { 
+                                        name: tag, 
+                                        value: Math.random() 
+                                    }
+                                } else {
+                                    return null
+                                }
                             }) 
+
+                            const tagsWithoutNulls = tagsWithoutStopwords.filter(el => (el != null) ? (el.name.trim() != "") ? true : false : false)
+
+                            const tagsWthtStpwrdsFiltered = filterByProperty(tagsWithoutNulls, 'name')
 
                             if (title && textInfo) {
                                 data.push(await Url.create({
@@ -81,7 +100,7 @@ async function getDataInfoAndPushToArray(itemData, cb) {
                                     host: itemData[i].host,
                                     textInfo,
                                     tags: textInfoTags,
-                                    tagsWithoutStopwords: tagsWithoutStopwords.filter(el => el != null)
+                                    tagsWithoutStopwords: tagsWthtStpwrdsFiltered
                                 }))                      
                             }
                             
@@ -112,4 +131,17 @@ async function getDataInfoAndPushToArray(itemData, cb) {
 
     return next()
 
+}
+
+function filterByProperty(array, propertyName) {
+    let occurrences = {}
+
+    return array.filter(function (x) {
+        let property = x[propertyName]
+        if (occurrences[property]) {
+            return false;
+        }
+        occurrences[property] = true;
+        return true;
+    })
 }

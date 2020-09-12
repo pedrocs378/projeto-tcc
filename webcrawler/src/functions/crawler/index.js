@@ -74,12 +74,8 @@ async function getDataInfoAndPushToArray(itemData, cb) {
                             const textInfoTags = textInfoParsed.split(' ')
 
 
-
                             const tagsWithoutStopwords = textInfoTags.map((tag) => {
                                 if (!(stopwordsParsed.includes(tag))) {
-                                    // const tagsAlreadySaved = await Url.find({ name: tag }, '-_id tagsWithoutStopwords')
-                                    // console.log('TAGS_ALREADY_SAVED:', tagsAlreadySaved)
-
                                     return { 
                                         name: tag, 
                                         value: Math.random() 
@@ -89,19 +85,20 @@ async function getDataInfoAndPushToArray(itemData, cb) {
                                 }
                             }) 
 
-                            const tagsWithoutNulls = tagsWithoutStopwords.filter(el => (el != null) ? (el.name.trim() != "") ? true : false : false)
+                            const tagsWithoutNulls = tagsWithoutStopwords.filter(el => 
+                                (el != null) ? (el.name.trim() != "") ? true : false : false)
 
                             const tagsWthtStpwrdsFiltered = filterByProperty(tagsWithoutNulls, 'name')
 
                             if (title && textInfo) {
-                                data.push(await Url.create({
+                                await Url.create({
                                     title,
                                     url: itemData[i].url,
                                     host: itemData[i].host,
                                     textInfo,
                                     tags: textInfoTags,
                                     tagsWithoutStopwords: tagsWthtStpwrdsFiltered
-                                }))                      
+                                })                      
                             }
                             
                             ++i
@@ -124,7 +121,7 @@ async function getDataInfoAndPushToArray(itemData, cb) {
             }
         } else {
             console.log('getDataInfoAndPushToArray - FUNCAO FINALIZADA')
-            cb(data)
+            cb()
         }
     
     }

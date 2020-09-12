@@ -42,8 +42,10 @@ module.exports = function analyseText(textSearched, datas) {
         })
     } else {
         datas.forEach(data => {
+            const tagsWithoutStopwords = data.tagsWithoutStopwords
+            const tags = tagsWithoutStopwords.map(tag => tag.name)
 
-            if (data.tagsWithoutStopwords.includes(textSearched)) {
+            if (tags.includes(textSearched)) {
                 const indexTag = data.tags.indexOf(textSearched)
                 const textInfoParsed = data.textInfo
                     .normalize('NFD')

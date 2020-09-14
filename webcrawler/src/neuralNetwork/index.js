@@ -1,58 +1,125 @@
 const Url = require('../models/Url')
 const { json } = require('express')
+const entrada = []
 
-module.exports = async (req, res) => {
+module.exports = async () => {
 
-    const dados = await Url.find({})
-	res.json(dados.map(dados => {
-		return {title: dados.title, tags: dados.tags}
-	}))
+	const dados = await Url.find({}, '-_id tagsWithoutStopwords.value')
+	const tags = dados.map(tag => tag.tagsWithoutStopwords)
+	const valor = tags.map((tag) => { return tag.map(({ value }) => value) })
 
-}
+	//entrada.push(valor)
+	//console.log(valor)
+}	
 
-//_______________ FUNÇÕES _______________//
+	
+//_______________ Funções da Rede _______________//
 
-function TokenizaValores(quantidade){
-
-	let vetor = []
-
-	for(let i=0; i<quantidade; i++){
-		vetor.push(Math.random())
-	}
-
-	return vetor
-}
-
-//console.log(TokenizaValores(2))
-
-function normalizaMatriz(entrada, nmroLinhas, nmroColunas) {
+function normalizaDados(entrada, nmroLinhas, nmroColunas) {
 
 	let total = 0
+	let normaliza = false
 
-	//Verifica se é um vetor ou matriz
-	if (nmroLinhas == 0 || nmroLinhas == null) {
+	//Vetor
+	if (nmroLinhas === 0) {
 		for (let i = 0; i < nmroColunas; i++) {
+			if (entrada[i] < 0 || entrada[i] > 1){
+				normaliza = true
+			}
 			total += entrada[i]
 		}
-
-		for (let i = 0; i < nmroColunas; i++) {
-			entrada[i] /= total
+		if (normaliza){
+			for (let i = 0; i < nmroColunas; i++) {
+				entrada[i] /= total
+			}
 		}
-	} else {
+	} 
+	else{ //Matriz
 		for (let i = 0; i < nmroLinhas; i++) {
-			for (let j = 0; j < nmroColunas; j++) {
+			for (let j = 0; j < nmroColunas; j++){
+				if (entrada[i][j] < 0 || entrada[i][j] > 1){
+					normaliza = true	
+				}
 				total += entrada[i][j]
 			}
 		}
-
-		for (let i = 0; i < nmroLinhas; i++) {
-			for (let j = 0; j < nmroColunas; j++) {
-				entrada[i][j] /= total
+		if (normaliza){
+			for (let i = 0; i < nmroLinhas; i++) {
+				for (let j = 0; j < nmroColunas; j++) {
+					entrada[i][j] /= total
+				}
 			}
 		}
 	}
 
 	return entrada
+}
+
+function realizaComplemento(entrada, nmroLinhas, nmroColunas){
+
+	let aux
+	let complemento
+
+	//Vetor
+	if (nmroLinhas === 0){
+
+		//Inicializa matriz com linhas da quantidade de colunas do vetor original
+		complemento = new Array(nmroColunas)
+
+		for(let i=0; i<nmroColunas; i++){
+			complemento[i] = new Array(2)
+		}
+		
+		aux = new Array(nmroColunas)
+
+		for (let i=0; i<nmroColunas; i++){
+			aux[i] = 1 - entrada[i]
+		}
+
+		nmroLinhas = nmroColunas
+		for (let i=0; i<nmroLinhas; i++){
+			for(let j=0; j<2; j++){
+				if(j === 0){
+					complemento[i][j] = entrada[i]
+				}else{
+					complemento[i][j] = aux[i]
+				}
+			}
+		}
+	}
+	else{ //Matriz
+		complemento = new Array(nmroLinhas) 
+
+		for(let i=0; i<nmroLinhas; i++){
+			complemento[i] = new Array(nmroColunas*2)
+		}
+		
+		aux = new Array(nmroLinhas) 
+
+		for(let i=0; i<nmroLinhas; i++){
+			aux[i] = new Array(nmroColunas) 
+		}
+
+		for (let i = 0; i < nmroLinhas; i++) {
+			for (let j = 0; j < nmroColunas; j++) {
+				aux[i][j] = 1 - entrada[i][j]
+			}
+		}
+
+		for (let i = 0; i < nmroLinhas; i++) {
+			for (let j = 0; j < nmroColunas; j++) {
+				complemento[i][j] = entrada[i][j]
+			}
+		}
+
+		for (let i = 0; i < nmroLinhas; i++) {
+			for (let j = (nmroColunas*2)/2; j < nmroColunas*2; j++) {
+				complemento[i][j] = aux[i][j-((nmroColunas*2)/2)]
+			}
+		}
+	}
+
+	return complemento
 }
 
 function somaColunas(linha, entrada, nmroColunas) {
@@ -175,53 +242,33 @@ function realizaMatchTracking(entrada, peso, linha, catVencedora, nmroLinhas, nm
 	return resMatchTracking
 }
 
-//______________________________________//
+//_______________ Variáveis de Controle da Rede _______________//
 
-//Variaveis de controle da rede
 var i = 0, j = 0
-var pa = 0.95, pb = 1, pab = 0.95
-var alfa = 0.1, beta = 1
+const pa = 0.95, pb = 1, pab = 0.95
+const alfa = 0.1, beta = 1
 var fase = 0 //Treinamento
 
 //_______________ Preparação ART B _______________//
 
-var wb = [[1, 1], [1, 1], [1, 1]]
-var b = [1, 0, 1]
+var nmroLinhasB = 0, nmroColunasB = 3
+var nmroLinhasWB = 3, nmroColunasWB = 2
+
+var wb = [[1, 1], [1, 1], [1, 1]] //Peso
+var b = [1, 0, 1] //Entrada 
 var yb = [[0, 0, 0], [0, 0, 0], [0, 0, 0]] //Matriz de atividades
 
 //Normalização (caso valores < 0 ou > 1)
-let somaEntradaB = 0
-
-for (i = 0; i < 3; i++) {
-	somaEntradaB += b[i]
-}
-
-let normalizaB = false
-
-for (i = 0; i < 3; i++) {
-	if (b[i] < 0 || b[i] > 1) {
-		normalizaB = true
-	}
-}
-
-if (normalizaB) {
-	normalizaMatriz(b, 0, 3)
-}
+normalizaDados(b, nmroLinhasB, nmroColunasB)
 
 //Complemento (1 - b)
-var complementoB = [[0, 0], [0, 0], [0, 0]]
-let auxB = [0, 0, 0]
-
-for (i = 0; i < 3; i++) {
-	auxB[i] = 1 - b[i]
-}
-
-for (i = 0; i < 3; i++) {
-	complementoB[i][0] = b[i]
-	complementoB[i][1] = auxB[i]
-}
+var complementoB = realizaComplemento(b, nmroLinhasB, nmroColunasB)
 
 //_______________ Preparação ART A _______________//
+
+var nmroLinhasA = 3, nmroColunasA = 2
+var nmroLinhasWA = 3, nmroColunasWA = 4
+var nmroLinhasWAB = 3, nmroColunasWAB = 3
 
 var wa = [[1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1]] //Peso 
 var a = [[1, 0], [0, 1], [0.5, 0.5]] //Entrada 
@@ -229,54 +276,13 @@ var wab = [[1, 1, 1], [1, 1, 1], [1, 1, 1]] //Peso Inter Art
 var ya = [[0, 0, 0], [0, 0, 0], [0, 0, 0]] //Matriz de atividades 
 
 //Normalização (caso valores < 0 ou > 1)
-let somaEntradaA = 0
-
-for (i = 0; i < 3; i++) {
-	for (j = 0; j < 2; j++) {
-		somaEntradaA += a[i][j]
-	}
-}
-
-let normalizaA = false
-
-for (i = 0; i < 3; i++) {
-	for (j = 0; j < 2; j++) {
-		if (a[i][j] < 0 || a[i][j] > 1) {
-			normalizaA = true
-		}
-	}
-}
-
-if (normalizaA) {
-	normalizaMatriz(a, 3, 2)
-}
+normalizaDados(a, nmroLinhasA, nmroColunasA)
 
 //Complemento (1 - a)
-let auxA = [[0, 0], [0, 0], [0, 0]]
-var complementoA = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
+var complementoA = realizaComplemento(a, nmroLinhasA, nmroColunasA)
 
-for (i = 0; i < 3; i++) {
-	for (j = 0; j < 2; j++) {
-		auxA[i][j] = 1 - a[i][j]
-	}
-}
-
-for (i = 0; i < 3; i++) {
-	for (j = 0; j < 2; j++) {
-		complementoA[i][j] = a[i][j]
-	}
-}
-
-for (i = 0; i < 3; i++) {
-	for (j = 2; j < 4; j++) {
-		complementoA[i][j] = auxA[i][j - 2]
-	}
-}
-
-//_______________ ART B _______________//
 //console.log("_______________ ART B _______________")
-
-let matB = [[0, 0], [0, 0], [0, 0]] //Matriz de And Logico 
+ 
 let Tb = [0, 0, 0] //Vetor de categorias
 var posiK = [0, 0, 0] //Vetor de categoria vencedora auxiliar
 let x = 0, y = 0, k = 0
@@ -284,14 +290,14 @@ let x = 0, y = 0, k = 0
 for (i = 0; i < 3; i++) {
 
 	//Categorias
-	Tb = CriaCategorias(complementoB, wb, i, 3, 2)
+	Tb = CriaCategorias(complementoB, wb, i, nmroLinhasWB, nmroColunasWB)
 	//console.log("Categorias criadas: ")
 	//console.log(Tb)
 
 	//Encontra categoria vencedora
 	let maiorB = Math.max(...Tb)
 	var K = Tb.indexOf(maiorB)
-	//console.log("Categoria Vencedora " + i + ": " + K)
+	//console.log("Categoria Vencedora K (" + i + "): " + K)
 
 	//Envia valor de K para o Art A
 	posiK[i] = K
@@ -307,7 +313,7 @@ for (i = 0; i < 3; i++) {
 		}
 	}
 
-	tVigilanciaB = realizaTesteDeVigilancia(complementoB, wb, i, K, 3, 2)
+	tVigilanciaB = realizaTesteDeVigilancia(complementoB, wb, i, K, nmroLinhasWB, nmroColunasWB)
 	//console.log("Teste de vigilancia " + i + ": " + tVigilanciaB)
 
 	//Valida vigilancia
@@ -317,7 +323,7 @@ for (i = 0; i < 3; i++) {
 		Tb[K] = 0
 		maiorB = Math.max(...Tb)
 		K = Tb.indexOf(maiorB)
-		//console.log("Nova categoria vencedora " + i + ": " + K)
+		//console.log("Nova categoria vencedora K (" + i + "): " + K)
 
 		//Teste de vigilancia
 		for (j = 0; j < 2; j++) {
@@ -328,7 +334,7 @@ for (i = 0; i < 3; i++) {
 			}
 		}
 
-		tVigilanciaB = realizaTesteDeVigilancia(complementoB, wb, i, K, 3, 2)
+		tVigilanciaB = realizaTesteDeVigilancia(complementoB, wb, i, K, nmroLinhasWB, nmroColunasWB)
 		//console.log("Novo teste de vigilancia " + i + ": " + tVigilanciaB)
 
 	}//Fim While
@@ -345,21 +351,16 @@ for (i = 0; i < 3; i++) {
 	Tb = []
 
 }//Fim for art B
-/*
+
 console.log("Entrada B: ")
 console.log(complementoB)
-console.log("Matriz do AND B:")
-console.log(matB)
 console.log("WB Atualizado: ")
 console.log(wb)
 console.log("Matriz de Atividades B:")
 console.log(yb)
-*/
-
 console.log('\n')
 
-//_______________ ART A _______________//
-//console.log("_______________ ART A _______________")
+console.log("_______________ ART A _______________")
 
 let Ta = [0, 0, 0]
 let J = 0
@@ -372,14 +373,14 @@ let tVigilanciaA = [0, 0, 0]
 for (i = 0; i < 3; i++) {
 
 	//Categorias
-	Ta = CriaCategorias(complementoA, wa, i, 3, 4)
+	Ta = CriaCategorias(complementoA, wa, i, nmroLinhasWA, nmroColunasWA)
 	//console.log("Categorias criadas A: ")
 	//console.log(Ta)
 
 	//Encontra maior categoria
 	maiorA = Math.max(...Ta)
 	J = Ta.indexOf(maiorA)
-	//console.log("Categoria vencedora A " + i + ": " + J)
+	//console.log("Categoria vencedora J (" + i + "): " + J)
 
 	//Teste de vigilancia auxiliar para atualizar o peso
 	for (j = 0; j < 4; j++) {
@@ -391,7 +392,7 @@ for (i = 0; i < 3; i++) {
 	}
 
 	//Teste de vigilancia
-	tVigilanciaA = realizaTesteDeVigilancia(complementoA, wa, i, J, 3, 4)
+	tVigilanciaA = realizaTesteDeVigilancia(complementoA, wa, i, J, nmroLinhasWA, nmroColunasWA)
 	//console.log("Teste de vigilancia A " + i + ": " + tVigilanciaA)
 
 	//Match tracking
@@ -405,7 +406,7 @@ for (i = 0; i < 3; i++) {
 		}
 	}
 
-	validaMatch = realizaMatchTracking(yb, wab, i, J, 3, 3)
+	validaMatch = realizaMatchTracking(yb, wab, i, J, nmroLinhasWAB, nmroColunasWAB)
 	//console.log("Match tracking " + i + ": " + validaMatch)
 
 	//Valida o Match Tracking
@@ -415,10 +416,10 @@ for (i = 0; i < 3; i++) {
 		Ta[J] = 0
 		maiorA = Math.max(...Ta)
 		J = Ta.indexOf(maiorA)
-		//console.log("Nova categoria vencedora A " + i + ": " + J)
+		//console.log("Nova categoria vencedora J (" + i + "): " + J)
 
 		//Teste de vigilancia
-		tVigilanciaA = realizaTesteDeVigilancia(complementoA, wa, i, J, 3, 4)
+		tVigilanciaA = realizaTesteDeVigilancia(complementoA, wa, i, J, nmroLinhasWA, nmroColunasWA)
 		//console.log("Novo teste de vigilancia A " + i + ": " + tVigilanciaA)
 
 		//Valida Vigilancia
@@ -428,10 +429,10 @@ for (i = 0; i < 3; i++) {
 			Ta[J] = 0
 			maiorA = Math.max(...Ta)
 			J = Ta.indexOf(maiorA)
-			//console.log("Nova categoria vencedora " + i + ": " + J)
+			//console.log("Nova categoria vencedora J (" + i + "): " + J)
 
 			//Teste Vigilancia
-			tVigilanciaA = realizaTesteDeVigilancia(complementoA, wa, i, J, 3, 4)
+			tVigilanciaA = realizaTesteDeVigilancia(complementoA, wa, i, J, nmroLinhasWA, nmroColunasWA)
 			//console.log("Valida teste de vigilancia A" + i + ": " + tVigilanciaA)
 
 		}//Fim While Vigilancia
@@ -449,7 +450,7 @@ for (i = 0; i < 3; i++) {
 			}
 		}
 
-		validaMatch = realizaMatchTracking(yb, wab, i, J, 3, 3)
+		validaMatch = realizaMatchTracking(yb, wab, i, J, nmroLinhasWAB, nmroColunasWAB)
 		//console.log("Valida match tracking " + i + ": " + validaMatch)
 
 	}//Fim do while Match
@@ -473,7 +474,7 @@ for (i = 0; i < 3; i++) {
 	Ta = []
 
 }//Fim for art A
-/*
+
 console.log("Entrada A: ")
 console.log(complementoA)
 console.log("Match Tracking:")
@@ -484,85 +485,45 @@ console.log("WAB Atualizado: ")
 console.log(wab)
 console.log("Matriz de Atividades A:")
 console.log(ya)
-*/
-
 console.log('\n')
 
-//_______________ DIAGNOSTICO _______________//
-//console.log("_______________ DIAGNOSTICO _______________")
 
-fase = 0 //Ativa diagnostico caso = 1
+//_______________ DIAGNOSTICO _______________//
+
+fase = 0 //Ativa diagnostico caso 1
+
+var nmroLinhasD = 3, nmroColunasD = 2
 
 var pd = 0.5
 var d = [[1, 1], [0.5, 1], [0.2, 0.9]]
-var yd = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+var yd = [[0, 0, 0], [0, 0, 0], [0, 0, 0]] //Matriz de atividades D
 var ybd = [[0, 0, 0], [0, 0, 0], [0, 0, 0]] //Matriz de atividades Inter Art
-let matD = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
 var wbd = [[0, 0], [0, 0], [0, 0]] //Matriz de conhecimento da rede
-let somaCD = [0, 0, 0]
-let somaPesoD = [0, 0, 0]
 let Td = [0, 0, 0]
 var fim = [0, 0, 0]
 var tVigilanciaD = [0, 0, 0]
 
 if (fase === 1) {
 
+	console.log("_______________ DIAGNÓSTICO _______________")
+
 	//Normalização (caso valores < 0 ou > 1)
-	let somaEntradaD = 0
-
-	for (i = 0; i < 3; i++) {
-		for (j = 0; j < 2; j++) {
-			somaEntradaD += d[i][j]
-		}
-	}
-
-	let normalizaD = false
-
-	for (i = 0; i < 3; i++) {
-		for (j = 0; j < 2; j++) {
-			if (d[i][j] < 0 || d[i][j] > 1) {
-				normalizaD = true
-			}
-		}
-	}
-
-	if (normalizaD) {
-		normalizaMatriz(d, 3, 2)
-	}
+	normalizaDados(d, nmroLinhasD, nmroColunasD)
 
 	//Complemento (1 - d)
-	let auxD = [[0, 0], [0, 0], [0, 0]]
-	var complementoD = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
-
-	for (i = 0; i < 3; i++) {
-		for (j = 0; j < 2; j++) {
-			auxD[i][j] = 1 - d[i][j]
-		}
-	}
-
-	for (i = 0; i < 3; i++) {
-		for (j = 0; j < 2; j++) {
-			complementoD[i][j] = d[i][j]
-		}
-	}
-
-	for (i = 0; i < 3; i++) {
-		for (j = 2; j < 4; j++) {
-			complementoD[i][j] = auxD[i][j - 2]
-		}
-	}
+	var complementoD = realizaComplemento(d, nmroLinhasD, nmroColunasD)
 
 	for (i = 0; i < 3; i++) {
 
 		//Categorias
-		Td = CriaCategorias(complementoD, wa, i, 3, 4)
-		console.log("Categorias criadas D: ")
-		console.log(Td)
+		Td = CriaCategorias(complementoD, wa, i, nmroLinhasWA, nmroColunasWA)
+		//console.log("Categorias criadas D: ")
+		//console.log(Td)
 
 		//Encontra categoria vencedora
 		let maiorD = Math.max(...Td)
 		let D = Td.indexOf(maiorD)
-		console.log("Categoria vencedora D " + i + ": " + D)
+		//console.log("Categoria vencedora D (" + i + "): " + D)
 
 		//Teste de vigilancia
 		let vigilanciaD = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
@@ -575,8 +536,8 @@ if (fase === 1) {
 			}
 		}
 
-		tVigilanciaD = realizaTesteDeVigilancia(complementoD, wa, i, D, 3, 4)
-		console.log("Teste de vigilancia D " + i + ": " + tVigilanciaD)
+		tVigilanciaD = realizaTesteDeVigilancia(complementoD, wa, i, D, nmroLinhasWA, nmroColunasWA)
+		//console.log("Teste de vigilancia D " + i + ": " + tVigilanciaD)
 
 		//Valida Vigilancia
 		while (tVigilanciaD[i] < pd) {
@@ -585,7 +546,7 @@ if (fase === 1) {
 			Td[D] = 0
 			maiorD = Math.max(...Td)
 			D = Td.indexOf(maiorD)
-			console.log("Nova categoria vencedora " + i + ": " + D)
+			//console.log("Nova categoria vencedora D (" + i + "): " + D)
 
 			//Teste Vigilancia
 			for (j = 0; j < 4; j++) {
@@ -596,8 +557,8 @@ if (fase === 1) {
 				}
 			}
 
-			tVigilanciaD = realizaTesteDeVigilancia(complementoD, wa, i, D, 3, 4)
-			console.log("Valida teste de vigilancia D" + i + ": " + tVigilanciaD)
+			tVigilanciaD = realizaTesteDeVigilancia(complementoD, wa, i, D, nmroLinhasWA, nmroColunasWA)
+			//console.log("Valida teste de vigilancia D" + i + ": " + tVigilanciaD)
 
 		}//Fim While Vigilancia
 
@@ -639,16 +600,16 @@ if (fase === 1) {
 			}
 		}
 	}
+	/*
+	console.log("Entrada D:")
+	console.log(complementoD)
+	console.log("Matriz de atividades D:")
+	console.log(yd)
+	console.log("Matriz de atividades Inter Art D:")
+	console.log(ybd)
+	console.log("Matriz de diagnóstico D:")
+	console.log(wbd)
+	console.log("Categorias com ressonância:")
+	console.log(ressonacia)*/
 
-}//Fim do if fase
-/*
-console.log("Entrada D:")
-console.log(complementoD)
-console.log("Matriz de atividades D:")
-console.log(yd)
-console.log("Matriz de atividades Inter Art D:")
-console.log(ybd)
-console.log("Matriz de diagnostico D:")
-console.log(wbd)
-console.log("Categorias com ressonância:")
-console.log(ressonacia)*/
+}//Fim da fase

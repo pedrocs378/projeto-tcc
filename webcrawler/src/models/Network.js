@@ -1,18 +1,18 @@
 const { Schema, model } = require('mongoose')
 
-const DataSchema = new Schema({
+const NetworkSchema = new Schema({
     url: {
         type: String,
         required: true
     },
-    saida: {
+    output: [{
         type: Array,
         required: true
-    },
-    peso: {
+    }],
+    weight: [{
         type: Array,
         required: true
-    }
+    }],
 })
 
-module.exports = model('Data', DataSchema)
+module.exports = model('Network', NetworkSchema)

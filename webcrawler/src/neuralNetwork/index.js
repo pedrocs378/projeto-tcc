@@ -1,12 +1,31 @@
 const Url = require('../models/Url')
-const { json } = require('express')
-const { TransformError } = require('request-promise/errors')
+const Network = require('../models/Network')
 
-module.exports = async () => {
+module.exports = async (req, res) => {
 
-	const dados = await Url.find({}, '-_id tagsWithoutStopwords.value')
-	const tags = dados.map(tag => tag.tagsWithoutStopwords)
-	const valor = tags.map((tag) => { return tag.map(({ value }) => value) })
+	// const dados = await Url.find({}, '-_id tagsWithoutStopwords.value')
+	// const tags = dados.map(tag => tag.tagsWithoutStopwords)
+	// const valor = tags.map((tag) => { return tag.map(({ value }) => value) })
+
+	const url = 'www.teste.com.br'
+	const output = [
+		[0,1,2],
+		[3,4,5],
+		[6,7,8],
+	]
+	const weight = [
+		[0, 1, 2],
+		[3, 4, 5],
+		[6, 7, 8],
+	]
+
+	const response = await Network.create({
+		url,
+		output,
+		weight
+	})
+
+	return res.json(response)
 
 }	
 

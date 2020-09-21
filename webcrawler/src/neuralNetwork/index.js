@@ -26,7 +26,7 @@ module.exports = async (req, res) => {
 	})
 
 	return res.json(response)
-
+ 
 }	
 
 //_______________ Controle da Rede _______________//
@@ -42,7 +42,7 @@ var beta = 1
 var fase = 0
 
 //_______________ Dados Art B _______________//
-
+/*
 var nmroLinhasInicialB = 0, nmroColunasInicialB = 3
 var nmroLinhasB = nmroColunasInicialB, nmroColunasB = 2
 var nmroLinhasMatAtvdade = 3, nmroColunasMatAtvdade = 3
@@ -55,10 +55,10 @@ var K
 
 normalizaDados(b, nmroLinhasInicialB, nmroColunasInicialB)
 var complementoB = realizaComplemento(b, nmroLinhasInicialB, nmroColunasInicialB)
-
+*/
 
 //_______________ Dados Art A _______________//
-
+/*
 var nmroLinhasInicialA = 3, nmroColunasInicialA = 2 
 var nmroLinhasA = 3, nmroColunasA = 4 
 var nmroLinhasWAB = 3, nmroColunasWAB = 3 //Tamanho da matriz inter art (NaXNb)
@@ -73,8 +73,9 @@ var J
 
 normalizaDados(a, nmroLinhasInicialA, nmroColunasInicialA)
 var complementoA = realizaComplemento(a, nmroLinhasInicialA, nmroColunasInicialA)
-
+*/
 //_______________ Dados diagnóstico _______________//
+/*
 var nmroLinhasInicialD = 3, nmroColunasInicialD = 2
 
 var d = [[1, 1], [0.5, 1], [0.2, 0.9]] 
@@ -86,51 +87,14 @@ var D //Vetor de categorias D
 
 normalizaDados(d, nmroLinhasInicialD, nmroColunasInicialD)
 var complementoD = realizaComplemento(d, nmroLinhasInicialD, nmroColunasInicialD)
-
+*/
 //_______________ Chamada das funções _______________//
-
-if (complementoB.length != complementoA.length){
-	if (complementoA.length < complementoB.length){
-		complementoA = normalizaTamanho(complementoA, complementoB)
-	}else{
-		complementoB = normalizaTamanho(complementoA, complementoB)
-	}
-}
 
 //artB(complementoB, wb, pb, beta, complementoB.length, complementoB[0].length)
 //artA(complementoA, wa, pa, beta, complementoA.length, complementoA[0].length)
 //Diagnostico(complementoD, wa, pd, complementoD.length, complementoD[0].length)
 
 //_______________ FUNÇÕES _______________//
-
-function normalizaTamanho(entrada, saida){
-
-	let tamEntrada = entrada.length
-	let tamSaida = saida.length
-	let novo
-
-	if (tamEntrada < tamSaida){
-		novo = inicializaValores(tamSaida, entrada[0].length, 0.1)
-
-		for(let i=0; i<tamEntrada; i++){
-			for(let j=0; j<entrada[0].length; j++){
-				novo[i][j] = entrada[i][j]
-			}
-		}
-	}
-
-	if (tamEntrada > tamSaida){
-		novo = inicializaValores(tamEntrada, saida[0].length, 0.1)
-
-		for(let i=0; i<tamSaida; i++){
-			for(let j=0; j<saida[0].length; j++){
-				novo[i][j] = saida[i][j]
-			}
-		}
-	}
-
-	return novo
-}
 
 function inicializaValores(nmroLinhas, nmroColunas, valor){
 

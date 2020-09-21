@@ -1,13 +1,45 @@
+const { 
+    inicializaValores,
+    insertInputValues,
+    insertOutputValues,
+    normalizaDados,
+    realizaComplemento,
+} = require('../neuralNetwork')
 
+module.exports = function analyseText(textSearched, datas, valueTags) {
 
-module.exports = function analyseText(textSearched, datas) {
+    let page = 1
+    let cont = 0
 
     const textSplited = textSearched.split(' ')
+    const dataText = textSplited.map(text => {
+        return {
+            name: text,
+            value: Math.random()
+        }
+    })
+    const valuesText = dataText.map(data => data.value)
+
     const dataSearched = []
     const results = []
 
-    let page = 1
-    let cont = 0 
+    // INPUTS
+    let inputNetwork = insertInputValues(valuesText, valuesText.length, 1)
+    console.log('INPUT:\n', inputNetwork)
+    let input = realizaComplemento(inputNetwork, inputNetwork.length, inputNetwork[0].length)
+    console.log('COMPL. INPUT:\n', input)
+    let wInput = inicializaValores(input.length, input[0].length, 1)
+    console.log('WEIGHT INPUT:\n', wInput)
+    
+    // OUTPUTS
+    let outputNetwork = insertOutputValues(valueTags[0], valuesText.length, valueTags[0].length)
+    console.log('OUTPUT:\n', outputNetwork)
+    console.log('ROWS: ' +outputNetwork.length+ ' COLS: ' +outputNetwork[0].length)
+    let output = realizaComplemento(outputNetwork, outputNetwork.length, outputNetwork[0].length)
+    console.log('COMPL. OUTPUT:\n', output)
+    console.log('ROWS: ' + output.length + ' COLS: ' + output[0].length)
+    let wOutput = inicializaValores(output.length, output[0].length, 1)
+    console.log('WEIGHT OUTPUT:\n', wOutput)
 
     if (textSplited.length > 1) {
 

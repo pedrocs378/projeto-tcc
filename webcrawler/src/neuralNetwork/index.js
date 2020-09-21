@@ -41,59 +41,6 @@ var alfa = 0.1
 var beta = 1
 var fase = 0
 
-//_______________ Dados Art B _______________//
-/*
-var nmroLinhasInicialB = 0, nmroColunasInicialB = 3
-var nmroLinhasB = nmroColunasInicialB, nmroColunasB = 2
-var nmroLinhasMatAtvdade = 3, nmroColunasMatAtvdade = 3
-
-var b = [1, 0, 1] //Saida desejada
-var wb = inicializaValores(nmroLinhasB, nmroColunasB, 1) 
-var yb = inicializaValores(nmroLinhasMatAtvdade, nmroColunasMatAtvdade, 0) //Matriz de atividades 
-var posiK = inicializaValores(0, nmroLinhasB, 0) //Vetor auxiliar de envio de categoria Ativa B para A
-var K 
-
-normalizaDados(b, nmroLinhasInicialB, nmroColunasInicialB)
-var complementoB = realizaComplemento(b, nmroLinhasInicialB, nmroColunasInicialB)
-*/
-
-//_______________ Dados Art A _______________//
-/*
-var nmroLinhasInicialA = 3, nmroColunasInicialA = 2 
-var nmroLinhasA = 3, nmroColunasA = 4 
-var nmroLinhasWAB = 3, nmroColunasWAB = 3 //Tamanho da matriz inter art (NaXNb)
-
-
-var a = [[1, 0], [0, 1], [0.5, 0.5]] //Entrada 
-var wa = inicializaValores(nmroLinhasA, nmroColunasA, 1) 
-var wab = inicializaValores(nmroLinhasWAB, nmroColunasWAB, 1) //Peso Inter Art
-var ya = inicializaValores(nmroLinhasMatAtvdade, nmroColunasMatAtvdade, 0) //Matriz de atividades 
-var mt = inicializaValores(nmroLinhasWAB, nmroColunasWAB, 0) //Match Tracking auxiliar
-var J
-
-normalizaDados(a, nmroLinhasInicialA, nmroColunasInicialA)
-var complementoA = realizaComplemento(a, nmroLinhasInicialA, nmroColunasInicialA)
-*/
-//_______________ Dados diagnóstico _______________//
-/*
-var nmroLinhasInicialD = 3, nmroColunasInicialD = 2
-
-var d = [[1, 1], [0.5, 1], [0.2, 0.9]] 
-var yd = inicializaValores(nmroLinhasMatAtvdade, nmroColunasMatAtvdade, 0) //Matriz de atividades D
-var ybd = inicializaValores(nmroLinhasWAB, nmroColunasWAB, 0) //Matriz de atividades Inter Art
-var wbd = inicializaValores(nmroLinhasB, nmroColunasB, 0) //Matriz de conhecimento da rede
-var fim = inicializaValores(0, nmroLinhasB, 0) //Vetor auxiliar de conhecimento
-var D //Vetor de categorias D
-
-normalizaDados(d, nmroLinhasInicialD, nmroColunasInicialD)
-var complementoD = realizaComplemento(d, nmroLinhasInicialD, nmroColunasInicialD)
-*/
-//_______________ Chamada das funções _______________//
-
-//artB(complementoB, wb, pb, beta, complementoB.length, complementoB[0].length)
-//artA(complementoA, wa, pa, beta, complementoA.length, complementoA[0].length)
-//Diagnostico(complementoD, wa, pd, complementoD.length, complementoD[0].length)
-
 //_______________ FUNÇÕES _______________//
 
 function inicializaValores(nmroLinhas, nmroColunas, valor){

@@ -1,4 +1,8 @@
+const config = require('../../configs/networkConfig')
 
+class NetworkController {
+    
+}
 
 exports.normalizaTamanho = function (entrada, saida) {
 
@@ -61,6 +65,38 @@ exports.inicializaValores = function (nmroLinhas, nmroColunas, valor) {
     }
 
     return entrada
+}
+
+exports.insertInputValues = function(data, rows, cols) {
+    let newData = new Array(rows).fill(undefined)
+
+    for (let i = 0; i < rows; i++) {
+        newData[i] = new Array(cols).fill(0)
+    }
+
+    for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < cols; j++) {
+            newData[i][j] = data[i]
+        }
+    }
+
+    return newData
+}
+
+exports.insertOutputValues = function (data, rows, cols) {
+    let newData = new Array(rows).fill(undefined)
+
+    for (let i = 0; i < rows; i++) {
+        newData[i] = new Array(cols).fill(0)
+    }
+
+    for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < cols; j++) {
+            newData[i][j] = data[j]
+        }
+    }
+
+    return newData
 }
 
 exports.normalizaDados = function (entrada, nmroLinhas, nmroColunas) {
@@ -183,7 +219,7 @@ function somaColunas(linha, entrada, nmroColunas) {
     return soma
 }
 
-exports.criaCategorias = function (entrada, peso, linha, nmroLinhas, nmroColunas) {
+function criaCategorias (entrada, peso, linha, nmroLinhas, nmroColunas) {
 
     let matrizCat = inicializaValores(nmroLinhas, nmroColunas, 0)
 
@@ -212,7 +248,7 @@ exports.criaCategorias = function (entrada, peso, linha, nmroLinhas, nmroColunas
     let categorias = inicializaValores(nmroLinhas, 0, 0)
 
     for (let i = 0; i < nmroLinhas; i++) {
-        categorias[i] = somaColunasMat[i] / (alfa + somaPeso[i])
+        categorias[i] = somaColunasMat[i] / (config.alpha + somaPeso[i])
     }
 
     return categorias
@@ -313,7 +349,7 @@ exports.realizaMatchTracking = function (entrada, peso, linha, catVencedora, nmr
     return resMatchTracking
 }
 
-exports.retornaCategoriaVencedora = function(Categorias) {
+function retornaCategoriaVencedora (Categorias) {
 
     let maior = Math.max(...Categorias)
     let catVencedora = Categorias.indexOf(maior)
@@ -518,7 +554,7 @@ exports.artA = function (entrada, wa, pa, beta, nmroLinhasA, nmroColunasA) {
         console.log("Match tracking " + i + ": " + validaMatch)
 
         //Valida o Match Tracking
-        while (validaMatch[i] < pab) {
+        while (validaMatch[i] < config.pAB) {
 
             //Categorias
             Ta[J] = 0

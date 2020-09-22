@@ -1,7 +1,17 @@
 const config = require('../../configs/networkConfig')
 
+
 class NetworkController {
 
+    constructor(pA, pB, pAB, pD, alpha, beta, phase){
+        this.pA = pA
+        this.pB = pB
+        this.pAB = pAB
+        this.pD = pD
+        this.alpha = alpha
+        this.beta = beta
+        this.phase = phase
+    }
 
     setInputValues(data, rows, cols) {
         let newInput = new Array(rows).fill(undefined)
@@ -205,12 +215,13 @@ class NetworkController {
         return entrada
     }
 
-    somaColunas(linha, entrada, nmroColunas) {
+    somaColunas(linha, entrada) {
 
+        let colLength = this._output[0].length
         let soma = 0
 
         for (let i = 0; i < Array.length; i++) {
-            for (let j = 0; j < nmroColunas; j++) {
+            for (let j = 0; j < colLength; j++) {
                 soma += entrada[linha][j]
             }
         }
@@ -218,12 +229,14 @@ class NetworkController {
         return soma
     }
 
-    criaCategorias(entrada, peso, linha, nmroLinhas, nmroColunas) {
+    criaCategorias(entrada, peso, linha) {
 
-        let matrizCat = inicializaValores(nmroLinhas, nmroColunas, 0)
+        let rowLength = this._input.length
+        let colLength = this._output[0].length
+        let matrizCat = inicializaValores(rowLength, colLength, 0)
 
-        for (let i = 0; i < nmroLinhas; i++) {
-            for (let j = 0; j < nmroColunas; j++) {
+        for (let i = 0; i < rowLength; i++) {
+            for (let j = 0; j < colLength; j++) {
                 if (entrada[linha][j] < peso[i][j]) {
                     matrizCat[i][j] = entrada[linha][j]
                 } else {
@@ -232,21 +245,21 @@ class NetworkController {
             }
         }
 
-        let somaColunasMat = inicializaValores(nmroLinhas, 0, 0)
+        let somaColunasMat = inicializaValores(rowLength, 0, 0)
 
-        for (let i = 0; i < nmroLinhas; i++) {
-            somaColunasMat[i] = somaColunas(i, matrizCat, nmroColunas)
+        for (let i = 0; i < rowLength; i++) {
+            somaColunasMat[i] = somaColunas(i, matrizCat, rowLength)
         }
 
-        let somaPeso = inicializaValores(nmroLinhas, 0, 0)
+        let somaPeso = inicializaValores(rowLength, 0, 0)
 
-        for (let i = 0; i < nmroLinhas; i++) {
-            somaPeso[i] = somaColunas(i, peso, nmroColunas)
+        for (let i = 0; i < rowLength; i++) {
+            somaPeso[i] = somaColunas(i, peso, colLength)
         }
 
-        let categorias = inicializaValores(nmroLinhas, 0, 0)
+        let categorias = inicializaValores(rowLength, 0, 0)
 
-        for (let i = 0; i < nmroLinhas; i++) {
+        for (let i = 0; i < rowLength; i++) {
             categorias[i] = somaColunasMat[i] / (config.alpha + somaPeso[i])
         }
 
@@ -254,11 +267,13 @@ class NetworkController {
 
     }
 
-    vigilanciaAuxiliar(entrada, peso, linha, catVencedora, nmroLinhas, nmroColunas) {
+    vigilanciaAuxiliar(entrada, peso, linha, catVencedora) {
 
-        var vigilancia = inicializaValores(nmroLinhas, nmroColunas, 0)
+        let rowLength = this._input.length
+        let colLength = this._output[0].length
+        var vigilancia = inicializaValores(rowLength, colLength, 0)
 
-        for (let j = 0; j < nmroColunas; j++) {
+        for (let j = 0; j < colLength; j++) {
             if (entrada[catVencedora][j] < peso[catVencedora][j]) {
                 vigilancia[linha][j] = entrada[catVencedora][j]
             } else {
@@ -269,12 +284,14 @@ class NetworkController {
         return vigilancia
     }
 
-    realizaTesteDeVigilancia(entrada, peso, linha, catVencedora, nmroLinhas, nmroColunas) {
+    realizaTesteDeVigilancia(entrada, peso, linha, catVencedora) {
 
-        matrizVig = inicializaValores(nmroLinhas, nmroColunas, 0)
+        let rowLength = this._input.length
+        let colLength = this._output[0].length
+        matrizVig = inicializaValores(rowLength, colLength, 0)
 
-        for (let i = 0; i < nmroLinhas; i++) {
-            for (let j = 0; j < nmroColunas; j++) {
+        for (let i = 0; i < rowLength; i++) {
+            for (let j = 0; j < colLength; j++) {
                 if (entrada[catVencedora][j] < peso[catVencedora][j]) {
                     matrizVig[linha][j] = entrada[catVencedora][j]
                 } else {
@@ -283,17 +300,16 @@ class NetworkController {
             }
         }
 
-        let somaVigilancia = inicializaValores(nmroLinhas, nmroColunas, 0)
-        let somaEntrada = inicializaValores(nmroLinhas, nmroColunas, 0)
+        let somaVigilancia = inicializaValores(rowLength, colLength, 0)
+        let somaEntrada = inicializaValores(rowLength, colLength, 0)
+        let testeDeVigilancia = inicializaValores(rowLength, colLength, 0)
 
-        for (let i = 0; i < nmroLinhas; i++) {
-            somaVigilancia[i] = somaColunas(i, matrizVig, nmroColunas)
-            somaEntrada[i] = somaColunas(i, entrada, nmroColunas)
+        for (let i = 0; i < rowLength; i++) {
+            somaVigilancia[i] = somaColunas(i, matrizVig, colLength)
+            somaEntrada[i] = somaColunas(i, entrada, colLength)
         }
 
-        let testeDeVigilancia = inicializaValores(nmroLinhas, nmroColunas, 0)
-
-        for (let i = 0; i < nmroLinhas; i++) {
+        for (let i = 0; i < rowLength; i++) {
             testeDeVigilancia[i] = somaVigilancia[i] / somaEntrada[i]
         }
 
@@ -301,12 +317,14 @@ class NetworkController {
     }
 
 
-    criaMatrizMatchTracking(entrada, peso, catVencedora, linha, nmroLinhas, nmroColunas) {
+    criaMatrizMatchTracking(entrada, peso, catVencedora, linha) {
 
-        let matrizMatch = inicializaValores(nmroLinhas, nmroColunas, 0)
+        let rowLength = this._input.length
+        let colLength = this._output[0].length
+        let matrizMatch = inicializaValores(rowLength, colLength, 0)
 
-        for (let i = 0; i < nmroLinhas; i++) {
-            for (let j = 0; j < nmroColunas; j++) {
+        for (let i = 0; i < rowLength; i++) {
+            for (let j = 0; j < colLength; j++) {
                 if (entrada[linha][j] < peso[catVencedora][j]) {
                     matrizMatch[linha][j] = entrada[linha][j]
                 } else {
@@ -318,12 +336,14 @@ class NetworkController {
         return matrizMatch
     }
 
-    realizaMatchTracking(entrada, peso, linha, catVencedora, nmroLinhas, nmroColunas) {
+    realizaMatchTracking(entrada, peso, linha, catVencedora) {
 
-        let matrizMatch = inicializaValores(nmroLinhas, nmroColunas, 0)
+        let rowLength = this._input.length
+        let colLength = this._output[0].length
+        let matrizMatch = inicializaValores(rowLength, colLength, 0)
 
-        for (let i = 0; i < nmroLinhas; i++) {
-            for (let j = 0; j < nmroColunas; j++) {
+        for (let i = 0; i < rowLength; i++) {
+            for (let j = 0; j < colLength; j++) {
                 if (entrada[linha][j] < peso[catVencedora][j]) {
                     matrizMatch[linha][j] = entrada[linha][j]
                 } else {
@@ -332,17 +352,16 @@ class NetworkController {
             }
         }
 
-        let somaColMatch = inicializaValores(nmroLinhas, nmroColunas, 0)
-        let somaColEntrada = inicializaValores(nmroLinhas, nmroColunas, 0)
+        let somaColMatch = inicializaValores(rowLength, colLength, 0)
+        let somaColEntrada = inicializaValores(rowLength, colLength, 0)
+        let resMatchTracking = inicializaValores(rowLength, colLength, 0)
 
-        for (let i = 0; i < nmroLinhas; i++) {
+        for (let i = 0; i < rowLength; i++) {
             somaColMatch[i] = somaColunas(i, matrizMatch, nmroColunas)
             somaColEntrada[i] = somaColunas(i, entrada, nmroColunas)
         }
 
-        let resMatchTracking = inicializaValores(nmroLinhas, nmroColunas, 0)
-
-        for (let i = 0; i < nmroLinhas; i++) {
+        for (let i = 0; i < rowLength; i++) {
             resMatchTracking[i] = somaColMatch[i] / somaColEntrada[i]
         }
 
@@ -357,18 +376,22 @@ class NetworkController {
         return catVencedora
     }
 
-    atualizaPeso(peso, beta, vigilancia, catVencedora, linha, nmroColunas) {
+    atualizaPeso(peso, beta, vigilancia, catVencedora, linha) {
 
-        for (let j = 0; j < nmroColunas; j++) {
-            peso[catVencedora][j] = beta * vigilancia[linha][j] + (1 - beta) * peso[catVencedora][j]
+        let colLength = this._output[0].length
+
+        for (let j = 0; j < colLength; j++) {
+            peso[catVencedora][j] = config.beta * vigilancia[linha][j] + (1 - config.beta) * peso[catVencedora][j]
         }
 
         return peso
     }
 
-    atualizaPesoInterArt(peso, catVencedoraA, catVencedoraB, vetorK, linha, nmroColunas) {
+    atualizaPesoInterArt(peso, catVencedoraA, catVencedoraB, vetorK, linha) {
 
-        for (let j = 0; j < nmroColunas; j++) {
+        let colLength = this._output[0].length
+
+        for (let j = 0; j < colLength; j++) {
             peso[catVencedoraA][j] = 0
         }
 
@@ -385,22 +408,25 @@ class NetworkController {
         return entrada
     }
 
-    criaMatrizDeAtividadesInterArt(entrada, peso, linha, nmroColunas) {
+    criaMatrizDeAtividadesInterArt(entrada, peso, linha) {
 
-        let mtInterArt = inicializaValores(nmroColunas, nmroColunas, 0)
+        let rowLength = this._input.length
+        let colLength = this._output[0].length
+        let mtInterArt = inicializaValores(rowLength, rowLength, 0)
 
-        for (let j = 0; j < nmroColunas; j++) {
+        for (let j = 0; j < colLength; j++) {
             mtInterArt[linha][j] = entrada[linha][j] * peso[linha][j]
         }
 
         return mtInterArt
     }
 
-    verificaConhecimento(entrada, linha, nmroColunas) {
+    verificaConhecimento(entrada, linha) {
 
-        let fim = inicializaValores(0, nmroColunas, 0)
+        let colLength = this._output[0].length
+        let fim = inicializaValores(0, colLength, 0)
 
-        for (let j = 0; j < nmroColunas; j++) {
+        for (let j = 0; j < colLength; j++) {
             if (entrada[linha][j] === 1) {
                 fim[linha] = j
                 continue
@@ -410,12 +436,14 @@ class NetworkController {
         return fim
     }
 
-    criaMatrizDeDiagnostico(peso, conhecimento, nmroLinhas, nmroColunas) {
+    criaMatrizDeDiagnostico(peso, conhecimento) {
 
-        let mtDiagnostico = inicializaValores(nmroLinhas, nmroColunas, 0)
+        let rowLength = this._input.length
+        let colLength = this._output[0].length
+        let mtDiagnostico = inicializaValores(rowLength, colLength, 0)
 
-        for (let i = 0; i < nmroLinhas; i++) {
-            for (let j = 0; j < nmroColunas; j++) {
+        for (let i = 0; i < rowLength; i++) {
+            for (let j = 0; j < colLength; j++) {
                 mtDiagnostico[i][j] = peso[conhecimento[i]][j]
             }
         }
@@ -423,12 +451,14 @@ class NetworkController {
         return mtDiagnostico
     }
 
-    verificaRessonancia(diagnostico, peso, nmroLinhas, nmroColunas) {
+    verificaRessonancia(diagnostico, peso) {
 
-        let ressonacia = inicializaValores(nmroLinhas, nmroColunas, 0)
+        let rowLength = this._input.length
+        let colLength = this._output[0].length
+        let ressonacia = inicializaValores(rowLength, colLength, 0)
 
-        for (let i = 0; i < nmroLinhas; i++) {
-            for (let j = 0; j < nmroColunas; j++) {
+        for (let i = 0; i < rowLength; i++) {
+            for (let j = 0; j < colLength; j++) {
                 if (diagnostico[i][j] === peso[i][j]) {
                     ressonacia[i] = 1
                 }
@@ -606,23 +636,6 @@ class NetworkController {
             //Atualiza Peso Inter Art
             wab = atualizaPesoInterArt(wab, J, K, posiK, i, nmroColunasWAB)
 
-            //J = 0, 1, 2, 2 Categorias A ativa
-            //K = 0, 0 Categorias B Ativa 
-
-            /*
-            inicio
-            1 1
-            1 1
-            1 1
-            1 1
-    
-            atualizado
-            0 0 -> 1 0
-            0 0 -> 1 0
-            0 0 -> ? ?
-            1 1 -> 1 1
-            */
-
         }//Fim for
 
         console.log('\n')
@@ -641,7 +654,6 @@ class NetworkController {
 
         return wa
     }
-
 
     Diagnostico(entrada, wa, pd, nmroLinhasA, nmroColunasA) {
 

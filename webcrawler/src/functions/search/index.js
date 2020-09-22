@@ -1,19 +1,13 @@
-const { 
-    // inicializaValores,
-    // insertInputValues,
-    // insertOutputValues,
-    normalizaDados,
-    // realizaComplemento,
-} = require('../neuralNetwork')
-
 const NetworkController = require('../neuralNetwork')
+
+const { alpha, beta, pA, pAB, pB, pD, phase } = require('../../configs/networkConfig')
 
 module.exports = function analyseText(textSearched, datas, valueTags) {
 
     let page = 1
     let cont = 0
 
-    const neuralNetwork = new NetworkController
+    const neuralNetwork = new NetworkController(pA, pB, pAB, pD, alpha, beta, phase)
 
     const textSplited = textSearched.split(' ')
     const dataText = textSplited.map(text => {
@@ -32,10 +26,11 @@ module.exports = function analyseText(textSearched, datas, valueTags) {
     let inputNetwork = neuralNetwork.getInputValues
     console.log('INPUT:\n', inputNetwork)
     let input = neuralNetwork.realizaComplemento(inputNetwork, inputNetwork.length, inputNetwork[0].length)
-    console.log('COMPL. INPUT:\n', input)
-    let wInput = neuralNetwork.inicializaValores(input.length, input[0].length, 1)
-    neuralNetwork.setWeightInput = wInput
-    console.log('WEIGHT INPUT:\n', neuralNetwork.getWeightInput)
+    neuralNetwork.complementA = input
+    console.log('COMPL. INPUT:\n', neuralNetwork.complementA)
+    let wInput = neuralNetwork.inicializaValores(neuralNetwork.complementA.length, neuralNetwork.complementA[0].length, 1)
+    neuralNetwork.weightInput = wInput
+    console.log('WEIGHT INPUT:\n', neuralNetwork.weightInput)
     
     // OUTPUTS
     neuralNetwork.setOutputValues(valueTags[0], valuesText.length, valueTags[0].length)
@@ -43,11 +38,12 @@ module.exports = function analyseText(textSearched, datas, valueTags) {
     console.log('OUTPUT:\n', outputNetwork)
     console.log('ROWS: ' +outputNetwork.length+ ' COLS: ' +outputNetwork[0].length)
     let output = neuralNetwork.realizaComplemento(outputNetwork, outputNetwork.length, outputNetwork[0].length)
-    console.log('COMPL. OUTPUT:\n', output)
-    console.log('ROWS: ' + output.length + ' COLS: ' + output[0].length)
-    let wOutput = neuralNetwork.inicializaValores(output.length, output[0].length, 1)
-    neuralNetwork.setWeightOutput = wOutput
-    console.log('WEIGHT OUTPUT:\n', neuralNetwork.getWeightOutput)
+    neuralNetwork.complementB = output
+    console.log('COMPL. OUTPUT:\n', neuralNetwork.complementB)
+    console.log('ROWS: ' + neuralNetwork.complementB.length + ' COLS: ' + neuralNetwork.complementB[0].length)
+    let wOutput = neuralNetwork.inicializaValores(neuralNetwork.complementB.length, neuralNetwork.complementB[0].length, 1)
+    neuralNetwork.weightOutput = wOutput
+    console.log('WEIGHT OUTPUT:\n', neuralNetwork.weightOutput)
 
     if (textSplited.length > 1) {
 

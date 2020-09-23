@@ -720,9 +720,9 @@ class NetworkController {
 
 		console.log("_______________ DIAGNÓSTICO _______________")
 		
-		const input = this._complementD
-		const rowsInput = this._complementD.length
-		const colsInput = this._complementD[0].length
+		const inputD = this._complementD
+		const rowsInputD = this._complementD.length
+		const colsInputD = this._complementD[0].length
 
 		const wOutput = this._wOutput
 		const rowsOutput = this._complementB.length
@@ -730,12 +730,12 @@ class NetworkController {
 
 		const colsWAB = this._wAB[0].length
 
-        for (let i = 0; i < rowsInput; i++) {
+        for (let i = 0; i < rowsInputD; i++) {
 
             const wA = this._wInput
             
             //Categorias
-			let Td = this.criaCategorias(input, wA, i, rowsInput, colsInput)
+            let Td = this.criaCategorias(inputD, wA, i, rowsInputD, colsInputD)
             console.log("Categorias criadas D: ")
             console.log(Td)
 
@@ -744,15 +744,15 @@ class NetworkController {
             console.log("Categoria vencedora D " + i + ": " + D)
 
             //Teste de vigilancia
-            let vigilanciaD = this.inicializaValores(rowsInput, colsInput, 0)
-			let vigilanciaAuxD = this.vigilanciaAuxiliar(input, wA, i, D, colsInput)
+            let vigilanciaD = this.inicializaValores(rowsInputD, colsInputD, 0)
+			let vigilanciaAuxD = this.vigilanciaAuxiliar(input, wA, i, D, colsInputD)
 
-            for (j = 0; j < colsInput; j++) {
+            for (j = 0; j < colsInputD; j++) {
                 vigilanciaD[i][j] = vigilanciaAuxD[i][j]
             }
 
             //Realiza Vigilancia
-			tVigilanciaD = this.realizaTesteDeVigilancia(input, wA, i, D, rowsInput, colsInput)
+            tVigilanciaD = this.realizaTesteDeVigilancia(inputD, wA, i, D, rowsInputD, colsInputD)
             console.log("Teste de vigilancia D " + i + ": " + tVigilanciaD)
 
             //Valida Vigilancia
@@ -764,13 +764,13 @@ class NetworkController {
                 console.log("Nova categoria vencedora D" + i + ": " + D)
 
                 //Teste Vigilancia
-				vigilanciaAuxD = this.vigilanciaAuxiliar(input, wA, i, D, colsInput)
+                vigilanciaAuxD = this.vigilanciaAuxiliar(inputD, wA, i, D, colsInputD)
 
-                for (j = 0; j < colsInput; j++) {
+                for (j = 0; j < colsInputD; j++) {
                     vigilanciaD[i][j] = vigilanciaAuxD[i][j]
                 }
 
-				tVigilanciaD = this.realizaTesteDeVigilancia(input, wA, i, D, rowsInput, colsInput)
+                tVigilanciaD = this.realizaTesteDeVigilancia(inputD, wA, i, D, rowsInputD, colsInputD)
                 console.log("Valida teste de vigilancia D" + i + ": " + tVigilanciaD)
 
             }//Fim While Vigilancia
@@ -778,7 +778,7 @@ class NetworkController {
             //Matriz de atividades (Ressonância) D
 			let ydAux = this.criaMatrizDeAtividades(this._yd, D, i)
 
-			for (j = 0; j < colsInput; j++) {
+			for (j = 0; j < colsInputD; j++) {
                 this._yd[i][j] = ydAux[i][j]
             }
 

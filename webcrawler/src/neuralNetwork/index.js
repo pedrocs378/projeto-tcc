@@ -593,7 +593,7 @@ function artA(entrada, wa, pa, beta, nmroLinhasA, nmroColunasA){
 
 		//Matriz de atividades A
 		var yaAux = criaMatrizDeAtividades(ya, J, i)
-		//Provavelmente o tamanho é 4x4 *
+
 		for(let j=0; j<nmroColunasMatAtvdade; j++){
 			ya[i][j] = yaAux[i][j]
 		}

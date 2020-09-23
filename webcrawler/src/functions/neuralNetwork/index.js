@@ -9,13 +9,13 @@ class NetworkController {
         this._alpha = alpha
         this._beta = beta
 		this._phase = phase
-		this._ya = []
-		this._yb = []
-		this._yd = []
-		this._mt = []
-		this._ybd = []
-		this._wBD = []
-		this._end = []
+		this._ya = [] //Tamanho de A
+		this._yb = [] //Tamanho de B
+		this._yd = [] //Tamanho de D
+		this._mt = [] //Linhas A X Linhas B (WAB)
+		this._ybd = [] //Linhas A X Linhas B (WAB)
+		this._wBD = [] //Tamanho de B
+		this._end = [] //Linhas de B (vetor)
     }
 
     setInputValues(data, rows, cols) {
@@ -78,6 +78,17 @@ class NetworkController {
 
 	get complementB() {
 		return this._complementB
+    }
+    
+    /**
+	 * @param {Array} input
+	 */
+	set complementD(input) {
+		this._complementD = input
+	}
+
+	get complementD() {
+		return this._complementD
 	}
 
     /**
@@ -571,7 +582,7 @@ class NetworkController {
 
         console.log('\n')
         console.log("_______________ SAÍDA B: _______________")
-        console.log("Saida Desejada: ")
+        console.log("Saida desejada: ")
         console.log(this._complementB)
         console.log("WB Atualizado: ")
         console.log(this._wOutput)
@@ -678,7 +689,7 @@ class NetworkController {
 
             //Matriz de atividades A
 			let yaAux = this.criaMatrizDeAtividades(this._ya, J, i)
-            //Provavelmente o tamanho é 4x4 *
+
 			for (let j = 0; j < colsInput; j++) {
                 this._ya[i][j] = yaAux[i][j]
             }
@@ -705,13 +716,13 @@ class NetworkController {
 		return this._wInput
     }
 
-    Diagnostico(entrada) {
+    Diagnostico() {
 
 		console.log("_______________ DIAGNÓSTICO _______________")
 		
-		const input = this._complementA
-		const rowsInput = this._complementA.length
-		const colsInput = this._complementA[0].length
+		const input = this._complementD
+		const rowsInput = this._complementD.length
+		const colsInput = this._complementD[0].length
 
 		const wOutput = this._wOutput
 		const rowsOutput = this._complementB.length
@@ -719,10 +730,10 @@ class NetworkController {
 
 		const colsWAB = this._wAB[0].length
 
-        for (i = 0; i < rowsInput; i++) {
+        for (let i = 0; i < rowsInput; i++) {
 
-			const wA = this._wInput
-
+            const wA = this._wInput
+            
             //Categorias
 			let Td = this.criaCategorias(entrada, wA, i, rowsInput, colsInput)
             console.log("Categorias criadas D: ")
@@ -793,7 +804,7 @@ class NetworkController {
         console.log('\n')
         console.log("_______________ SAÍDA D: _______________")
         console.log("Entrada D:")
-        // console.log(complementoD)
+        console.log(this._complementD)
         console.log("Matriz de atividades D:")
         console.log(this._yd)
         console.log("Matriz de atividades Inter Art D:")
@@ -804,7 +815,7 @@ class NetworkController {
         console.log(ressonacia)
     }
 
-    
+
 }
 
 module.exports = NetworkController

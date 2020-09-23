@@ -1,6 +1,16 @@
 const NetworkController = require('../neuralNetwork')
 
-const { alpha, beta, pA, pAB, pB, pD, phase } = require('../../configs/networkConfig')
+const { 
+    alpha, 
+    beta, 
+    pA, 
+    pAB,
+    pB, 
+    pD, 
+    phase 
+} = require('../../configs/networkConfig')
+const convertString = require('../../utils/convertStringToNumber')
+const convertNumber = require('../../utils/convertForZeroToOne')
 
 module.exports = function analyseText(textSearched, datas, valueTags) {
 
@@ -13,37 +23,53 @@ module.exports = function analyseText(textSearched, datas, valueTags) {
     const dataText = textSplited.map(text => {
         return {
             name: text,
-            value: Math.random()
+            value: convertString(text)
         }
     })
+    console.log('TERMOS DIGITADOS: \n', dataText)
     const valuesText = dataText.map(data => data.value)
+    const valuesNormalized = convertNumber(valuesText)
 
     const dataSearched = []
-    const results = []
 
-    // INPUTS
-    neuralNetwork.setInputValues(valuesText, valuesText.length, 1)
+    // SET INPUTS
+    neuralNetwork.setInputValues(valuesNormalized, valuesNormalized.length, 1)
     let inputNetwork = neuralNetwork.getInputValues
     console.log('INPUT:\n', inputNetwork)
+
     let input = neuralNetwork.realizaComplemento(inputNetwork, inputNetwork.length, inputNetwork[0].length)
     neuralNetwork.complementA = input
     console.log('COMPL. INPUT:\n', neuralNetwork.complementA)
+
     let wInput = neuralNetwork.inicializaValores(neuralNetwork.complementA.length, neuralNetwork.complementA[0].length, 1)
     neuralNetwork.weightInput = wInput
     console.log('WEIGHT INPUT:\n', neuralNetwork.weightInput)
     
-    // OUTPUTS
-    neuralNetwork.setOutputValues(valueTags[0], valuesText.length, valueTags[0].length)
+    // SET OUTPUTS
+    const valueTagsNormalized = convertNumber(valueTags[0])
+    neuralNetwork.setOutputValues(valueTagsNormalized, valuesNormalized.length, valueTagsNormalized.length)
     let outputNetwork = neuralNetwork.getOutputValues
     console.log('OUTPUT:\n', outputNetwork)
-    console.log('ROWS: ' +outputNetwork.length+ ' COLS: ' +outputNetwork[0].length)
+
     let output = neuralNetwork.realizaComplemento(outputNetwork, outputNetwork.length, outputNetwork[0].length)
     neuralNetwork.complementB = output
     console.log('COMPL. OUTPUT:\n', neuralNetwork.complementB)
-    console.log('ROWS: ' + neuralNetwork.complementB.length + ' COLS: ' + neuralNetwork.complementB[0].length)
+
     let wOutput = neuralNetwork.inicializaValores(neuralNetwork.complementB.length, neuralNetwork.complementB[0].length, 1)
     neuralNetwork.weightOutput = wOutput
     console.log('WEIGHT OUTPUT:\n', neuralNetwork.weightOutput)
+
+    // INITIALIZE VARIABLES (ya, yb, yd...)
+
+    neuralNetwork.initVariables()
+
+    // ART B
+    let newWOutput = neuralNetwork.artB()
+    console.log('NEW W. OUTPUT:\n', newWOutput)
+
+    // ART A
+    let newWInput = neuralNetwork.artA()
+    console.log('NEW W. INPUT:\n', newWInput)
 
     if (textSplited.length > 1) {
 

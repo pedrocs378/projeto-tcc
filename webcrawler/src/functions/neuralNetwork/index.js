@@ -8,7 +8,10 @@ class NetworkController {
         this._pD = pD
         this._alpha = alpha
         this._beta = beta
-		this._phase = phase
+        this._phase = phase
+        this._wAB = []
+        this._posiK = []
+        this._K = 0
 		this._ya = [] //Linhas A X Linhas B
 		this._yb = [] //Linhas A X Linhas B
 		this._yd = [] //Linhas A X Linhas B
@@ -16,6 +19,41 @@ class NetworkController {
 		this._ybd = [] //Linhas A X Linhas B (WAB)
 		this._wBD = [] //Tamanho de B
 		this._end = [] //Linhas de B (vetor)
+    }
+
+    initVariables() {
+        const rowsInput = this._complementA.length
+        const rowsOutput = this._complementB.length
+
+        this._wAB = new Array(rowsInput).fill(undefined)
+        for (let i = 0; i < rowsInput; i++) {
+            this._wAB[i] = new Array(rowsOutput).fill(1)
+        }
+
+        this._ya = new Array(rowsInput).fill(undefined)
+        for (let i = 0; i < rowsInput; i++) {
+            this._ya[i] = new Array(rowsOutput).fill(0)
+        }
+
+        this._yb = new Array(rowsInput).fill(undefined)
+        for (let i = 0; i < rowsInput; i++) {
+            this._yb[i] = new Array(rowsOutput).fill(0)
+        }
+
+        this._yd = new Array(rowsInput).fill(undefined)
+        for (let i = 0; i < rowsInput; i++) {
+            this._yd[i] = new Array(rowsOutput).fill(0)
+        }
+
+        this._mt = new Array(rowsInput).fill(undefined)
+        for (let i = 0; i < rowsInput; i++) {
+            this._mt[i] = new Array(rowsOutput).fill(0)
+        }
+
+        this._ybd = new Array(rowsInput).fill(undefined)
+        for (let i = 0; i < rowsInput; i++) {
+            this._ybd[i] = new Array(rowsOutput).fill(0)
+        }
     }
 
     setInputValues(data, rows, cols) {
@@ -111,31 +149,6 @@ class NetworkController {
 
     get weightOutput() {
         return this._wOutput
-	}
-	
-	/**
-	 * @param {Array} weight
-	 */
-	set weightAB(weight) {
-		this._wAB = weight
-	}
-
-	get weightAB() {
-		return this._wAB
-	}
-
-	/**
-	 * @param {Number} K
-	 */
-	set valueK(K) {
-		this._K = K
-	}
-
-	/**
-	 * @param {number} pos
-	 */
-	set posiK(pos) {
-		this._posiK[pos] = this._K
 	}
 
     inicializaValores(nmroLinhas, nmroColunas, valor) {
@@ -320,7 +333,7 @@ class NetworkController {
 		let categorias = this.inicializaValores(nmroLinhas, 0, 0)
 
 		for (let i = 0; i < nmroLinhas; i++) {
-			categorias[i] = somaColunasMat[i] / (alfa + somaPeso[i])
+			categorias[i] = somaColunasMat[i] / (this._alpha + somaPeso[i])
 		}
 
 		return categorias
@@ -344,7 +357,7 @@ class NetworkController {
 
 	realizaTesteDeVigilancia(entrada, peso, linha, catVencedora, nmroLinhas, nmroColunas) {
 
-		matrizVig = this.inicializaValores(nmroLinhas, nmroColunas, 0)
+		let matrizVig = this.inicializaValores(nmroLinhas, nmroColunas, 0)
 
 		for (let i = 0; i < nmroLinhas; i++) {
 			for (let j = 0; j < nmroColunas; j++) {
@@ -428,15 +441,15 @@ class NetworkController {
 		let catVencedora = Categorias.indexOf(maior)
 
 		return catVencedora
-	}
+    }
 
 	atualizaPeso(peso, vigilancia, catVencedora, linha, nmroColunas) {
 
 		for (let j = 0; j < nmroColunas; j++) {
-			peso[catVencedora][j] = this._beta * vigilancia[linha][j] + (1 - this._beta) * peso[catVencedora][j]
-		}
-
-		return peso
+            peso[catVencedora][j] = this._beta * vigilancia[linha][j] + (1 - this._beta) * peso[catVencedora][j]
+        }
+        
+        return peso
 	}
 
 	atualizaPesoInterArt(peso, catVencedoraA, catVencedoraB, vetorK, linha, nmroColunas) {
@@ -518,11 +531,11 @@ class NetworkController {
 		const rowsOutput = this._complementB.length
 		const colsOutput = this._complementB[0].length
 		
-		const output = this._complementB
+        const output = this._complementB
 
         for (let i = 0; i < rowsOutput; i++) {
 
-			const wB = this._wOutput
+            let wB = this._wOutput
 
             //Cria categorias
 			let Tb = this.criaCategorias(output, wB, i, rowsOutput, colsOutput)
@@ -530,22 +543,22 @@ class NetworkController {
             console.log(Tb)
 
 			//Retorna maior categoria
-			this.valueK = this.retornaCategoriaVencedora(Tb)
+			this._K = this.retornaCategoriaVencedora(Tb)
 			console.log("Categoria vencedora " + i + ": " + this._K)
 
 			//Envia valor de K para o Art A
-			this.posiK = i
+			this._posiK[i] = this._K
 
             //Vigilancia para atualizar pesos (AND)
 			let vigilanciaAuxB = this.vigilanciaAuxiliar(output, wB, i, this._K, rowsOutput, colsOutput)
             let vigilanciaB = this.inicializaValores(rowsOutput, colsOutput, 0)
 
-            for (j = 0; j < colsOutput; j++) {
+            for (let j = 0; j < colsOutput; j++) {
                 vigilanciaB[i][j] = vigilanciaAuxB[i][j]
             }
 
             //Teste de vigilancia
-			let tVigilanciaB = this.realizaTesteDeVigilancia(output, wB, i, K, rowsOutput, colsOutput)
+			let tVigilanciaB = this.realizaTesteDeVigilancia(output, wB, i, this._K, rowsOutput, colsOutput)
             console.log("Teste de vigilancia B " + i + ": " + tVigilanciaB)
 
             while (tVigilanciaB[i] < this._pB) {
@@ -558,7 +571,7 @@ class NetworkController {
                 //Teste de vigilancia auxiliar peso
 				vigilanciaAuxB = this.vigilanciaAuxiliar(output, wB, i, this._K, colsOutput)
 
-                for (j = 0; j < colsOutput; j++) {
+                for (let j = 0; j < colsOutput; j++) {
                     vigilanciaB[i][j] = vigilanciaAuxB[i][j]
                 }
 
@@ -569,7 +582,7 @@ class NetworkController {
             }//Fim While
 
             //Atualiza o peso Wb
-			this._wOutput = this.atualizaPeso(wB, this._beta, vigilanciaB, this._K, i, colsOutput)
+            this._wOutput = this.atualizaPeso(wB, vigilanciaB, this._K, i, colsOutput)
 
             //Matriz de Atividades B
 			let ybAux = this.criaMatrizDeAtividades(this._yb, this._K, i)
@@ -584,8 +597,6 @@ class NetworkController {
         console.log("_______________ SAÍDA B: _______________")
         console.log("Saida desejada: ")
         console.log(this._complementB)
-        console.log("WB Atualizado: ")
-        console.log(this._wOutput)
         console.log("Matriz de Atividades B:")
         console.log(this._yb)
         console.log('\n')
@@ -623,7 +634,7 @@ class NetworkController {
 			let vigilanciaAuxA = this.vigilanciaAuxiliar(input, wA, i, J, rowsInput, colsInput)
             let vigilanciaA = this.inicializaValores(rowsInput, colsInput, 0)
 
-            for (j = 0; j < colsInput; j++) {
+            for (let j = 0; j < colsInput; j++) {
                 vigilanciaA[i][j] = vigilanciaAuxA[i][j]
             }
 
@@ -636,7 +647,7 @@ class NetworkController {
 
             //Salva matriz do mt
             for (let x = 0; x < rowsWAB; x++) {
-                for (j = 0; j < colsWAB; j++) {
+                for (let j = 0; j < colsWAB; j++) {
                     this._mt[i][j] = mtAux[i][j]
                 }
             }
@@ -674,7 +685,7 @@ class NetworkController {
 				mtAux = this.criaMatrizMatchTracking(this._yb, wAB, J, i, rowsWAB, colsWAB)
 
                 for (let x = 0; x < rowsWAB; x++) {
-                    for (j = 0; j < colsWAB; j++) {
+                    for (let j = 0; j < colsWAB; j++) {
                         this._mt[i][j] = mtAux[i][j]
                     }
                 }
@@ -685,7 +696,7 @@ class NetworkController {
             }//Fim do while Match
 
             //Atualiza o peso Wa
-			this._wInput = this.atualizaPeso(wA, this._beta, vigilanciaA, J, i, colsInput)
+			this._wInput = this.atualizaPeso(wA, vigilanciaA, J, i, colsInput)
 
             //Matriz de atividades A
 			let yaAux = this.criaMatrizDeAtividades(this._ya, J, i)
@@ -705,8 +716,6 @@ class NetworkController {
         console.log(this._complementA)
         console.log("Match Tracking:")
         console.log(this._mt)
-        console.log("WA Atualizado: ")
-		console.log(this._wInput)
         console.log("WAB Atualizado: ")
         console.log(this._wAB)
         console.log("Matriz de Atividades A:")
@@ -747,7 +756,7 @@ class NetworkController {
             let vigilanciaD = this.inicializaValores(rowsInputD, colsInputD, 0)
 			let vigilanciaAuxD = this.vigilanciaAuxiliar(input, wA, i, D, colsInputD)
 
-            for (j = 0; j < colsInputD; j++) {
+            for (let j = 0; j < colsInputD; j++) {
                 vigilanciaD[i][j] = vigilanciaAuxD[i][j]
             }
 
@@ -766,7 +775,7 @@ class NetworkController {
                 //Teste Vigilancia
                 vigilanciaAuxD = this.vigilanciaAuxiliar(inputD, wA, i, D, colsInputD)
 
-                for (j = 0; j < colsInputD; j++) {
+                for (let j = 0; j < colsInputD; j++) {
                     vigilanciaD[i][j] = vigilanciaAuxD[i][j]
                 }
 
@@ -778,14 +787,14 @@ class NetworkController {
             //Matriz de atividades (Ressonância) D
 			let ydAux = this.criaMatrizDeAtividades(this._yd, D, i)
 
-			for (j = 0; j < colsInputD; j++) {
+			for (let j = 0; j < colsInputD; j++) {
                 this._yd[i][j] = ydAux[i][j]
             }
 
             //Matriz de Atividades inter art 
 			let ybdAux = this.criaMatrizDeAtividadesInterArt(this._yd, this._wAB, i, colsWAB)
 
-			for (j = 0; j < colsWAB; j++) {
+			for (let j = 0; j < colsWAB; j++) {
                 this._ybd[i][j] = ybdAux[i][j]
             }
 

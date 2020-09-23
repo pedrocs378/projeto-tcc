@@ -4,7 +4,7 @@ const Stopword = require('../../models/Stopword')
 const rp = require('request-promise')
 const cheerio = require('cheerio')
 
-const data = []
+const convertString = require('../../utils/convertStringToNumber')
 
 module.exports = async function handleRunCrawler(page, callback) {
 
@@ -73,12 +73,11 @@ async function getDataInfoAndPushToArray(itemData, cb) {
                             
                             const textInfoTags = textInfoParsed.split(' ')
 
-
                             const tagsWithoutStopwords = textInfoTags.map((tag) => {
                                 if (!(stopwordsParsed.includes(tag))) {
                                     return { 
                                         name: tag, 
-                                        value: Math.random() 
+                                        value: convertString(tag)
                                     }
                                 } else {
                                     return null

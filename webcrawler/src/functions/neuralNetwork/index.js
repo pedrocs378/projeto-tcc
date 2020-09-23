@@ -9,9 +9,9 @@ class NetworkController {
         this._alpha = alpha
         this._beta = beta
 		this._phase = phase
-		this._ya = [] //Tamanho de A
-		this._yb = [] //Tamanho de B
-		this._yd = [] //Tamanho de D
+		this._ya = [] //Linhas A X Linhas B
+		this._yb = [] //Linhas A X Linhas B
+		this._yd = [] //Linhas A X Linhas B
 		this._mt = [] //Linhas A X Linhas B (WAB)
 		this._ybd = [] //Linhas A X Linhas B (WAB)
 		this._wBD = [] //Tamanho de B

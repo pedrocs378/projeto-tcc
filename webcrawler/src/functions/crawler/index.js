@@ -5,6 +5,7 @@ const rp = require('request-promise')
 const cheerio = require('cheerio')
 
 const convertString = require('../../utils/convertStringToNumber')
+const filterByProperty = require('../../utils/filterByProperty')
 
 module.exports = async function handleRunCrawler(page, callback) {
 
@@ -127,17 +128,4 @@ async function getDataInfoAndPushToArray(itemData, cb) {
 
     return next()
 
-}
-
-function filterByProperty(array, propertyName) {
-    let occurrences = {}
-
-    return array.filter(function (x) {
-        let property = x[propertyName]
-        if (occurrences[property]) {
-            return false;
-        }
-        occurrences[property] = true;
-        return true;
-    })
 }

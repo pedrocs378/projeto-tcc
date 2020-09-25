@@ -561,7 +561,7 @@ class NetworkController {
 			let tVigilanciaB = this.realizaTesteDeVigilancia(output, wB, i, this._K, rowsOutput, colsOutput)
             console.log("Teste de vigilancia B " + i + ": " + tVigilanciaB)
 
-            while (tVigilanciaB[i] < this._pB) {
+            while (tVigilanciaB[i] <= this._pB) {
 
                 //Recria categorias
                 Tb[this._K] = 0
@@ -656,7 +656,7 @@ class NetworkController {
             console.log("Match tracking " + i + ": " + validaMatch)
 
             //Valida o Match Tracking
-            while (validaMatch[i] < this._pAB) {
+            while (validaMatch[i] <= this._pAB) {
 
                 //Categorias
                 Ta[J] = 0
@@ -765,7 +765,7 @@ class NetworkController {
             console.log("Teste de vigilancia D " + i + ": " + tVigilanciaD)
 
             //Valida Vigilancia
-            while (tVigilanciaD[i] < this._pD) {
+            while (tVigilanciaD[i] <= this._pD) {
 
                 //Recria categorias
                 Td[D] = 0

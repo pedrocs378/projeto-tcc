@@ -33,14 +33,93 @@ module.exports = async (req, res) => {
 
 var i = 0
 var j = 0
-var pa = 0.95
+var pa = 0.8
 var pb = 1 
-var pab = 0.95
+var pab = 1
 var pd = 0.5
 var alfa = 0.1
 var beta = 1
 var fase = 0
+/*
 
+var b = [  [    0.865,  0.746,  0.952,  0.761, 0.1601,  0.947,  0.549,   0.26,
+			0.1166,  0.158,  0.764,  0.435,  0.431,  0.432, 0.1446,   0.61,
+			0.52,  0.328,  0.618,  0.941, 0.1582,  0.419,   0.87,  0.517,
+			0.1073, 0.1067,  0.824,  0.307,  0.569,  0.755,  0.972,  0.744,
+			0.86,  0.737,  0.727,  0.503, 0.1162,  0.533,  0.878,  0.882,
+			0.647,  0.551,  0.524,  0.949, 0.1067,  0.833,  0.833,  0.841,
+			0.669,  0.763, 0.1172,   0.43,  0.941,  0.527,  0.895,  0.109,
+			0.1165,  0.643, 0.1388, 0.1614, 0.1588, 0.1142, 0.1073, 0.1277,
+			0.537, 0.1007,  0.724,  0.759,  0.643,  0.433,  0.878, 0.1154,
+			0.744,  0.839, 0.1158,  0.761,  0.318, 0.1204,  0.834,  0.927,
+			0.426,   0.84,  0.759, 0.1072,  0.738,  0.523,  0.944, 0.1071,
+			0.761,  0.542,  0.855,  0.847, 0.1608,  0.432, 0.1207,  0.754],
+
+	 [  0.865,  0.746,  0.952,  0.761, 0.1601,  0.947,  0.549,   0.26,
+		0.1166,  0.158,  0.764,  0.435,  0.431,  0.432, 0.1446,   0.61,
+		  0.52,  0.328,  0.618,  0.941, 0.1582,  0.419,   0.87,  0.517,
+		0.1073, 0.1067,  0.824,  0.307,  0.569,  0.755,  0.972,  0.744,
+		  0.86,  0.737,  0.727,  0.503, 0.1162,  0.533,  0.878,  0.882,
+		 0.647,  0.551,  0.524,  0.949, 0.1067,  0.833,  0.833,  0.841,
+		 0.669,  0.763, 0.1172,   0.43,  0.941,  0.527,  0.895,  0.109,
+		0.1165,  0.643, 0.1388, 0.1614, 0.1588, 0.1142, 0.1073, 0.1277,
+		 0.537, 0.1007,  0.724,  0.759,  0.643,  0.433,  0.878, 0.1154,
+		 0.744,  0.839, 0.1158,  0.761,  0.318, 0.1204,  0.834,  0.927,
+		 0.426,   0.84,  0.759, 0.1072,  0.738,  0.523,  0.944, 0.1071,
+		 0.761,  0.542,  0.855,  0.847, 0.1608,  0.432, 0.1207,  0.754],
+
+		 [  0.865,  0.746,  0.952,  0.761, 0.1601,  0.947,  0.549,   0.26,
+			0.1166,  0.158,  0.764,  0.435,  0.431,  0.432, 0.1446,   0.61,
+			  0.52,  0.328,  0.618,  0.941, 0.1582,  0.419,   0.87,  0.517,
+			0.1073, 0.1067,  0.824,  0.307,  0.569,  0.755,  0.972,  0.744,
+			  0.86,  0.737,  0.727,  0.503, 0.1162,  0.533,  0.878,  0.882,
+			 0.647,  0.551,  0.524,  0.949, 0.1067,  0.833,  0.833,  0.841,
+			 0.669,  0.763, 0.1172,   0.43,  0.941,  0.527,  0.895,  0.109,
+			0.1165,  0.643, 0.1388, 0.1614, 0.1588, 0.1142, 0.1073, 0.1277,
+			 0.537, 0.1007,  0.724,  0.759,  0.643,  0.433,  0.878, 0.1154,
+			 0.744,  0.839, 0.1158,  0.761,  0.318, 0.1204,  0.834,  0.927,
+			 0.426,   0.84,  0.759, 0.1072,  0.738,  0.523,  0.944, 0.1071,
+			 0.761,  0.542,  0.855,  0.847, 0.1608,  0.432, 0.1207,  0.754] ]
+
+
+var wb = inicializaValores(b.length, b[0].length, 1) 
+
+var posiK = inicializaValores(0, b.length, 0) //Vetor auxiliar de envio de categoria Ativa B para A
+var K 
+
+var nmroLinhasInicialB = 0, nmroColunasInicialB = 3
+var nmroLinhasB = b.length, nmroColunasB = b[0].length
+var nmroLinhasMatAtvdade = b.length, nmroColunasMatAtvdade = b[0].length
+
+//normalizaDados(b, nmroLinhasInicialB, nmroColunasInicialB)
+var complementoB = realizaComplemento(b, b.length, b[0].length)
+var yb = inicializaValores(complementoB.length, complementoB[0].length, 0) //Matriz de atividades 
+//console.log(complementoB)
+
+artB(complementoB, wb, pb, beta, b.length, b[0].length)
+
+
+//_______________ Dados Art A _______________//
+
+var a = [ [ 0.865 ], [ 0.746 ], [ 0.952 ] ] //Entrada 
+
+var nmroLinhasA = a.length, nmroColunasA = a[0].length
+var nmroLinhasWAB = a.length, nmroColunasWAB = b.length //Tamanho da matriz inter art (NaXNb)
+
+
+var wab = inicializaValores(a.length, b.length, 1) //Peso Inter Art
+
+
+var J
+
+//normalizaDados(a, nmroLinhasInicialA, nmroColunasInicialA)
+var complementoA = realizaComplemento(a, a.length, a[0].length)
+var ya = inicializaValores(complementoA.length, complementoA[0].length, 0) //Matriz de atividades 
+var wa = inicializaValores(complementoA.length, complementoA[0].length, 1) 
+var mt = inicializaValores(a.length, b.length, 0) //Match Tracking auxiliar
+var nmroLinhasMatAtvdadeA = complementoA.length, nmroColunasMatAtvdadeA = complementoA[0].length
+artA(complementoA, wa, pa, beta, complementoA.length, complementoA[0].length)
+*/
 //_______________ FUNÇÕES _______________//
 
 function inicializaValores(nmroLinhas, nmroColunas, valor){
@@ -262,15 +341,15 @@ function realizaTesteDeVigilancia(entrada, peso, linha, catVencedora, nmroLinhas
 		}
 	}
 
-	let somaVigilancia = inicializaValores(nmroLinhas, nmroColunas, 0)
-	let somaEntrada = inicializaValores(nmroLinhas, nmroColunas, 0)
+	let somaVigilancia = inicializaValores(nmroLinhas, 0, 0)
+	let somaEntrada = inicializaValores(nmroLinhas, 0, 0)
 
 	for (let i = 0; i < nmroLinhas; i++) {
 		somaVigilancia[i] = somaColunas(i, matrizVig, nmroColunas)
 		somaEntrada[i] = somaColunas(i, entrada, nmroColunas)
 	}
 
-	let testeDeVigilancia = inicializaValores(nmroLinhas, nmroColunas, 0)
+	let testeDeVigilancia = inicializaValores(nmroLinhas, 0, 0)
 
 	for (let i = 0; i < nmroLinhas; i++) {
 		testeDeVigilancia[i] = somaVigilancia[i] / somaEntrada[i]
@@ -594,7 +673,7 @@ function artA(entrada, wa, pa, beta, nmroLinhasA, nmroColunasA){
 		//Matriz de atividades A
 		var yaAux = criaMatrizDeAtividades(ya, J, i)
 
-		for(let j=0; j<nmroColunasMatAtvdade; j++){
+		for(let j=0; j<nmroColunasMatAtvdadeA; j++){
 			ya[i][j] = yaAux[i][j]
 		}
 

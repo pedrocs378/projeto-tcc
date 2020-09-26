@@ -9,11 +9,11 @@ class NetworkController {
         this._alpha = alpha
         this._beta = beta
         this._phase = phase
-        this._wAB = []
-        this._posiK = []
+        this._wAB = [] //Linhas A X Linhas B
+        this._posiK = [] //Linhas B
         this._K = 0
-		this._ya = [] //Linhas A X Linhas B
-		this._yb = [] //Linhas A X Linhas B
+		this._ya = [] //Linhas A X Colunas A
+		this._yb = [] //Linhas B X Colunas B
 		this._yd = [] //Linhas A X Linhas B
 		this._mt = [] //Linhas A X Linhas B (WAB)
 		this._ybd = [] //Linhas A X Linhas B (WAB)
@@ -25,6 +25,8 @@ class NetworkController {
         const rowsInput = this._complementA.length
         const rowsOutput = this._complementB.length
 
+        const colsBOutput = this._complementB[0].length
+
         this._wAB = new Array(rowsInput).fill(undefined)
         for (let i = 0; i < rowsInput; i++) {
             this._wAB[i] = new Array(rowsOutput).fill(1)
@@ -35,9 +37,9 @@ class NetworkController {
             this._ya[i] = new Array(rowsOutput).fill(0)
         }
 
-        this._yb = new Array(rowsInput).fill(undefined)
-        for (let i = 0; i < rowsInput; i++) {
-            this._yb[i] = new Array(rowsOutput).fill(0)
+        this._yb = new Array(rowsOutput).fill(undefined)
+        for (let i = 0; i < rowsOutput; i++) {
+            this._yb[i] = new Array(colsBOutput).fill(0)
         }
 
         this._yd = new Array(rowsInput).fill(undefined)
@@ -533,6 +535,9 @@ class NetworkController {
 		
         const output = this._complementB
 
+        const colsYBOutput = this._complementB[0].length
+
+
         for (let i = 0; i < rowsOutput; i++) {
 
             let wB = this._wOutput
@@ -587,7 +592,7 @@ class NetworkController {
             //Matriz de Atividades B
 			let ybAux = this.criaMatrizDeAtividades(this._yb, this._K, i)
 
-			for (let j = 0; j < colsOutput; j++) {
+			for (let j = 0; j < colsYBOutput; j++) {
                 this._yb[i][j] = ybAux[i][j]
             }
 
@@ -668,7 +673,7 @@ class NetworkController {
                 console.log("Novo teste de vigilancia A " + i + ": " + tVigilanciaA)
 
                 //Valida Vigilancia
-                while (tVigilanciaA[i] < this._pA) {
+                while (tVigilanciaA[i] <= this._pA) {
 
                     //Recria categorias
                     Ta[J] = 0

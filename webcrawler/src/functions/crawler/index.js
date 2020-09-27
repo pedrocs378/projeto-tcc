@@ -9,7 +9,7 @@ const filterByProperty = require('../../utils/filterByProperty')
 
 module.exports = async function handleRunCrawler(page, callback) {
 
-    const url = 'http://saude.gov.br/saude-de-a-z'
+    const url = 'http://antigo.saude.gov.br/saude-de-a-z'
 
     await page.goto(url);
     console.log('Puppeteer - PAGINA ENCAMINHADA PARA: ' + url)

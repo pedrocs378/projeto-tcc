@@ -540,7 +540,6 @@ class NetworkController {
 
         const colsYBOutput = this._complementB[0].length
 
-
         for (let i = 0; i < rowsOutput; i++) {
 
             let wB = this._wOutput
@@ -561,7 +560,7 @@ class NetworkController {
 			let tVigilanciaB = this.realizaTesteDeVigilancia(output, wB, i, this._K, rowsOutput, colsOutput)
             console.log("Teste de vigilancia B " + i + ": " + tVigilanciaB)
 
-            while (tVigilanciaB[i] < this._pB) {
+            while (tVigilanciaB[i] <= this._pB) {
 
                 //Recria categorias
                 Tb[this._K] = 0
@@ -644,7 +643,7 @@ class NetworkController {
             console.log("Match tracking " + i + ": " + validaMatch)
 
             //Valida o Match Tracking
-            while (validaMatch[i] < this._pAB) {
+            while (validaMatch[i] <= this._pAB) {
 
                 //Categorias
                 Ta[J] = 0

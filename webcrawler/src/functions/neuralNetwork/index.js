@@ -448,12 +448,13 @@ class NetworkController {
     }
 
 	atualizaPeso(peso, vigilancia, catVencedora, linha, nmroColunas) {
+        let newWeight = peso
 
 		for (let j = 0; j < nmroColunas; j++) {
-            peso[catVencedora][j] = this._beta * vigilancia[linha][j] + (1 - this._beta) * peso[catVencedora][j]
+            newWeight[catVencedora][j] = (this._beta * vigilancia[linha][j]) + ((1 - this._beta) * peso[catVencedora][j])
         }
         
-        return peso
+        return newWeight
 	}
 
 	atualizaPesoInterArt(peso, catVencedoraA, catVencedoraB, vetorK, linha, nmroColunas) {
@@ -560,7 +561,7 @@ class NetworkController {
 			let tVigilanciaB = this.realizaTesteDeVigilancia(output, wB, i, this._K, rowsOutput, colsOutput)
             console.log("Teste de vigilancia B " + i + ": " + tVigilanciaB)
 
-            while (tVigilanciaB[i] <= this._pB) {
+            while (tVigilanciaB[i] < this._pB) {
 
                 //Recria categorias
                 Tb[this._K] = 0
@@ -643,7 +644,7 @@ class NetworkController {
             console.log("Match tracking " + i + ": " + validaMatch)
 
             //Valida o Match Tracking
-            while (validaMatch[i] <= this._pAB) {
+            while (validaMatch[i] < this._pAB) {
 
                 //Categorias
                 Ta[J] = 0

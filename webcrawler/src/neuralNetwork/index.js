@@ -33,14 +33,14 @@ module.exports = async (req, res) => {
 
 var i = 0
 var j = 0
-var pa = 0.8
-var pb = 1 
-var pab = 1
+var pa = 0.95
+var pb = 0.9 
+var pab = 0.9
 var pd = 0.5
 var alfa = 0.1
 var beta = 1
 var fase = 0
-/*
+
 
 var b = [  [    0.865,  0.746,  0.952,  0.761, 0.1601,  0.947,  0.549,   0.26,
 			0.1166,  0.158,  0.764,  0.435,  0.431,  0.432, 0.1446,   0.61,
@@ -82,43 +82,42 @@ var b = [  [    0.865,  0.746,  0.952,  0.761, 0.1601,  0.947,  0.549,   0.26,
 			 0.761,  0.542,  0.855,  0.847, 0.1608,  0.432, 0.1207,  0.754] ]
 
 
-var wb = inicializaValores(b.length, b[0].length, 1) 
+//var b = [ [0.5, 0.6], [0.9, 0.7], [0.1, 0.3], [0.896, 0.150] ]
 
-var posiK = inicializaValores(0, b.length, 0) //Vetor auxiliar de envio de categoria Ativa B para A
+/*
+//var b = [1, 0, 1]
+normalizaDados(b, b.length, b[0].length)
+var complementoB = realizaComplemento(b, b.length, b[0].length)
+
+var nmroLinhasB = b.length, nmroColunasB = complementoB[0].length
+var nmroColunasMatAtvdade = complementoB[0].length
+
+var wb = inicializaValores(complementoB.length, complementoB[0].length, 1) 
+var posiK = inicializaValores(0, b.length, 0) 
+var yb = inicializaValores(b.length, b.length, 0)
 var K 
 
-var nmroLinhasInicialB = 0, nmroColunasInicialB = 3
-var nmroLinhasB = b.length, nmroColunasB = b[0].length
-var nmroLinhasMatAtvdade = b.length, nmroColunasMatAtvdade = b[0].length
+artB(complementoB, wb, pb, beta, b.length, complementoB[0].length)
+/*
+//_______________ Art A _______________//
 
-//normalizaDados(b, nmroLinhasInicialB, nmroColunasInicialB)
-var complementoB = realizaComplemento(b, b.length, b[0].length)
-var yb = inicializaValores(complementoB.length, complementoB[0].length, 0) //Matriz de atividades 
-//console.log(complementoB)
+//var a = [ [ 0.865 ], [ 0.746 ], [ 0.952 ] ]
 
-artB(complementoB, wb, pb, beta, b.length, b[0].length)
+var a = [[1, 0], [0, 1], [0.5, 0.5]] 
+normalizaDados(a, a.length, a[0].length)
+var complementoA = realizaComplemento(a, a.length, a[0].length)
 
+var nmroLinhasWAB = a.length, nmroColunasWAB = b.length
+var nmroLinhasMatAtvdadeA = complementoA.length, nmroColunasMatAtvdadeA = complementoA[0].length
 
-//_______________ Dados Art A _______________//
-
-var a = [ [ 0.865 ], [ 0.746 ], [ 0.952 ] ] //Entrada 
-
-var nmroLinhasA = a.length, nmroColunasA = a[0].length
-var nmroLinhasWAB = a.length, nmroColunasWAB = b.length //Tamanho da matriz inter art (NaXNb)
-
-
-var wab = inicializaValores(a.length, b.length, 1) //Peso Inter Art
-
-
+var wa = inicializaValores(complementoA.length, complementoA[0].length, 1) 
+var wab = inicializaValores(nmroLinhasWAB, nmroColunasWAB, 1)
+var ya = inicializaValores(nmroLinhasMatAtvdadeA, nmroColunasMatAtvdadeA, 0)
+var mt = inicializaValores(nmroLinhasWAB, nmroColunasWAB, 0) 
 var J
 
-//normalizaDados(a, nmroLinhasInicialA, nmroColunasInicialA)
-var complementoA = realizaComplemento(a, a.length, a[0].length)
-var ya = inicializaValores(complementoA.length, complementoA[0].length, 0) //Matriz de atividades 
-var wa = inicializaValores(complementoA.length, complementoA[0].length, 1) 
-var mt = inicializaValores(a.length, b.length, 0) //Match Tracking auxiliar
-var nmroLinhasMatAtvdadeA = complementoA.length, nmroColunasMatAtvdadeA = complementoA[0].length
 artA(complementoA, wa, pa, beta, complementoA.length, complementoA[0].length)
+
 */
 //_______________ FUNÇÕES _______________//
 
@@ -312,15 +311,17 @@ function criaCategorias(entrada, peso, linha, nmroLinhas, nmroColunas) {
 
 }
 
-function vigilanciaAuxiliar(entrada, peso, linha, catVencedora, nmroLinhas, nmroColunas){
+function vigilanciaAuxiliar(entrada, peso, nmroLinhas, nmroColunas){
 
 	var vigilancia = inicializaValores(nmroLinhas, nmroColunas, 0)
 
-	for (let j = 0; j < nmroColunas; j++) {
-		if (entrada[catVencedora][j] < peso[catVencedora][j]) {
-			vigilancia[linha][j] = entrada[catVencedora][j]
-		} else {
-			vigilancia[linha][j] = peso[catVencedora][j]
+	for (let i=0; i<nmroLinhas; i++){
+		for (let j = 0; j < nmroColunas; j++) {
+			if (entrada[i][j] < peso[i][j]) {
+				vigilancia[i][j] = entrada[i][j]
+			} else {
+				vigilancia[i][j] = peso[i][j]
+			}
 		}
 	}
 
@@ -530,31 +531,16 @@ function artB(saidaDesejada, wb, pb, beta, nmroLinhasB, nmroColunasB){
 		//Envia valor de K para o Art A
 		posiK[i] = K
 
-		//Vigilancia para atualizar pesos (AND)
-		var vigilanciaAuxB = vigilanciaAuxiliar(saidaDesejada, wb, i, K, nmroLinhasB, nmroColunasB)
-		var vigilanciaB = inicializaValores(nmroLinhasB, nmroColunasB, 0)
-		
-		for(j=0; j<nmroColunasB; j++){
-			vigilanciaB[i][j] = vigilanciaAuxB[i][j] 
-		}
-
 		//Teste de vigilancia
 		var tVigilanciaB = realizaTesteDeVigilancia(saidaDesejada, wb, i, K, nmroLinhasB, nmroColunasB)
 		console.log("Teste de vigilancia B " + i + ": " + tVigilanciaB)
 
-		while (tVigilanciaB[i] < pb) {
+		while (tVigilanciaB[i] <= pb) {
 
 			//Recria categorias
 			Tb[K] = 0
 			K = retornaCategoriaVencedora(Tb)
 			console.log("Nova categoria vencedora B " + i + ": " + K)
-	
-			//Teste de vigilancia auxiliar peso
-			vigilanciaAuxB = vigilanciaAuxiliar(saidaDesejada, wb, i, K, nmroColunasB)
-	
-			for(j=0; j<nmroColunasB; j++){
-				vigilanciaB[i][j] = vigilanciaAuxB[i][j] 
-			}
 	
 			//Vigilancia final
 			tVigilanciaB = realizaTesteDeVigilancia(saidaDesejada, wb, i, K, nmroLinhasB, nmroColunasB)
@@ -562,8 +548,11 @@ function artB(saidaDesejada, wb, pb, beta, nmroLinhasB, nmroColunasB){
 	
 		}//Fim While
 
+		//Vigilancia para atualizar pesos (AND)
+		var vigilanciaAuxB = vigilanciaAuxiliar(saidaDesejada, wb, nmroLinhasB, nmroColunasB)
+
 		//Atualiza o peso Wb
-		wb = atualizaPeso(wb, beta, vigilanciaB, K, i, nmroColunasB)
+		wb = atualizaPeso(wb, beta, vigilanciaAuxB, K, i, nmroColunasB)
 
 		//Matriz de Atividades B
 		var ybAux = criaMatrizDeAtividades(yb, K, i)
@@ -582,6 +571,8 @@ function artB(saidaDesejada, wb, pb, beta, nmroLinhasB, nmroColunasB){
 	console.log(wb)
 	console.log("Matriz de Atividades B:")
 	console.log(yb)
+	console.log("Matriz de Vigilancia B:")
+	console.log(vigilanciaAuxB)
 	console.log('\n')
 
 	return wb
@@ -602,14 +593,6 @@ function artA(entrada, wa, pa, beta, nmroLinhasA, nmroColunasA){
 		J = retornaCategoriaVencedora(Ta)
 		console.log("Categoria vencedora A " + i + ": " + J)
 
-		//Teste de vigilancia auxiliar para atualizar o peso
-		var vigilanciaAuxA = vigilanciaAuxiliar(entrada, wa, i, J, nmroLinhasA, nmroColunasA)
-		var vigilanciaA = inicializaValores(nmroLinhasA, nmroColunasA, 0)
-
-		for(j=0; j<nmroColunasA; j++){
-			vigilanciaA[i][j] = vigilanciaAuxA[i][j] 
-		}
-
 		//Teste de vigilancia
 		var tVigilanciaA = realizaTesteDeVigilancia(entrada, wa, i, J, nmroLinhasA, nmroColunasA)
 		console.log("Teste de vigilancia A " + i + ": " + tVigilanciaA)
@@ -628,7 +611,7 @@ function artA(entrada, wa, pa, beta, nmroLinhasA, nmroColunasA){
 		console.log("Match tracking " + i + ": " + validaMatch)
 
 		//Valida o Match Tracking
-		while (validaMatch[i] < pab) {
+		while (validaMatch[i] <= pab) {
 
 			//Categorias
 			Ta[J] = 0
@@ -640,7 +623,7 @@ function artA(entrada, wa, pa, beta, nmroLinhasA, nmroColunasA){
 			console.log("Novo teste de vigilancia A " + i + ": " + tVigilanciaA)
 
 			//Valida Vigilancia
-			while (tVigilanciaA[i] < pa) {
+			while (tVigilanciaA[i] <= pa) {
 
 				//Recria categorias
 				Ta[J] = 0
@@ -667,8 +650,11 @@ function artA(entrada, wa, pa, beta, nmroLinhasA, nmroColunasA){
 
 		}//Fim do while Match
 
+		//Teste de vigilancia auxiliar para atualizar o peso
+		var vigilanciaAuxA = vigilanciaAuxiliar(entrada, wa, nmroLinhasA, nmroColunasA)
+
 		//Atualiza o peso Wa
-		wa = atualizaPeso(wa, beta, vigilanciaA, J, i, nmroColunasA)
+		wa = atualizaPeso(wa, beta, vigilanciaAuxA, J, i, nmroColunasA)
 
 		//Matriz de atividades A
 		var yaAux = criaMatrizDeAtividades(ya, J, i)

@@ -342,17 +342,19 @@ class NetworkController {
 
 	}
 
-	vigilanciaAuxiliar(entrada, peso, linha, catVencedora, nmroLinhas, nmroColunas) {
+	vigilanciaAuxiliar(entrada, peso, nmroLinhas, nmroColunas) {
 
 		let vigilancia = this.inicializaValores(nmroLinhas, nmroColunas, 0)
 
-		for (let j = 0; j < nmroColunas; j++) {
-			if (entrada[catVencedora][j] < peso[catVencedora][j]) {
-				vigilancia[linha][j] = entrada[catVencedora][j]
-			} else {
-				vigilancia[linha][j] = peso[catVencedora][j]
-			}
-		}
+		for (let i=0; i<nmroLinhas; i++){
+            for (let j = 0; j < nmroColunas; j++) {
+                if (entrada[i][j] < peso[i][j]) {
+                    vigilancia[i][j] = entrada[i][j]
+                } else {
+                    vigilancia[i][j] = peso[i][j]
+                }
+            }
+        }
 
 		return vigilancia
 	}
@@ -554,14 +556,6 @@ class NetworkController {
 			//Envia valor de K para o Art A
 			this._posiK[i] = this._K
 
-            //Vigilancia para atualizar pesos (AND)
-			let vigilanciaAuxB = this.vigilanciaAuxiliar(output, wB, i, this._K, rowsOutput, colsOutput)
-            let vigilanciaB = this.inicializaValores(rowsOutput, colsOutput, 0)
-
-            for (let j = 0; j < colsOutput; j++) {
-                vigilanciaB[i][j] = vigilanciaAuxB[i][j]
-            }
-
             //Teste de vigilancia
 			let tVigilanciaB = this.realizaTesteDeVigilancia(output, wB, i, this._K, rowsOutput, colsOutput)
             console.log("Teste de vigilancia B " + i + ": " + tVigilanciaB)
@@ -573,21 +567,17 @@ class NetworkController {
 				this.valueK = this.retornaCategoriaVencedora(Tb)
 				console.log("Nova categoria vencedora B " + i + ": " + this._K)
 
-                //Teste de vigilancia auxiliar peso
-				vigilanciaAuxB = this.vigilanciaAuxiliar(output, wB, i, this._K, colsOutput)
-
-                for (let j = 0; j < colsOutput; j++) {
-                    vigilanciaB[i][j] = vigilanciaAuxB[i][j]
-                }
-
                 //Vigilancia final
 				tVigilanciaB = this.realizaTesteDeVigilancia(output, wB, i, this._K, rowsOutput, colsOutput)
                 console.log("Novo teste de vigilancia " + i + ": " + tVigilanciaB)
 
             }//Fim While
 
+            //Vigilancia para atualizar pesos (AND)
+            let andB = this.vigilanciaAuxiliar(output, wB, rowsOutput, colsOutput)
+            
             //Atualiza o peso Wb
-            this._wOutput = this.atualizaPeso(wB, vigilanciaB, this._K, i, colsOutput)
+            this._wOutput = this.atualizaPeso(wB, andB, this._K, i, colsOutput)
 
             //Matriz de Atividades B
 			let ybAux = this.criaMatrizDeAtividades(this._yb, this._K, i)
@@ -634,14 +624,6 @@ class NetworkController {
             //Encontra maior categoria
 			let J = this.retornaCategoriaVencedora(Ta)
             console.log("Categoria vencedora A " + i + ": " + J)
-
-            //Teste de vigilancia auxiliar para atualizar o peso
-			let vigilanciaAuxA = this.vigilanciaAuxiliar(input, wA, i, J, rowsInput, colsInput)
-            let vigilanciaA = this.inicializaValores(rowsInput, colsInput, 0)
-
-            for (let j = 0; j < colsInput; j++) {
-                vigilanciaA[i][j] = vigilanciaAuxA[i][j]
-            }
 
             //Teste de vigilancia
 			let tVigilanciaA = this.realizaTesteDeVigilancia(input, wA, i, J, rowsInput, colsInput)
@@ -700,8 +682,11 @@ class NetworkController {
 
             }//Fim do while Match
 
+            //Teste de vigilancia auxiliar para atualizar o peso
+			let andA = this.vigilanciaAuxiliar(input, wA, rowsInput, colsInput)
+
             //Atualiza o peso Wa
-			this._wInput = this.atualizaPeso(wA, vigilanciaA, J, i, colsInput)
+			this._wInput = this.atualizaPeso(wA, andA, J, i, colsInput)
 
             //Matriz de atividades A
 			let yaAux = this.criaMatrizDeAtividades(this._ya, J, i)
@@ -757,14 +742,6 @@ class NetworkController {
 			D = this.retornaCategoriaVencedora(Td)
             console.log("Categoria vencedora D " + i + ": " + D)
 
-            //Teste de vigilancia
-            let vigilanciaD = this.inicializaValores(rowsInputD, colsInputD, 0)
-			let vigilanciaAuxD = this.vigilanciaAuxiliar(input, wA, i, D, colsInputD)
-
-            for (let j = 0; j < colsInputD; j++) {
-                vigilanciaD[i][j] = vigilanciaAuxD[i][j]
-            }
-
             //Realiza Vigilancia
             tVigilanciaD = this.realizaTesteDeVigilancia(inputD, wA, i, D, rowsInputD, colsInputD)
             console.log("Teste de vigilancia D " + i + ": " + tVigilanciaD)
@@ -776,13 +753,6 @@ class NetworkController {
                 Td[D] = 0
 				D = this.retornaCategoriaVencedora(Td)
                 console.log("Nova categoria vencedora D" + i + ": " + D)
-
-                //Teste Vigilancia
-                vigilanciaAuxD = this.vigilanciaAuxiliar(inputD, wA, i, D, colsInputD)
-
-                for (let j = 0; j < colsInputD; j++) {
-                    vigilanciaD[i][j] = vigilanciaAuxD[i][j]
-                }
 
                 tVigilanciaD = this.realizaTesteDeVigilancia(inputD, wA, i, D, rowsInputD, colsInputD)
                 console.log("Valida teste de vigilancia D" + i + ": " + tVigilanciaD)

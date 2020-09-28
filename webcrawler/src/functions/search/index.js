@@ -43,7 +43,6 @@ module.exports = function analyseText(textSplited, textSearched, dataText, datas
 
         // SET OUTPUTS
         const valueTagsNormalized = convertNumber(values)
-        valueTagsNormalized.includes()
         neuralNetwork.setOutputValues(valueTagsNormalized, valuesNormalized.length, valueTagsNormalized.length)
         let outputNetwork = neuralNetwork.getOutputValues
         console.log('OUTPUT:\n', outputNetwork)

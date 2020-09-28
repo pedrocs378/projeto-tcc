@@ -715,7 +715,7 @@ class NetworkController {
 		return this._wInput
     }
 
-    Diagnostico() {
+    diagnostico() {
 
 		console.log("_______________ DIAGNÓSTICO _______________")
 		
@@ -739,11 +739,11 @@ class NetworkController {
             console.log(Td)
 
             //Encontra categoria vencedora
-			D = this.retornaCategoriaVencedora(Td)
+			let D = this.retornaCategoriaVencedora(Td)
             console.log("Categoria vencedora D " + i + ": " + D)
 
             //Realiza Vigilancia
-            tVigilanciaD = this.realizaTesteDeVigilancia(inputD, wA, i, D, rowsInputD, colsInputD)
+            let tVigilanciaD = this.realizaTesteDeVigilancia(inputD, wA, i, D, rowsInputD, colsInputD)
             console.log("Teste de vigilancia D " + i + ": " + tVigilanciaD)
 
             //Valida Vigilancia

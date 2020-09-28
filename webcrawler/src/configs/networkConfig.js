@@ -4,6 +4,6 @@ module.exports = {
     pAB: 0.9,
     pD: 0.5,
     alpha: 0.1,
-    beta: 1,
+    beta: 0.95,
     phase: 0
 }

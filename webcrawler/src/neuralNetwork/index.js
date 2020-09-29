@@ -1,5 +1,4 @@
-/*
-const Url = require('../models/Url')
+/*const Url = require('../models/Url')
 const Network = require('../models/Network')
 
 module.exports = async (req, res) => {
@@ -28,9 +27,8 @@ module.exports = async (req, res) => {
 
 	return res.json(response)
  
-}*/	
+}	*/
 
-/*
 //_______________ Controle da Rede _______________//
 
 var i = 0
@@ -45,7 +43,7 @@ var fase = 0
 var epsilon = 0.01
 
 																			
- var b2 = [
+ var b = [
 	[
 	   0.851,  0.761, 0.1601,  0.947,  0.654,  0.258, 0.1166,  0.743,
 	   0.267,  0.764,  0.435,  0.431,  0.432, 0.1446,   0.61,   0.52,
@@ -86,15 +84,14 @@ var epsilon = 0.01
 	  0.1183, 0.1398,  0.831,  0.415,  0.876,  0.742,  0.118,  0.126,
 	   0.727, 0.1491,  0.635,  0.411, 0.1051, 0.1154,  0.941,  0.855]
   ]
-
+/*
 
 //var b = [ [0.5, 0.6], [0.9, 0.7], [0.1, 0.3], [0.896, 0.150] ]
 //var b = [[0.5, 0.6, 0.7], [0.5, 0.6, 0.7], [0.5, 0.6, 0.7], [0.5, 0.6, 0.7]]
+//var b = [1, 0, 1]
 
-var b = [1, 0, 1]
-
-normalizaDados(b, 0, b.length)
-var complementoB = realizaComplemento(b, 0, b.length)
+//normalizaDados(b, b.length, b[0].length)
+//var complementoB = realizaComplemento(b, b.length, b[0].length)
 
 var nmroLinhasB = complementoB.length, nmroColunasB = complementoB[0].length
 var nmroLinhasMatAtvdadeB = complementoB.length, nmroColunasMatAtvdadeB = complementoB[0].length + 1
@@ -104,7 +101,7 @@ var yb = inicializaValores(nmroLinhasMatAtvdadeB, nmroColunasMatAtvdadeB, 0)
 var posiK = inicializaValores(0, b.length, 0) 
 var K 
 
-artB(complementoB, wb, pb, beta, nmroLinhasB, nmroColunasB)
+//artB(complementoB, wb, pb, beta, nmroLinhasB, nmroColunasB)
 
 //_______________ Art A _______________//
 
@@ -112,8 +109,8 @@ artB(complementoB, wb, pb, beta, nmroLinhasB, nmroColunasB)
 
 var a = [[1, 0], [0, 1], [0.5, 0.5]] 
 
-normalizaDados(a, a.length, a[0].length)
-var complementoA = realizaComplemento(a, a.length, a[0].length)
+//normalizaDados(a, a.length, a[0].length)
+//var complementoA = realizaComplemento(a, a.length, a[0].length)
 
 var nmroLinhasMatAtvdadeA = complementoA.length, nmroColunasMatAtvdadeA = complementoA[0].length
 var nmroLinhasWAB = complementoA.length, nmroColunasWAB = complementoB.length
@@ -125,14 +122,14 @@ var ya = inicializaValores(nmroLinhasMatAtvdadeA, nmroColunasMatAtvdadeA, 0)
 var mt = inicializaValores(nmroLinhasWAB, nmroColunasWAB, 0) 
 var J
 
-artA(complementoA, wa, pa, beta, nmroLinhasA, nmroColunasA)
+//artA(complementoA, wa, pa, beta, nmroLinhasA, nmroColunasA)
 
 //_______________ Dados diagnóstico _______________//
 
 var d = [[1, 1], [0.5, 1], [0.2, 0.9]] 
 
-normalizaDados(d, d.length, d[0].length)
-var complementoD = realizaComplemento(d, d.length, d[0].length)
+//normalizaDados(d, d.length, d[0].length)
+//var complementoD = realizaComplemento(d, d.length, d[0].length)
 
 var nmroLinhasMatAtvdadeD = complementoD.length, nmroColunasMatAtvdadeD = complementoD[0].length
 var nmroLinhasD = complementoD.length, nmroColunasD = complementoD[0].length
@@ -143,7 +140,10 @@ var wbd = inicializaValores(nmroLinhasB, nmroColunasB, 0) //Matriz de conhecimen
 var fim = inicializaValores(0, nmroLinhasB, 0) //Vetor auxiliar de conhecimento
 var D 
 
-Diagnostico(complementoD, wa, pd, nmroLinhasD, nmroColunasD)
+//Diagnostico(complementoD, wa, pd, nmroLinhasD, nmroColunasD)
+
+
+*/
 
 //_______________ FUNÇÕES _______________//
 
@@ -660,7 +660,7 @@ function artA(entrada, wa, pa, beta, nmroLinhasA, nmroColunasA){
 		//console.log("SomaVig = " + somaVig)
 
 		pa = (somaVig / soma) + epsilon
-		//console.log("pA:" + pa)
+		//console.log("pA:" + pa)*/
 
 		//Valida o Match Tracking
 		while (validaMatch[i] <= pab) {
@@ -814,4 +814,4 @@ function Diagnostico(entrada, wa, pd, nmroLinhas, nmroColunas){
 	console.log(novoYbd)
 	console.log("Saída do diagnóstico:")
 	console.log(saida)
-}*/
+}

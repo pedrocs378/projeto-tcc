@@ -7,6 +7,7 @@ const {
     pAB,
     pB, 
     pD, 
+    epsilon,
     phase 
 } = require('../../configs/networkConfig')
 const convertNumber = require('../../utils/convertForZeroToOne')
@@ -26,7 +27,7 @@ module.exports = function analyseText(textSplited, textSearched, dataText, datas
 
     valueTags.forEach((values, index) => {
         console.log('\n\nURL ACESSADA:', datas[index].url)
-        const neuralNetwork = new NetworkController(pA, pB, pAB, pD, alpha, beta, phase)
+        const neuralNetwork = new NetworkController(pA, pB, pAB, pD, alpha, beta, epsilon, phase)
 
         // SET INPUTS
         neuralNetwork.setInputValues(valuesNormalized, valuesNormalized.length, 1)

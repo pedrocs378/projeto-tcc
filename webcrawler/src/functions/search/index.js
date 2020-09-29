@@ -67,6 +67,11 @@ module.exports = function analyseText(textSplited, textSearched, dataText, datas
         // ART A
         let newWInput = neuralNetwork.artA()
         console.log('NEW W. INPUT:\n', newWInput)
+
+        // DIAGNOSTIC
+        neuralNetwork.complementD = neuralNetwork.complementA
+        let outputDiag = neuralNetwork.diagnostico()
+        console.log('OUTPUT DIAGNOSTIC:\n', outputDiag)
     })
 
     console.log('TERMOS DIGITADOS: \n', dataText)

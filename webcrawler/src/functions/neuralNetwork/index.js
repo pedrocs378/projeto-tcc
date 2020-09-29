@@ -14,7 +14,7 @@ class NetworkController {
         this._posiK = [] //Linhas B
         this._K = 0
 		this._ya = [] //Linhas A X Colunas A
-		this._yb = [] //Linhas B X Linhas B*
+		this._yb = [] //Linhas B X Colunas B*
 		this._yd = [] //Linhas A X Linhas B
 		this._mt = [] //Linhas A X Linhas B (WAB)
 		this._ybd = [] //Linhas A X Linhas B (WAB)
@@ -24,9 +24,10 @@ class NetworkController {
 
     initVariables() {
         const rowsInput = this._complementA.length
-        const rowsOutput = this._complementB.length
+        const colsInput = this._complementA[0].length
 
-        const colsBOutput = this._complementB[0].length
+        const rowsOutput = this._complementB.length
+        const colsOutput = this._complementB[0].length
 
         this._wAB = new Array(rowsInput).fill(undefined)
         for (let i = 0; i < rowsInput; i++) {
@@ -35,12 +36,12 @@ class NetworkController {
 
         this._ya = new Array(rowsInput).fill(undefined)
         for (let i = 0; i < rowsInput; i++) {
-            this._ya[i] = new Array(rowsOutput).fill(0)
+            this._ya[i] = new Array(colsInput).fill(0)
         }
 
         this._yb = new Array(rowsOutput).fill(undefined)
-        for (let i = 0; i < colsBOutput; i++) {
-            this._yb[i] = new Array(rowsOutput).fill(0)
+        for (let i = 0; i < rowsOutput; i++) {
+            this._yb[i] = new Array(colsOutput).fill(0)
         }
 
         this._yd = new Array(rowsInput).fill(undefined)
@@ -817,7 +818,7 @@ class NetworkController {
             }
 
             //Verifica o conhecimento da rede
-			fimAux = this.verificaConhecimento(this._ybd, i, colsWAB)
+			let fimAux = this.verificaConhecimento(this._ybd, i, colsWAB)
             this._end[i] = fimAux[i]
 
         }//Fim do for
@@ -846,8 +847,8 @@ class NetworkController {
         console.log(ressonacia)
         console.log("YBD:")
         console.log(novoYbd)
-        console.log("Saída do diagnóstico:")
-        console.log(saida)
+
+        return saida
     }
 
 

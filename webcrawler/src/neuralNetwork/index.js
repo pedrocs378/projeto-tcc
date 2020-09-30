@@ -87,7 +87,7 @@ var epsilon = 0.01
 	   0.727, 0.1491,  0.635,  0.411, 0.1051, 0.1154,  0.941,  0.855]
   ]
 
-
+/*
 //var b = [ [0.5, 0.6], [0.9, 0.7], [0.1, 0.3], [0.896, 0.150] ]
 //var b = [[0.5, 0.6, 0.7], [0.5, 0.6, 0.7], [0.5, 0.6, 0.7], [0.5, 0.6, 0.7]]
 var b = [1, 0, 1], linhaB = 0, colunaB = 3
@@ -144,7 +144,7 @@ var D
 
 Diagnostico(complementoD, wa, pa, nmroLinhasD, nmroColunasD)
 
-
+*/
 //_______________ FUNÇÕES _______________//
 
 function inicializaValores(nmroLinhas, nmroColunas, valor){

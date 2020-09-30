@@ -29,6 +29,8 @@ module.exports = async (req, res) => {
  
 }	*/
 
+const { patch } = require("request-promise")
+
 //_______________ Controle da Rede _______________//
 
 var i = 0
@@ -84,14 +86,14 @@ var epsilon = 0.01
 	  0.1183, 0.1398,  0.831,  0.415,  0.876,  0.742,  0.118,  0.126,
 	   0.727, 0.1491,  0.635,  0.411, 0.1051, 0.1154,  0.941,  0.855]
   ]
-/*
+
 
 //var b = [ [0.5, 0.6], [0.9, 0.7], [0.1, 0.3], [0.896, 0.150] ]
 //var b = [[0.5, 0.6, 0.7], [0.5, 0.6, 0.7], [0.5, 0.6, 0.7], [0.5, 0.6, 0.7]]
-//var b = [1, 0, 1]
+var b = [1, 0, 1], linhaB = 0, colunaB = 3
 
-//normalizaDados(b, b.length, b[0].length)
-//var complementoB = realizaComplemento(b, b.length, b[0].length)
+normalizaDados(b, linhaB, colunaB)
+var complementoB = realizaComplemento(b, linhaB,colunaB)
 
 var nmroLinhasB = complementoB.length, nmroColunasB = complementoB[0].length
 var nmroLinhasMatAtvdadeB = complementoB.length, nmroColunasMatAtvdadeB = complementoB[0].length + 1
@@ -101,7 +103,7 @@ var yb = inicializaValores(nmroLinhasMatAtvdadeB, nmroColunasMatAtvdadeB, 0)
 var posiK = inicializaValores(0, b.length, 0) 
 var K 
 
-//artB(complementoB, wb, pb, beta, nmroLinhasB, nmroColunasB)
+artB(complementoB, wb, pb, beta, nmroLinhasB, nmroColunasB)
 
 //_______________ Art A _______________//
 
@@ -109,10 +111,10 @@ var K
 
 var a = [[1, 0], [0, 1], [0.5, 0.5]] 
 
-//normalizaDados(a, a.length, a[0].length)
-//var complementoA = realizaComplemento(a, a.length, a[0].length)
+normalizaDados(a, a.length, a[0].length)
+var complementoA = realizaComplemento(a, a.length, a[0].length)
 
-var nmroLinhasMatAtvdadeA = complementoA.length, nmroColunasMatAtvdadeA = complementoA[0].length
+var nmroLinhasMatAtvdadeA = complementoA.length, nmroColunasMatAtvdadeA = complementoA[0].length - 1
 var nmroLinhasWAB = complementoA.length, nmroColunasWAB = complementoB.length
 var nmroLinhasA = complementoA.length, nmroColunasA = complementoA[0].length
 
@@ -122,28 +124,26 @@ var ya = inicializaValores(nmroLinhasMatAtvdadeA, nmroColunasMatAtvdadeA, 0)
 var mt = inicializaValores(nmroLinhasWAB, nmroColunasWAB, 0) 
 var J
 
-//artA(complementoA, wa, pa, beta, nmroLinhasA, nmroColunasA)
+artA(complementoA, wa, pa, beta, nmroLinhasA, nmroColunasA)
 
 //_______________ Dados diagnóstico _______________//
 
-var d = [[1, 1], [0.5, 1], [0.2, 0.9]] 
+var d = [[1, 0], [0, 1], [0.5, 0.5]] 
 
-//normalizaDados(d, d.length, d[0].length)
-//var complementoD = realizaComplemento(d, d.length, d[0].length)
+normalizaDados(d, d.length, d[0].length)
+var complementoD = realizaComplemento(d, d.length, d[0].length)
 
-var nmroLinhasMatAtvdadeD = complementoD.length, nmroColunasMatAtvdadeD = complementoD[0].length
+var nmroLinhasMatAtvdadeD = complementoD.length, nmroColunasMatAtvdadeD = complementoD[0].length - 1
 var nmroLinhasD = complementoD.length, nmroColunasD = complementoD[0].length
 
 var yd = inicializaValores(nmroLinhasMatAtvdadeD, nmroColunasMatAtvdadeD, 0) //Matriz de atividades D
 var ybd = inicializaValores(nmroLinhasWAB, nmroColunasWAB, 0) //Matriz de atividades Inter Art
-var wbd = inicializaValores(nmroLinhasB, nmroColunasB, 0) //Matriz de conhecimento da rede
+var wbd = inicializaValores(nmroLinhasB, nmroColunasB/2, 0) //Matriz de conhecimento da rede
 var fim = inicializaValores(0, nmroLinhasB, 0) //Vetor auxiliar de conhecimento
 var D 
 
-//Diagnostico(complementoD, wa, pd, nmroLinhasD, nmroColunasD)
+Diagnostico(complementoD, wa, pa, nmroLinhasD, nmroColunasD)
 
-
-*/
 
 //_______________ FUNÇÕES _______________//
 
@@ -485,12 +485,12 @@ function verificaConhecimento(entrada, linha, nmroColunas){
 	return fim
 }
 
-function criaMatrizDeDiagnostico(peso, conhecimento, nmroLinhas, nmroColunas){
+function criaMatrizDeDiagnostico(peso, conhecimento, nmroLinhasB, nmroColunasB){
 
-	let mtDiagnostico = inicializaValores(nmroLinhas, nmroColunas, 0)
+	let mtDiagnostico = inicializaValores(nmroLinhasB, nmroColunasB/2, 0)
 
-	for(let i=0; i<nmroLinhas; i++){
-		for(let j=0; j<nmroColunas; j++){
+	for(let i=0; i<nmroLinhasB; i++){
+		for(let j=0; j<nmroColunasB/2; j++){
 			mtDiagnostico[i][j] = peso[conhecimento[i]][j]
 		}
 	}
@@ -513,12 +513,12 @@ function verificaRessonancia(diagnostico, peso, nmroLinhas, nmroColunas){
 	return ressonacia
 }
 
-function criaMatrizInterArtAux(matrizInter, matrizAtividadeD, nmroLinhas, nmroColunas){
+function criaMatrizInterArtAux(matrizInter, matrizAtividadeD, nmroLinhasMatAtvdadeD, nmroColunasMatAtvdadeD){
 
-	let novoYbd = inicializaValores(nmroLinhas, nmroColunas, 0)
+	let novoYbd = inicializaValores(nmroLinhasMatAtvdadeD, nmroColunasMatAtvdadeD, 0)
 
-	for(let i=0; i<nmroLinhas; i++){
-		for(let j=0; j<nmroColunas; j++){
+	for(let i=0; i<nmroLinhasMatAtvdadeD; i++){
+		for(let j=0; j<nmroColunasMatAtvdadeD; j++){
 			novoYbd[i][j] = matrizInter[i][j] * matrizAtividadeD[i][j]
 		}
 	}
@@ -526,22 +526,22 @@ function criaMatrizInterArtAux(matrizInter, matrizAtividadeD, nmroLinhas, nmroCo
 	return novoYbd
 }
 
-function saidaDiagnostico(pesoB, entrada, saidaDesejada, novoYbd, wbd, nmroLinhas, nmroColunas){
+function saidaDiagnostico(pesoB, entrada, saidaDesejada, novoYbd, wbd, nmroLinhasMatAtvdadeD, nmroColunasMatAtvdadeD, nmroColunasB){
 
 	//pega B sem complemento
 	let tamanho = pesoB[0].length / 2
 	let linhasA = inicializaValores(0, entrada.length, 0)
 
-	for(let i=0; i<nmroLinhas; i++){
-		for(let j=0; j<nmroLinhas; j++){
+	for(let i=0; i<nmroLinhasMatAtvdadeD; i++){
+		for(let j=0; j<nmroColunasMatAtvdadeD; j++){
 			if(novoYbd[i][j] === 1){
 				linhasA[i] = j
 			}
 		}
 	}
 
-	for(let i=0; i<nmroLinhas; i++){
-		for(let j=0; j<nmroColunas; j++){
+	for(let i=0; i<nmroLinhasMatAtvdadeD; i++){
+		for(let j=0; j<nmroColunasB/2; j++){
 			wbd[i][j] = saidaDesejada[linhasA[i]][tamanho]
 		}
 	}
@@ -736,7 +736,7 @@ function artA(entrada, wa, pa, beta, nmroLinhasA, nmroColunasA){
 	//return wa
 }
 
-function Diagnostico(entrada, wa, pd, nmroLinhas, nmroColunas){
+function Diagnostico(entrada, wa, p, nmroLinhas, nmroColunas){
 
 	console.log("_______________ DIAGNÓSTICO _______________")
 
@@ -756,7 +756,7 @@ function Diagnostico(entrada, wa, pd, nmroLinhas, nmroColunas){
 		console.log("Teste de vigilancia D " + i + ": " + tVigilanciaD)
 
 		//Valida Vigilancia
-		while (tVigilanciaD[i] <= pd) {
+		while (tVigilanciaD[i] <= p) {
 
 			//Recria categorias
 			Td[D] = 0
@@ -796,7 +796,7 @@ function Diagnostico(entrada, wa, pd, nmroLinhas, nmroColunas){
 
 	var novoYbd = criaMatrizInterArtAux(wab, yd, nmroLinhasWAB, nmroColunasWAB)	
 
-	var saida = saidaDiagnostico(wb, complementoA, complementoB, novoYbd, wbd, nmroLinhas, nmroColunas)
+	var saida = saidaDiagnostico(wb, complementoA, complementoB, novoYbd, wbd, nmroLinhas, nmroColunasB)
 	
 	console.log('\n')
 	console.log("_______________ SAÍDA D: _______________")

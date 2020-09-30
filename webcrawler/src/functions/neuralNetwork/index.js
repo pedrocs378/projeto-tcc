@@ -13,13 +13,13 @@ class NetworkController {
         this._wAB = [] //Linhas A X Linhas B
         this._posiK = [] //Linhas B
         this._K = 0
-		this._ya = [] //Linhas A X Colunas A
-		this._yb = [] //Linhas B X Colunas B*
-		this._yd = [] //Linhas A X Linhas B
-		this._mt = [] //Linhas A X Linhas B (WAB)
-		this._ybd = [] //Linhas A X Linhas B (WAB)
-		this._wBD = [] //Tamanho de B
-		this._end = [] //Linhas de B (vetor)
+		this._ya = [] 
+		this._yb = []
+		this._yd = [] 
+		this._mt = [] //(WAB)
+		this._ybd = [] //(WAB)
+		this._wBD = [] //Linhas de B X Colunas B (sem comple)
+		this._end = [] //Linhas de B
     }
 
     initVariables() {
@@ -39,14 +39,14 @@ class NetworkController {
             this._ya[i] = new Array(colsInput).fill(0)
         }
 
-        this._yb = new Array(rowsOutput).fill(undefined)
-        for (let i = 0; i < rowsOutput; i++) {
-            this._yb[i] = new Array(colsOutput).fill(0)
+        this._yb = new Array(rowsInput).fill(undefined)
+        for (let i = 0; i < rowsInput; i++) {
+            this._yb[i] = new Array(rowsOutput).fill(0) //*
         }
 
         this._yd = new Array(rowsInput).fill(undefined)
         for (let i = 0; i < rowsInput; i++) {
-            this._yd[i] = new Array(rowsOutput).fill(0)
+            this._yd[i] = new Array(colsInput).fill(0)
         }
 
         this._mt = new Array(rowsInput).fill(undefined)
@@ -56,7 +56,7 @@ class NetworkController {
 
         this._ybd = new Array(rowsInput).fill(undefined)
         for (let i = 0; i < rowsInput; i++) {
-            this._ybd[i] = new Array(rowsOutput).fill(0)
+            this._ybd[i] = new Array(colsInput).fill(0)
         }
     }
 
@@ -523,12 +523,12 @@ class NetworkController {
 		return ressonacia
     }
     
-    criaMatrizInterArtAux(matrizInter, matrizAtividadeD, nmroLinhas, nmroColunas){
+    criaMatrizInterArtAux(matrizInter, matrizAtividadeD, nmroLinhasMatAtvdadeD, nmroColunasMatAtvdadeD){
 
-        let novoYbd = this.inicializaValores(nmroLinhas, nmroColunas, 0)
+        let novoYbd = this.inicializaValores(nmroLinhasMatAtvdadeD, nmroColunasMatAtvdadeD, 0)
     
-        for(let i=0; i<nmroLinhas; i++){
-            for(let j=0; j<nmroColunas; j++){
+        for(let i=0; i<nmroLinhasMatAtvdadeD; i++){
+            for(let j=0; j<nmroColunasMatAtvdadeD; j++){
                 novoYbd[i][j] = matrizInter[i][j] * matrizAtividadeD[i][j]
             }
         }
@@ -536,22 +536,22 @@ class NetworkController {
         return novoYbd
     }
     
-    saidaDiagnostico(pesoB, entrada, saidaDesejada, novoYbd, wbd, nmroLinhas, nmroColunas){
+    saidaDiagnostico(pesoB, entrada, saidaDesejada, novoYbd, wbd, nmroLinhasMatAtvdadeD, nmroColunasMatAtvdadeD, nmroColunasB){
     
         //pega B sem complemento
         let tamanho = pesoB[0].length / 2
         let linhasA = this.inicializaValores(0, entrada.length, 0)
     
-        for(let i=0; i<nmroLinhas; i++){
-            for(let j=0; j<nmroLinhas; j++){
+        for(let i=0; i<nmroLinhasMatAtvdadeD; i++){
+            for(let j=0; j<nmroColunasMatAtvdadeD; j++){
                 if(novoYbd[i][j] === 1){
                     linhasA[i] = j
                 }
             }
         }
     
-        for(let i=0; i<nmroLinhas; i++){
-            for(let j=0; j<nmroColunas; j++){
+        for(let i=0; i<nmroLinhasMatAtvdadeD; i++){
+            for(let j=0; j<nmroColunasB/2; j++){
                 wbd[i][j] = saidaDesejada[linhasA[i]][tamanho]
             }
         }
@@ -567,8 +567,9 @@ class NetworkController {
 		const colsOutput = this._complementB[0].length
 		
         const output = this._complementB
-
         const colsYBOutput = this._complementB[0].length
+
+        const colsInput = this._complementA[0].length
 
         for (let i = 0; i < rowsOutput; i++) {
 
@@ -612,7 +613,7 @@ class NetworkController {
             //Matriz de Atividades B
 			let ybAux = this.criaMatrizDeAtividades(this._yb, this._K, i)
 
-			for (let j = 0; j < colsOutput; j++) {
+			for (let j = 0; j < colsInput; j++) {
                 this._yb[i][j] = ybAux[i][j]
             }
 
@@ -829,9 +830,9 @@ class NetworkController {
         //Verifica ressonância (Categorias validadas)
         let ressonacia = this.verificaRessonancia(this._wBD, wOutput, rowsOutput, colsOutput)
         
-        let novoYbd = this.criaMatrizInterArtAux(this._wAB,  this._yd, rowsWAB, colsWAB)	
+        let novoYbd = this.criaMatrizInterArtAux(this._wAB,  this._yd, rowsInputD, colsInputD)	
 
-        let saida = this.saidaDiagnostico(this._wOutput, this._complementA, this._complementB, novoYbd, this._wBD, rowsInputD, colsInputD)
+        let saida = this.saidaDiagnostico(this._wOutput, this._complementA, this._complementB, novoYbd, this._wBD, rowsInputD, colsInputD, this._wOutput)
 
         console.log('\n')
         console.log("_______________ SAÍDA D: _______________")

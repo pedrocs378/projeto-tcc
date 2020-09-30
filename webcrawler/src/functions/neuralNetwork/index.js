@@ -815,7 +815,7 @@ class NetworkController {
             //Matriz de Atividades inter art 
 			let ybdAux = this.criaMatrizDeAtividadesInterArt(this._yd, this._wAB, i, colsWAB)
 
-			for (let j = 0; j < colsWAB; j++) {
+			for (let j = 0; j < colsInputD; j++) {
                 this._ybd[i][j] = ybdAux[i][j]
             }
 

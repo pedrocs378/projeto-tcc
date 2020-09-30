@@ -676,21 +676,22 @@ class NetworkController {
 
             //Teste de vigilancia auxiliar para atualizar o peso
             let andA = this.realizaAndMinimo(input, wA, i, J, rowsInput, colsInput)
-            
-            //Adaptação 
-            let soma = 0
-            soma = this.somaColunas(i, this._complementA, colsInput)
-
-            let somaVig = 0
-            somaVig = this.somaColunas(i, andA, colsInput)
-
-            this._pA = (somaVig / soma) + this._epsilon
 
             //Valida o Match Tracking
-            while (validaMatch[i] <= this._pAB) {
+            while (validaMatch[i] < this._pAB) {
 
                 //Categorias
                 Ta[J] = 0
+
+                //Adaptação 
+                let soma = 0
+                soma = this.somaColunas(i, this._complementA, colsInput)
+
+                let somaVig = 0
+                somaVig = this.somaColunas(i, andA, colsInput)
+
+                this._pA = (somaVig / soma) + this._epsilon
+                
 				J = this.retornaCategoriaVencedora(Ta)
                 console.log("Nova categoria vencedora A " + i + ": " + J)
 
@@ -699,7 +700,7 @@ class NetworkController {
                 console.log("Novo teste de vigilancia A " + i + ": " + tVigilanciaA)
 
                 //Valida Vigilancia
-                while (tVigilanciaA[i] <= this._pA) {
+                while (tVigilanciaA[i] < this._pA) {
 
                     //Recria categorias
                     Ta[J] = 0
@@ -791,7 +792,7 @@ class NetworkController {
             console.log("Teste de vigilancia D " + i + ": " + tVigilanciaD)
 
             //Valida Vigilancia
-            while (tVigilanciaD[i] <= this._pA) {
+            while (tVigilanciaD[i] < this._pA) {
 
                 //Recria categorias
                 Td[D] = 0

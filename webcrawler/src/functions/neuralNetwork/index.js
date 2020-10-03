@@ -543,7 +543,7 @@ class NetworkController {
         let linhasA = new Array(entrada.length).fill(0)
     
         for(let i=0; i<nmroLinhasMatAtvdadeD; i++){
-            for(let j=0; j<nmroColunasMatAtvdadeD; j++){
+            for (let j = 0; j < nmroLinhasMatAtvdadeD; j++){
                 if(novoYbd[i][j] === 1){
                     linhasA[i] = j
                 }
@@ -813,7 +813,7 @@ class NetworkController {
             }
 
             //Matriz de Atividades inter art 
-			let ybdAux = this.criaMatrizDeAtividadesInterArt(this._yd, this._wAB, i, colsWAB)
+            let ybdAux = this.criaMatrizDeAtividadesInterArt(this._yd, this._wAB, i, colsInputD)
 
 			for (let j = 0; j < colsInputD; j++) {
                 this._ybd[i][j] = ybdAux[i][j]
@@ -826,10 +826,10 @@ class NetworkController {
         }//Fim do for
 
         //Matriz de diagnóstico
-		this._wBD = this.criaMatrizDeDiagnostico(wOutput, this._end, rowsOutput, colsOutput)
+        this._wBD = this.criaMatrizDeDiagnostico(wOutput, this._end, rowsInputD, colsOutput)
 
         //Verifica ressonância (Categorias validadas)
-        let ressonacia = this.verificaRessonancia(this._wBD, wOutput, rowsOutput, colsOutput)
+        let ressonacia = this.verificaRessonancia(this._wBD, wOutput, rowsInputD, colsOutput)
         
         let novoYbd = this.criaMatrizInterArtAux(this._wAB,  this._yd, rowsInputD, colsInputD)	
 
@@ -841,8 +841,6 @@ class NetworkController {
         console.log(this._complementD)
         console.log("Matriz de atividades D:")
         console.log(this._yd)
-        console.log("Matriz de atividades Inter Art D:")
-        console.log(this._ybd)
         console.log("Matriz de diagnóstico D:")
 		console.log(this._wBD)
         console.log("Categoria(s) com ressonância:")

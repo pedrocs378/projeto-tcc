@@ -1,16 +1,14 @@
+const async = require('async')
 const Url = require('../models/Url')
 const Stopword = require('../models/Stopword')
 
 const convertString = require('../utils/convertStringToNumber')
-const analyzeText = require('../functions/search')
+const { analyseText, executeNetwork } = require('../functions/search')
 
 module.exports = {
     async search(req, res) {
         const { q = "" } = req.query
         const allDatas = await Url.find({})
-        const tagsWithoutStopwords = await Url.find({}, '-_id tagsWithoutStopwords.value')
-        const tags = tagsWithoutStopwords.map(tag => tag.tagsWithoutStopwords)
-	    const valueTags = tags.map((tag) => { return tag.map(({ value }) => value) })
 
         const textSearched = q.normalize('NFD')
             .replace(/([\u0300-\u036f]|[^0-9a-zA-Z\s])/g, '')
@@ -20,31 +18,31 @@ module.exports = {
 
             const textSplited = textSearched.split(' ')
 
-            const stopwords = await Stopword.find({})
-            const stopwordsParsed = stopwords.map(({ word }) => {
-                return word
-                    .normalize('NFD')
-                    .replace(/([\u0300-\u036f]|[^0-9a-zA-Z\s])/g, '')
-                    .toLowerCase()
-            })
+            async.parallel([
+                function (callback) {
+                    const { dataSearched, totalPages, length } = analyseText(textSplited, textSearched, allDatas)
 
-            const textWithoutStopwords = textSplited.map((tag) => {
-                if (!(stopwordsParsed.includes(tag))) {
-                    return {
-                        name: tag,
-                        value: convertString(tag)
-                    }
-                } else {
-                    return null
+                    callback(null, {
+                        dataSearched,
+                        totalPages,
+                        length
+                    })
+                },
+                function(callback) {
+                    console.log('EXECUTANDO REDE.....')
+                    executeNetwork(allDatas, textSplited)
+
+                    callback()
                 }
+            ], function(err, results) {
+
+                return res.json({
+                    dataSearched: results[0].dataSearched,
+                    totalPages: results[0].totalPages,
+                    length: results[0].length
+                })
             })
-
-            const textWithoutNulls = textWithoutStopwords.filter(el =>
-                (el != null) ? (el.name.trim() != "") ? true : false : false)
-
-            const { dataSearched, totalPages, length } = analyzeText(textSplited, textSearched, textWithoutNulls, allDatas, valueTags)
-            
-            return res.json({ dataSearched, totalPages, length })
+        
         }
         
     }

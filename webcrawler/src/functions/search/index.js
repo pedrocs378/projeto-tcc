@@ -25,8 +25,6 @@ function analyseText(textSplited, textSearched, datas) {
 
     const dataSearched = []
 
-    // executeNetwork(valueTags, datas, dataText)
-
     if (textSplited.length > 1) {
 
         datas.forEach(data => {

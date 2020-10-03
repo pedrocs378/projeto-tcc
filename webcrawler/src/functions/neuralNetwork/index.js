@@ -530,24 +530,24 @@ class NetworkController {
 		return ressonacia
     }
     
-    saidaDiagnostico(pesoB, entrada, saidaDesejada, novoYbd, wbd, nmroLinhasMatAtvdadeD){
+    saidaDiagnostico(pesoB, entrada, saidaDesejada, yBD, wbd, nmroLinhasMatAtvdadeD){
     
         //pega B sem complemento
-        let tamanho = pesoB[0].length / 2
+        let tamanho = Math.floor(pesoB[0].length / 2)
         let linhasA = new Array(entrada.length).fill(0)
     
         for(let i=0; i<nmroLinhasMatAtvdadeD; i++){
             for (let j = 0; j < nmroLinhasMatAtvdadeD; j++){
-                if(novoYbd[i][j] === 1){
+                if(yBD[i][j] === 1){
                     linhasA[i] = j
                 }
             }
         }
+
+        console.log('LINHAS:', linhasA)
     
         for(let i=0; i<nmroLinhasMatAtvdadeD; i++){
-            for(let j=0; j<tamanho; j++){
-                wbd[i][j] = saidaDesejada[linhasA[i]][j]
-            }
+            wbd[i][0] = saidaDesejada[linhasA[i]][tamanho]         
         }
     
         return wbd
@@ -585,7 +585,7 @@ class NetworkController {
 			let tVigilanciaB = this.realizaTesteDeVigilancia(output, wB, i, this._K, rowsOutput, colsOutput)
             console.log("Teste de vigilancia B " + i + ": " + tVigilanciaB)
 
-            while (tVigilanciaB[i] <= this._pB) {
+            while (tVigilanciaB[i] < this._pB) {
 
                 //Recria categorias
                 Tb[this._K] = 0
@@ -673,7 +673,7 @@ class NetworkController {
             let andA = this.realizaAndMinimo(input, wA, i, J, rowsInput, colsInput)
 
             //Valida o Match Tracking
-            while (validaMatch[i] <= this._pAB) {
+            while (validaMatch[i] < this._pAB) {
 
                 //Adaptação 
                 let soma = 0
@@ -694,7 +694,7 @@ class NetworkController {
                 console.log("Novo teste de vigilancia A " + i + ": " + tVigilanciaA)
 
                 //Valida Vigilancia
-                while (tVigilanciaA[i] <= this._pA) {
+                while (tVigilanciaA[i] < this._pA) {
 
                     //Recria categorias
                     Ta[J] = 0
@@ -786,7 +786,7 @@ class NetworkController {
             console.log("Teste de vigilancia D " + i + ": " + tVigilanciaD)
 
             //Valida Vigilancia
-            while (tVigilanciaD[i] <= this._pA) {
+            while (tVigilanciaD[i] < this._pA) {
 
                 //Recria categorias
                 Td[D] = 0
@@ -823,8 +823,6 @@ class NetworkController {
 
         //Verifica ressonância (Categorias validadas)
         let ressonacia = this.verificaRessonancia(this._wBD, wOutput, rowsInputD, colsOutput)
-        
-        let novoYbd = this.criaMatrizInterArtAux(this._wAB,  this._yd, rowsInputD, colsInputD)	
 
         //Verifica ressonância 
         //let ressonacia = this.verificaRessonancia(this._wBD, wOutput, rowsOutput, colsOutput)

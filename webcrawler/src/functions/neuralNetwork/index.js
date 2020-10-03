@@ -540,7 +540,7 @@ class NetworkController {
     
         //pega B sem complemento
         let tamanho = pesoB[0].length / 2
-        let linhasA = this.inicializaValores(0, entrada.length, 0)
+        let linhasA = new Array(entrada.length).fill(0)
     
         for(let i=0; i<nmroLinhasMatAtvdadeD; i++){
             for(let j=0; j<nmroColunasMatAtvdadeD; j++){

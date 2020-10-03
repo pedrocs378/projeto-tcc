@@ -1,5 +1,5 @@
 module.exports = {
-    pA: 0.95,
+    pA: 0.7,
     pB: 0.9,
     pAB: 0.9,
     pD: 0.5,

@@ -536,7 +536,7 @@ class NetworkController {
         return novoYbd
     }
     
-    saidaDiagnostico(pesoB, entrada, saidaDesejada, novoYbd, wbd, nmroLinhasMatAtvdadeD, nmroColunasMatAtvdadeD, nmroColunasB){
+    saidaDiagnostico(pesoB, entrada, saidaDesejada, novoYbd, wbd, nmroLinhasMatAtvdadeD, nmroColunasMatAtvdadeD){
     
         //pega B sem complemento
         let tamanho = pesoB[0].length / 2
@@ -551,8 +551,8 @@ class NetworkController {
         }
     
         for(let i=0; i<nmroLinhasMatAtvdadeD; i++){
-            for(let j=0; j<nmroColunasB/2; j++){
-                wbd[i][j] = saidaDesejada[linhasA[i]][tamanho]
+            for(let j=0; j<tamanho; j++){
+                wbd[i][j] = saidaDesejada[linhasA[i]][j]
             }
         }
     
@@ -833,7 +833,7 @@ class NetworkController {
         
         let novoYbd = this.criaMatrizInterArtAux(this._wAB,  this._yd, rowsInputD, colsInputD)	
 
-        let saida = this.saidaDiagnostico(this._wOutput, this._complementA, this._complementB, novoYbd, this._wBD, rowsInputD, colsInputD, this._wOutput)
+        let saida = this.saidaDiagnostico(this._wOutput, this._complementA, this._complementB, this._ybd, this._wBD, rowsInputD, colsInputD)
 
         console.log('\n')
         console.log("_______________ SAÍDA D: _______________")
@@ -848,7 +848,7 @@ class NetworkController {
         console.log("Categoria(s) com ressonância:")
         console.log(ressonacia)
         console.log("YBD:")
-        console.log(novoYbd)
+        console.log(this._ybd)
 
         return saida
     }

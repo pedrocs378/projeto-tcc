@@ -41,12 +41,17 @@ class NetworkController {
 
         this._yb = new Array(rowsInput).fill(undefined)
         for (let i = 0; i < rowsInput; i++) {
-            this._yb[i] = new Array(rowsOutput).fill(0) //*
+            this._yb[i] = new Array(rowsOutput).fill(0)
         }
 
         this._yd = new Array(rowsInput).fill(undefined)
         for (let i = 0; i < rowsInput; i++) {
-            this._yd[i] = new Array(colsInput).fill(0)
+            this._yd[i] = new Array(rowsOutput).fill(0)
+        }
+
+        this._ybd = new Array(rowsInput).fill(undefined)
+        for (let i = 0; i < rowsInput; i++) {
+            this._ybd[i] = new Array(rowsOutput).fill(0)
         }
 
         this._mt = new Array(rowsInput).fill(undefined)
@@ -54,10 +59,6 @@ class NetworkController {
             this._mt[i] = new Array(rowsOutput).fill(0)
         }
 
-        this._ybd = new Array(rowsInput).fill(undefined)
-        for (let i = 0; i < rowsInput; i++) {
-            this._ybd[i] = new Array(colsInput).fill(0)
-        }
     }
 
     setInputValues(data, rows, cols) {
@@ -322,19 +323,19 @@ class NetworkController {
 			}
 		}
 
-		let somaColunasMat = this.inicializaValores(nmroLinhas, 0, 0)
+		let somaColunasMat = this.inicializaValores(0, nmroLinhas, 0)
 
 		for (let i = 0; i < nmroLinhas; i++) {
 			somaColunasMat[i] = this.somaColunas(i, matrizCat, nmroColunas)
 		}
 
-		let somaPeso = this.inicializaValores(nmroLinhas, 0, 0)
+		let somaPeso = this.inicializaValores(0, nmroLinhas, 0)
 
 		for (let i = 0; i < nmroLinhas; i++) {
 			somaPeso[i] = this.somaColunas(i, peso, nmroColunas)
 		}
 
-		let categorias = this.inicializaValores(nmroLinhas, 0, 0)
+		let categorias = this.inicializaValores(0, nmroLinhas, 0)
 
 		for (let i = 0; i < nmroLinhas; i++) {
 			categorias[i] = somaColunasMat[i] / (this._alpha + somaPeso[i])
@@ -369,17 +370,20 @@ class NetworkController {
 			} else {
 				matrizVig[linha][j] = peso[catVencedora][j]
 			}
-		}
-		
+        }
+        
 		let somaVigilancia = this.inicializaValores(0, nmroLinhas, 0)
-		let somaEntrada = this.inicializaValores(0, nmroLinhas, 0)
+        let somaEntrada = this.inicializaValores(0, nmroLinhas, 0)
+        
+        for (let i = 0; i < nmroLinhas; i++) {
+            somaVigilancia[i] = this.somaColunas(i, matrizVig, nmroColunas)
+        }
 
 		for (let i = 0; i < nmroLinhas; i++) {
-			somaVigilancia[i] = this.somaColunas(i, matrizVig, nmroColunas)
 			somaEntrada[i] = this.somaColunas(i, entrada, nmroColunas)
 		}
 
-		let testeDeVigilancia = this.inicializaValores(nmroLinhas, 0, 0)
+		let testeDeVigilancia = this.inicializaValores(0, nmroLinhas, 0)
 
 		for (let i = 0; i < nmroLinhas; i++) {
 			testeDeVigilancia[i] = somaVigilancia[i] / somaEntrada[i]
@@ -416,11 +420,14 @@ class NetworkController {
 			}
 		}
 
-		let somaColMatch = this.inicializaValores(nmroLinhas, nmroColunas, 0)
-		let somaColEntrada = this.inicializaValores(nmroLinhas, nmroColunas, 0)
+		let somaColMatch = this.inicializaValores(0, nmroLinhas, 0)
+        let somaColEntrada = this.inicializaValores(0, nmroLinhas, 0)
+        
+        for (let i = 0; i < nmroLinhas; i++) {
+            somaColMatch[i] = this.somaColunas(i, matrizMatch, nmroColunas)
+        }
 
 		for (let i = 0; i < nmroLinhas; i++) {
-			somaColMatch[i] = this.somaColunas(i, matrizMatch, nmroColunas)
 			somaColEntrada[i] = this.somaColunas(i, entrada, nmroColunas)
 		}
 
@@ -470,9 +477,9 @@ class NetworkController {
 		return entrada
 	}
 
-	criaMatrizDeAtividadesInterArt(entrada, peso, linha, nmroColunas) {
+	criaMatrizDeAtividadesInterArt(entrada, peso, linha, nmroLinhas, nmroColunas) {
 
-		let mtInterArt = this.inicializaValores(nmroColunas, nmroColunas, 0)
+		let mtInterArt = this.inicializaValores(nmroLinhas, nmroColunas, 0)
 
 		for (let j = 0; j < nmroColunas; j++) {
 			mtInterArt[linha][j] = entrada[linha][j] * peso[linha][j]
@@ -521,19 +528,6 @@ class NetworkController {
 		}
 
 		return ressonacia
-    }
-    
-    criaMatrizInterArtAux(matrizInter, matrizAtividadeD, nmroLinhasMatAtvdadeD, nmroColunasMatAtvdadeD){
-
-        let novoYbd = this.inicializaValores(nmroLinhasMatAtvdadeD, nmroColunasMatAtvdadeD, 0)
-    
-        for(let i=0; i<nmroLinhasMatAtvdadeD; i++){
-            for(let j=0; j<nmroColunasMatAtvdadeD; j++){
-                novoYbd[i][j] = matrizInter[i][j] * matrizAtividadeD[i][j]
-            }
-        }
-    
-        return novoYbd
     }
     
     saidaDiagnostico(pesoB, entrada, saidaDesejada, novoYbd, wbd, nmroLinhasMatAtvdadeD, nmroColunasMatAtvdadeD){
@@ -679,10 +673,7 @@ class NetworkController {
             let andA = this.realizaAndMinimo(input, wA, i, J, rowsInput, colsInput)
 
             //Valida o Match Tracking
-            while (validaMatch[i] < this._pAB) {
-
-                //Categorias
-                Ta[J] = 0
+            while (validaMatch[i] <= this._pAB) {
 
                 //Adaptação 
                 let soma = 0
@@ -692,7 +683,9 @@ class NetworkController {
                 somaVig = this.somaColunas(i, andA, colsInput)
 
                 this._pA = (somaVig / soma) + this._epsilon
-                
+
+                //Categorias
+                Ta[J] = 0
 				J = this.retornaCategoriaVencedora(Ta)
                 console.log("Nova categoria vencedora A " + i + ": " + J)
 
@@ -701,12 +694,12 @@ class NetworkController {
                 console.log("Novo teste de vigilancia A " + i + ": " + tVigilanciaA)
 
                 //Valida Vigilancia
-                while (tVigilanciaA[i] < this._pA) {
+                while (tVigilanciaA[i] <= this._pA) {
 
                     //Recria categorias
                     Ta[J] = 0
 					J = this.retornaCategoriaVencedora(Ta)
-                    console.log("Nova categoria vencedora " + i + ": " + J)
+                    console.log("Nova categoria vencedora A " + i + ": " + J)
 
                     //Teste Vigilancia
 					tVigilanciaA = this.realizaTesteDeVigilancia(input, wA, i, J, rowsInput, colsInput)
@@ -793,7 +786,7 @@ class NetworkController {
             console.log("Teste de vigilancia D " + i + ": " + tVigilanciaD)
 
             //Valida Vigilancia
-            while (tVigilanciaD[i] < this._pA) {
+            while (tVigilanciaD[i] <= this._pA) {
 
                 //Recria categorias
                 Td[D] = 0
@@ -813,14 +806,14 @@ class NetworkController {
             }
 
             //Matriz de Atividades inter art 
-            let ybdAux = this.criaMatrizDeAtividadesInterArt(this._yd, this._wAB, i, colsInputD)
+            let ybdAux = this.criaMatrizDeAtividadesInterArt(this._yd, this._wAB, i, rowsWAB, colsWAB) 
 
 			for (let j = 0; j < colsInputD; j++) {
                 this._ybd[i][j] = ybdAux[i][j]
             }
 
             //Verifica o conhecimento da rede
-			let fimAux = this.verificaConhecimento(this._ybd, i, colsWAB)
+			let fimAux = this.verificaConhecimento(this._ybd, i, colsWAB) 
             this._end[i] = fimAux[i]
 
         }//Fim do for
@@ -833,6 +826,9 @@ class NetworkController {
         
         let novoYbd = this.criaMatrizInterArtAux(this._wAB,  this._yd, rowsInputD, colsInputD)	
 
+        //Verifica ressonância 
+        //let ressonacia = this.verificaRessonancia(this._wBD, wOutput, rowsOutput, colsOutput)
+
         let saida = this.saidaDiagnostico(this._wOutput, this._complementA, this._complementB, this._ybd, this._wBD, rowsInputD, colsInputD)
 
         console.log('\n')
@@ -842,11 +838,11 @@ class NetworkController {
         console.log("Matriz de atividades D:")
         console.log(this._yd)
         console.log("Matriz de diagnóstico D:")
-		console.log(this._wBD)
-        console.log("Categoria(s) com ressonância:")
-        console.log(ressonacia)
-        console.log("YBD:")
+        console.log(this._wBD)
+        console.log("YBD")
         console.log(this._ybd)
+        //console.log("Categoria(s) com ressonância:")
+        //console.log(ressonacia)
 
         return saida
     }

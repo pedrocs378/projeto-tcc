@@ -10,9 +10,11 @@ export default function Search() {
     const [text, setText] = useState("")
     const history = useHistory()
 
+    /*	
     useEffect(() => {
         api.post('/crawler')
     }, [])
+    */
 
     function handleSearch() {
         if (text) {

@@ -4,7 +4,7 @@ module.exports = {
     pAB: 0.9,
     pD: 0.5,
     alpha: 0.1,
-    beta: 0.7,
+    beta: 0.95,
     epsilon: 0.01,
     phase: 0
 }

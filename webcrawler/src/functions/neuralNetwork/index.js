@@ -530,7 +530,7 @@ class NetworkController {
 		return ressonacia
     }
     
-    saidaDiagnostico(pesoB, entrada, saidaDesejada, novoYbd, wbd, nmroLinhasMatAtvdadeD, nmroColunasMatAtvdadeD){
+    saidaDiagnostico(pesoB, entrada, saidaDesejada, novoYbd, wbd, nmroLinhasMatAtvdadeD){
     
         //pega B sem complemento
         let tamanho = pesoB[0].length / 2
@@ -829,7 +829,7 @@ class NetworkController {
         //Verifica ressonância 
         //let ressonacia = this.verificaRessonancia(this._wBD, wOutput, rowsOutput, colsOutput)
 
-        let saida = this.saidaDiagnostico(this._wOutput, this._complementA, this._complementB, this._ybd, this._wBD, rowsInputD, colsInputD)
+        let saida = this.saidaDiagnostico(this._wOutput, this._complementA, this._complementB, this._ybd, this._wBD, rowsInputD)
 
         console.log('\n')
         console.log("_______________ SAÍDA D: _______________")

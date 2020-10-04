@@ -559,11 +559,9 @@ class NetworkController {
 		
 		const rowsOutput = this._complementB.length
 		const colsOutput = this._complementB[0].length
-		
+        const colsYb     = this._complementB.length 
+        
         const output = this._complementB
-        const colsYBOutput = this._complementB[0].length
-
-        const colsInput = this._complementA[0].length
 
         for (let i = 0; i < rowsOutput; i++) {
 
@@ -571,30 +569,30 @@ class NetworkController {
 
             //Cria categorias
 			let Tb = this.criaCategorias(output, wB, i, rowsOutput, colsOutput)
-            console.log("Categorias B criadas: ")
+            console.log("Categorias B (" + i + ") criadas:")
             console.log(Tb)
 
 			//Retorna maior categoria
 			this._K = this.retornaCategoriaVencedora(Tb)
-			console.log("Categoria vencedora " + i + ": " + this._K)
+			console.log("Categoria vencedora (" + i + "): " + this._K)
 
 			//Envia valor de K para o Art A
 			this._posiK[i] = this._K
 
             //Teste de vigilancia
 			let tVigilanciaB = this.realizaTesteDeVigilancia(output, wB, i, this._K, rowsOutput, colsOutput)
-            console.log("Teste de vigilancia B " + i + ": " + tVigilanciaB)
+            console.log("Teste de vigilancia B (" + i + "): " + tVigilanciaB)
 
             while (tVigilanciaB[i] <= this._pB) {
 
                 //Recria categorias
                 Tb[this._K] = 0
 				this.valueK = this.retornaCategoriaVencedora(Tb)
-				console.log("Nova categoria vencedora B " + i + ": " + this._K)
+				console.log("Nova categoria vencedora B (" + i + "): " + this._K)
 
                 //Vigilancia final
 				tVigilanciaB = this.realizaTesteDeVigilancia(output, wB, i, this._K, rowsOutput, colsOutput)
-                console.log("Novo teste de vigilancia " + i + ": " + tVigilanciaB)
+                console.log("Novo teste de vigilancia (" + i + "): " + tVigilanciaB)
 
             }//Fim While
 
@@ -607,7 +605,7 @@ class NetworkController {
             //Matriz de Atividades B
 			let ybAux = this.criaMatrizDeAtividades(this._yb, this._K, i)
 
-			for (let j = 0; j < colsInput; j++) {
+			for (let j = 0; j < colsYb; j++) {
                 this._yb[i][j] = ybAux[i][j]
             }
 
@@ -629,7 +627,9 @@ class NetworkController {
 		console.log("_______________ ART A _______________")
 
 		const rowsInput = this._complementA.length
-		const colsInput = this._complementA[0].length
+        const colsInput = this._complementA[0].length
+        
+        const colsYa    = this._complementA.length
 
         const input = this._complementA
         
@@ -645,12 +645,12 @@ class NetworkController {
 
             //Categorias
 			let Ta = this.criaCategorias(input, wA, i, rowsInput, colsInput)
-            console.log("Categorias criadas A: ")
+            console.log("Categorias A (" + i + ") criadas:")
             console.log(Ta)
 
             //Encontra maior categoria
 			let J = this.retornaCategoriaVencedora(Ta)
-            console.log("Categoria vencedora A " + i + ": " + J)
+            console.log("Categoria vencedora A (" + i + "): " + J)
 
               //Match tracking
 			let mtAux = this.criaMatrizMatchTracking(this._yb, wAB, J, i, rowsWAB, colsWAB)
@@ -663,11 +663,11 @@ class NetworkController {
             }
 
 			let validaMatch = this.realizaMatchTracking(this._yb, wAB, i, J, rowsWAB, colsWAB)
-            console.log("Match tracking " + i + ": " + validaMatch)
+            console.log("Match tracking (" + i + "): " + validaMatch)
 
             //Teste de vigilancia
 			let tVigilanciaA = this.realizaTesteDeVigilancia(input, wA, i, J, rowsInput, colsInput)
-            console.log("Teste de vigilancia A " + i + ": " + tVigilanciaA)
+            console.log("Teste de vigilancia A (" + i + "): " + tVigilanciaA)
 
             //Teste de vigilancia auxiliar para atualizar o peso
             let andA = this.realizaAndMinimo(input, wA, i, J, rowsInput, colsInput)
@@ -676,22 +676,20 @@ class NetworkController {
             while (validaMatch[i] <= this._pAB) {
 
                 //Adaptação 
-                let soma = 0
+                let soma = 0, somaVig = 0
+
                 soma = this.somaColunas(i, this._complementA, colsInput)
-
-                let somaVig = 0
                 somaVig = this.somaColunas(i, andA, colsInput)
-
                 this._pA = (somaVig / soma) + this._epsilon
 
                 //Categorias
                 Ta[J] = 0
 				J = this.retornaCategoriaVencedora(Ta)
-                console.log("Nova categoria vencedora A " + i + ": " + J)
+                console.log("Nova categoria vencedora A (" + i + "): " + J)
 
                 //Teste de vigilancia
 				tVigilanciaA = this.realizaTesteDeVigilancia(input, wA, i, J, rowsInput, colsInput)
-                console.log("Novo teste de vigilancia A " + i + ": " + tVigilanciaA)
+                console.log("Novo teste de vigilancia A (" + i + "): " + tVigilanciaA)
 
                 //Valida Vigilancia
                 while (tVigilanciaA[i] <= this._pA) {
@@ -699,11 +697,11 @@ class NetworkController {
                     //Recria categorias
                     Ta[J] = 0
 					J = this.retornaCategoriaVencedora(Ta)
-                    console.log("Nova categoria vencedora A " + i + ": " + J)
+                    console.log("Nova categoria vencedora A (" + i + "): " + J)
 
                     //Teste Vigilancia
 					tVigilanciaA = this.realizaTesteDeVigilancia(input, wA, i, J, rowsInput, colsInput)
-                    console.log("Valida teste de vigilancia A" + i + ": " + tVigilanciaA)
+                    console.log("Valida teste de vigilancia A (" + i + "): " + tVigilanciaA)
 
                 }//Fim While Vigilancia
 
@@ -717,7 +715,7 @@ class NetworkController {
                 }
 
 				validaMatch = this.realizaMatchTracking(this._yb, wAB, i, J, rowsWAB, colsWAB)
-                console.log("Valida match tracking " + i + ": " + validaMatch)
+                console.log("Valida match tracking (" + i + "): " + validaMatch)
 
             }//Fim do while Match
 
@@ -727,7 +725,7 @@ class NetworkController {
             //Matriz de atividades A
 			let yaAux = this.criaMatrizDeAtividades(this._ya, J, i)
 
-			for (let j = 0; j < colsInput; j++) {
+			for (let j = 0; j < colsYa; j++) {
                 this._ya[i][j] = yaAux[i][j]
             }
 
@@ -740,13 +738,13 @@ class NetworkController {
 
         console.log('\n')
         console.log("_______________ SAÍDA A: _______________")
-        console.log("Entrada A: ")
+        console.log("Entrada: ")
         console.log(this._complementA)
         console.log("Match Tracking:")
         console.log(this._mt)
         console.log("WAB Atualizado: ")
         console.log(this._wAB)
-        console.log("Matriz de Atividades A:")
+        console.log("Matriz de Atividades:")
         console.log(this._ya)
         console.log('\n')
 
@@ -774,16 +772,16 @@ class NetworkController {
             
             //Categorias
             let Td = this.criaCategorias(inputD, wA, i, rowsInputD, colsInputD)
-            console.log("Categorias criadas D: ")
+            console.log("Categorias D (" + i + ") criadas:")
             console.log(Td)
 
             //Encontra categoria vencedora
 			let D = this.retornaCategoriaVencedora(Td)
-            console.log("Categoria vencedora D " + i + ": " + D)
+            console.log("Categoria vencedora D (" + i + "): " + D)
 
             //Realiza Vigilancia
             let tVigilanciaD = this.realizaTesteDeVigilancia(inputD, wA, i, D, rowsInputD, colsInputD)
-            console.log("Teste de vigilancia D " + i + ": " + tVigilanciaD)
+            console.log("Teste de vigilancia D (" + i + "): " + tVigilanciaD)
 
             //Valida Vigilancia
             while (tVigilanciaD[i] <= this._pA) {
@@ -791,10 +789,10 @@ class NetworkController {
                 //Recria categorias
                 Td[D] = 0
 				D = this.retornaCategoriaVencedora(Td)
-                console.log("Nova categoria vencedora D" + i + ": " + D)
+                console.log("Nova categoria vencedora D (" + i + "): " + D)
 
                 tVigilanciaD = this.realizaTesteDeVigilancia(inputD, wA, i, D, rowsInputD, colsInputD)
-                console.log("Valida teste de vigilancia D" + i + ": " + tVigilanciaD)
+                console.log("Valida teste de vigilancia D (" + i + "): " + tVigilanciaD)
 
             }//Fim While Vigilancia
 
@@ -823,9 +821,6 @@ class NetworkController {
 
         //Verifica ressonância (Categorias validadas)
         //let ressonacia = this.verificaRessonancia(this._wBD, wOutput, rowsInputD, colsOutput)
-
-        //Verifica ressonância 
-        //let ressonacia = this.verificaRessonancia(this._wBD, wOutput, rowsOutput, colsOutput)
 
         let saida = this.saidaDiagnostico(this._wOutput, this._complementA, this._complementB, this._ybd, this._wBD, rowsInputD)
 

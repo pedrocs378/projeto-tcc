@@ -44,7 +44,7 @@ var beta = 1
 var fase = 0
 var epsilon = 0.01
 
-																			
+	/*																		
  var b = [
 	[
 	   0.851,  0.761, 0.1601,  0.947,  0.654,  0.258, 0.1166,  0.743,
@@ -85,18 +85,20 @@ var epsilon = 0.01
 	   0.661,   0.54,  0.854,  0.872, 0.1033,  0.618,  0.886, 0.1295,
 	  0.1183, 0.1398,  0.831,  0.415,  0.876,  0.742,  0.118,  0.126,
 	   0.727, 0.1491,  0.635,  0.411, 0.1051, 0.1154,  0.941,  0.855]
-  ]
+  ]*/
 
 /*
 //var b = [ [0.5, 0.6], [0.9, 0.7], [0.1, 0.3], [0.896, 0.150] ]
 //var b = [[0.5, 0.6, 0.7], [0.5, 0.6, 0.7], [0.5, 0.6, 0.7], [0.5, 0.6, 0.7]]
-var b = [1, 0, 1], linhaB = 0, colunaB = 3
+//var b = [1, 0, 1], linhaB = 0, colunaB = 3
+var b = [ [1,1,1,1], [1,1,1,1], [1,1,1,1], [1,1,1,1] ]
+var linhaB = b.length, colunaB = b[0].length
 
 normalizaDados(b, linhaB, colunaB)
 var complementoB = realizaComplemento(b, linhaB,colunaB)
 
 var nmroLinhasB = complementoB.length, nmroColunasB = complementoB[0].length
-var nmroLinhasMatAtvdadeB = complementoB.length, nmroColunasMatAtvdadeB = complementoB[0].length + 1
+var nmroLinhasMatAtvdadeB = complementoB.length, nmroColunasMatAtvdadeB = complementoB.length 
 
 var wb = inicializaValores(complementoB.length, complementoB[0].length, 1) 
 var yb = inicializaValores(nmroLinhasMatAtvdadeB, nmroColunasMatAtvdadeB, 0)
@@ -107,14 +109,14 @@ artB(complementoB, wb, pb, beta, nmroLinhasB, nmroColunasB)
 
 //_______________ Art A _______________//
 
-//var a2 = [ [ 0.865 ], [ 0.746 ], [ 0.952 ] ]
+//var a = [ [ 0.865 ], [ 0.746 ], [ 0.952 ] ]
 
-var a = [[1, 0], [0, 1], [0.5, 0.5]] 
+var a = [ [1, 0], [0, 1], [0.5, 0.5], [0.4, 0.4] ] 
 
 normalizaDados(a, a.length, a[0].length)
 var complementoA = realizaComplemento(a, a.length, a[0].length)
 
-var nmroLinhasMatAtvdadeA = complementoA.length, nmroColunasMatAtvdadeA = complementoA[0].length - 1
+var nmroLinhasMatAtvdadeA = complementoA.length, nmroColunasMatAtvdadeA = complementoA[0].length
 var nmroLinhasWAB = complementoA.length, nmroColunasWAB = complementoB.length
 var nmroLinhasA = complementoA.length, nmroColunasA = complementoA[0].length
 
@@ -128,12 +130,12 @@ artA(complementoA, wa, pa, beta, nmroLinhasA, nmroColunasA)
 
 //_______________ Dados diagnóstico _______________//
 
-var d = [[1, 0], [0, 1], [0.5, 0.5]] 
+var d = [ [1, 0], [0, 1], [0.5, 0.5], [0.4, 0.4] ] 
 
 normalizaDados(d, d.length, d[0].length)
 var complementoD = realizaComplemento(d, d.length, d[0].length)
 
-var nmroLinhasMatAtvdadeD = complementoD.length, nmroColunasMatAtvdadeD = complementoD[0].length - 1
+var nmroLinhasMatAtvdadeD = complementoD.length, nmroColunasMatAtvdadeD = complementoD.length 
 var nmroLinhasD = complementoD.length, nmroColunasD = complementoD[0].length
 
 var yd = inicializaValores(nmroLinhasMatAtvdadeD, nmroColunasMatAtvdadeD, 0) //Matriz de atividades D
@@ -143,8 +145,9 @@ var fim = inicializaValores(0, nmroLinhasB, 0) //Vetor auxiliar de conhecimento
 var D 
 
 Diagnostico(complementoD, wa, pa, nmroLinhasD, nmroColunasD)
-
 */
+
+
 //_______________ FUNÇÕES _______________//
 
 function inicializaValores(nmroLinhas, nmroColunas, valor){
@@ -513,37 +516,24 @@ function verificaRessonancia(diagnostico, peso, nmroLinhas, nmroColunas){
 	return ressonacia
 }
 
-function criaMatrizInterArtAux(matrizInter, matrizAtividadeD, nmroLinhasMatAtvdadeD, nmroColunasMatAtvdadeD){
-
-	let novoYbd = inicializaValores(nmroLinhasMatAtvdadeD, nmroColunasMatAtvdadeD, 0)
-
-	for(let i=0; i<nmroLinhasMatAtvdadeD; i++){
-		for(let j=0; j<nmroColunasMatAtvdadeD; j++){
-			novoYbd[i][j] = matrizInter[i][j] * matrizAtividadeD[i][j]
-		}
-	}
-
-	return novoYbd
-}
-
-function saidaDiagnostico(pesoB, entrada, saidaDesejada, novoYbd, wbd, nmroLinhasMatAtvdadeD, nmroColunasMatAtvdadeD, nmroColunasB){
-
+function saidaDiagnostico(pesoB, entrada, saidaDesejada, yBD, wbd, nmroLinhasMatAtvdadeD){
+    
 	//pega B sem complemento
-	let tamanho = pesoB[0].length / 2
-	let linhasA = inicializaValores(0, entrada.length, 0)
+	let tamanho = Math.floor(pesoB[0].length / 2)
+	let linhasA = new Array(entrada.length).fill(0)
 
 	for(let i=0; i<nmroLinhasMatAtvdadeD; i++){
-		for(let j=0; j<nmroColunasMatAtvdadeD; j++){
-			if(novoYbd[i][j] === 1){
+		for (let j = 0; j < nmroLinhasMatAtvdadeD; j++){
+			if(yBD[i][j] === 1){
 				linhasA[i] = j
 			}
 		}
 	}
 
+	console.log('LINHAS:', linhasA)
+
 	for(let i=0; i<nmroLinhasMatAtvdadeD; i++){
-		for(let j=0; j<nmroColunasB/2; j++){
-			wbd[i][j] = saidaDesejada[linhasA[i]][tamanho]
-		}
+		wbd[i][0] = saidaDesejada[linhasA[i]][tamanho]         
 	}
 
 	return wbd
@@ -607,8 +597,6 @@ function artB(saidaDesejada, wb, pb, beta, nmroLinhasB, nmroColunasB){
 	console.log(wb)
 	console.log("Matriz de Atividades B:")
 	console.log(yb)
-	//console.log("Matriz de Vigilancia B:")
-	//console.log(and)
 	console.log('\n')
 
 	//return wb
@@ -717,6 +705,8 @@ function artA(entrada, wa, pa, beta, nmroLinhasA, nmroColunasA){
 
 		pa = paIni
 
+		
+
 	}//Fim for
 
 	console.log('\n')
@@ -792,11 +782,9 @@ function Diagnostico(entrada, wa, p, nmroLinhas, nmroColunas){
 	wbd = criaMatrizDeDiagnostico(wb, fim, nmroLinhasB, nmroColunasB)
 
 	//Verifica ressonância (Categorias validadas)
-	var ressonacia = verificaRessonancia(wbd, wb, nmroLinhasB, nmroColunasB)
+	//var ressonacia = verificaRessonancia(wbd, wb, nmroLinhasB, nmroColunasB)
 
-	var novoYbd = criaMatrizInterArtAux(wab, yd, nmroLinhasWAB, nmroColunasWAB)	
-
-	var saida = saidaDiagnostico(wb, complementoA, complementoB, novoYbd, wbd, nmroLinhas, nmroColunasB)
+	var saida = saidaDiagnostico(wb, complementoA, complementoB, ybd, wbd, nmroLinhasB, nmroColunasB)
 	
 	console.log('\n')
 	console.log("_______________ SAÍDA D: _______________")
@@ -808,10 +796,8 @@ function Diagnostico(entrada, wa, p, nmroLinhas, nmroColunas){
 	console.log(ybd)
 	console.log("Matriz de diagnóstico D:")
 	console.log(wbd)
-	console.log("Categoria(s) com ressonância:")
-	console.log(ressonacia)
-	console.log("YBD:")
-	console.log(novoYbd)
+	/*console.log("Categoria(s) com ressonância:")
+	console.log(ressonacia)*/
 	console.log("Saída do diagnóstico:")
 	console.log(saida)
-}
+} 

@@ -13,9 +13,9 @@ class NetworkController {
         this._wAB = [] //Linhas A X Linhas B
         this._posiK = [] //Linhas B
         this._K = 0
-		this._ya = [] 
-		this._yb = []
-		this._yd = [] 
+		this._ya = [] //Linhas A X Linhas A
+		this._yb = [] //Linhas B X Linhas B
+		this._yd = [] //Linhas D X Linhas D
 		this._mt = [] //(WAB)
 		this._ybd = [] //(WAB)
 		this._wBD = [] //Linhas de B X Colunas B (sem comple)
@@ -36,17 +36,17 @@ class NetworkController {
 
         this._ya = new Array(rowsInput).fill(undefined)
         for (let i = 0; i < rowsInput; i++) {
-            this._ya[i] = new Array(colsInput).fill(0)
+            this._ya[i] = new Array(rowsInput).fill(0)
         }
 
-        this._yb = new Array(rowsInput).fill(undefined)
-        for (let i = 0; i < rowsInput; i++) {
+        this._yb = new Array(rowsOutput).fill(undefined)
+        for (let i = 0; i < rowsOutput; i++) {
             this._yb[i] = new Array(rowsOutput).fill(0)
         }
 
         this._yd = new Array(rowsInput).fill(undefined)
         for (let i = 0; i < rowsInput; i++) {
-            this._yd[i] = new Array(rowsOutput).fill(0)
+            this._yd[i] = new Array(rowsInput).fill(0)
         }
 
         this._ybd = new Array(rowsInput).fill(undefined)

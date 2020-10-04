@@ -630,8 +630,7 @@ class NetworkController {
         const colsInput = this._complementA[0].length
         
         const colsYa    = this._complementA.length
-
-        const input = this._complementA
+        const input     = this._complementA
         
         let paIni = this._pA
 		
@@ -799,14 +798,14 @@ class NetworkController {
             //Matriz de atividades (Ressonância) D
 			let ydAux = this.criaMatrizDeAtividades(this._yd, D, i)
 
-			for (let j = 0; j < colsInputD; j++) {
+			for (let j = 0; j < rowsInputD; j++) {
                 this._yd[i][j] = ydAux[i][j]
             }
 
             //Matriz de Atividades inter art 
             let ybdAux = this.criaMatrizDeAtividadesInterArt(this._yd, this._wAB, i, rowsWAB, colsWAB) 
 
-			for (let j = 0; j < colsInputD; j++) {
+			for (let j = 0; j < rowsInputD; j++) {
                 this._ybd[i][j] = ybdAux[i][j]
             }
 

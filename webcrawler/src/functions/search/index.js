@@ -191,17 +191,11 @@ async function executeNetwork (datas, textSplited) {
      
     })
 
-    Network
-        .create({
-            input: dataText,
-            dataSearch
-        })
-        .then(dataNetwork => {
-            console.log(dataNetwork)
-        })
-        .catch(err => {
-            console.log(err)
-        })
+    await Network.create({
+        input: dataText,
+        dataSearch
+    })
+
 
     console.log('TERMOS DIGITADOS: \n', dataText)
 

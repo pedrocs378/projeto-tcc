@@ -490,7 +490,7 @@ function verificaConhecimento(entrada, linha, nmroColunas){
 
 function criaMatrizDeDiagnostico(peso, conhecimento, nmroLinhasB, nmroColunasB){
 
-	let mtDiagnostico = inicializaValores(nmroLinhasB, nmroColunasB/2, 0)
+	let mtDiagnostico = inicializaValores(nmroLinhasB, nmroColunasB/2, 0) //Linhas de B sem complemento
 
 	for(let i=0; i<nmroLinhasB; i++){
 		for(let j=0; j<nmroColunasB/2; j++){

@@ -504,10 +504,10 @@ class NetworkController {
 
 	criaMatrizDeDiagnostico(peso, conhecimento, nmroLinhas, nmroColunas) {
 
-		let mtDiagnostico = this.inicializaValores(nmroLinhas, nmroColunas, 0)
+		let mtDiagnostico = this.inicializaValores(nmroLinhas, nmroColunas/2, 0)
 
 		for (let i = 0; i < nmroLinhas; i++) {
-			for (let j = 0; j < nmroColunas; j++) {
+			for (let j = 0; j < nmroColunas/2; j++) {
 				mtDiagnostico[i][j] = peso[conhecimento[i]][j]
 			}
 		}

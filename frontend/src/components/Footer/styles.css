@@ -7,6 +7,6 @@
     background-color: #e0e0e0;
 }
 
-.footer-content span {
+.footer-content > span {
     margin-right: 25px;
 }

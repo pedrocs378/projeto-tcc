@@ -1,22 +1,14 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 
 import SearchBar from '../../components/SearchBar'
 import Footer from '../../components/Footer'
-
-import api from '../../services/api'
 
 import './styles.css'
 
 export default function Search() {
     const [text, setText] = useState("")
     const history = useHistory()
-
-    /*	
-    useEffect(() => {
-        api.post('/crawler')
-    }, [])
-    */
 
     function handleSearch() {
         if (text) {

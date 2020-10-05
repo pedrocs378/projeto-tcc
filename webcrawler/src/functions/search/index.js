@@ -14,6 +14,7 @@ const {
 } = require('../../configs/networkConfig')
 const convertNumber = require('../../utils/convertForZeroToOne')
 const convertStringToNumber = require('../../utils/convertStringToNumber')
+const Network = require('../../models/Network')
 
 /**
  * @param {Array} valueTags
@@ -131,6 +132,8 @@ async function executeNetwork (datas, textSplited) {
     const valuesText = dataText.map(data => data.value)
     const valuesNormalized = convertNumber(valuesText)
 
+    const dataSearch = []
+
     // NETWORK
  
     valueTags.forEach((values, index) => {
@@ -180,7 +183,25 @@ async function executeNetwork (datas, textSplited) {
         neuralNetwork.complementD = neuralNetwork.complementA
         let outputDiag = neuralNetwork.diagnostico()
         console.log('OUTPUT DIAGNOSTIC:\n', outputDiag)
+
+        dataSearch.push({
+            pageId: datas[index]._id,
+            wBD: outputDiag
+        })
+     
     })
+
+    Network
+        .create({
+            input: dataText,
+            dataSearch
+        })
+        .then(dataNetwork => {
+            console.log(dataNetwork)
+        })
+        .catch(err => {
+            console.log(err)
+        })
 
     console.log('TERMOS DIGITADOS: \n', dataText)
 

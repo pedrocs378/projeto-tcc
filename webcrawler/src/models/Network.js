@@ -1,18 +1,23 @@
 const { Schema, model } = require('mongoose')
 
+const ObjectId = Schema.Types.ObjectId
+
 const NetworkSchema = new Schema({
-    url: {
-        type: String,
+    input: {
+        type: Array,
         required: true
     },
-    output: [{
-        type: Array,
-        required: true
-    }],
-    weight: [{
-        type: Array,
-        required: true
-    }],
+    dataSearch: [{
+        pageId: {
+            type: ObjectId,
+            required: true
+        },
+        wBD: {
+            type: Array,
+            required: true
+        },
+    }]
+    
 })
 
 module.exports = model('Network', NetworkSchema)

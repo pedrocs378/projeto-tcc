@@ -530,14 +530,14 @@ class NetworkController {
 		return ressonacia
     }
     
-    saidaDiagnostico(pesoB, entrada, saidaDesejada, yBD, wbd, nmroLinhasMatAtvdadeD){
+    saidaDiagnostico(pesoB, entrada, saidaDesejada, yBD, wbd, nmroLinhas){
     
         //pega B sem complemento
         let tamanho = Math.floor(pesoB[0].length / 2)
         let linhasA = new Array(entrada.length).fill(0)
     
-        for(let i=0; i<nmroLinhasMatAtvdadeD; i++){
-            for (let j = 0; j < nmroLinhasMatAtvdadeD; j++){
+        for(let i=0; i<nmroLinhas; i++){
+            for (let j = 0; j < nmroLinhas; j++){
                 if(yBD[i][j] === 1){
                     linhasA[i] = j
                 }
@@ -546,7 +546,7 @@ class NetworkController {
 
         console.log('LINHAS:', linhasA)
     
-        for(let i=0; i<nmroLinhasMatAtvdadeD; i++){
+        for(let i=0; i<nmroLinhas; i++){
             wbd[i][0] = saidaDesejada[linhasA[i]][tamanho]         
         }
     
@@ -782,7 +782,7 @@ class NetworkController {
             let tVigilanciaD = this.realizaTesteDeVigilancia(inputD, wA, i, D, rowsInputD, colsInputD)
             console.log("Teste de vigilancia D (" + i + "): " + tVigilanciaD)
 
-            //Valida Vigilancia
+            //Valida vigilancia
             while (tVigilanciaD[i] <= this._pA) {
 
                 //Recria categorias
@@ -818,9 +818,6 @@ class NetworkController {
         //Matriz de diagnóstico
         this._wBD = this.criaMatrizDeDiagnostico(wOutput, this._end, rowsInputD, colsOutput)
 
-        //Verifica ressonância (Categorias validadas)
-        //let ressonacia = this.verificaRessonancia(this._wBD, wOutput, rowsInputD, colsOutput)
-
         let saida = this.saidaDiagnostico(this._wOutput, this._complementA, this._complementB, this._ybd, this._wBD, rowsInputD)
 
         console.log('\n')
@@ -833,10 +830,9 @@ class NetworkController {
         console.log(this._wBD)
         console.log("YBD")
         console.log(this._ybd)
-        //console.log("Categoria(s) com ressonância:")
-        //console.log(ressonacia)
 
         return saida
+
     }
 
 

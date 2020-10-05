@@ -11,6 +11,7 @@ import './styles.css'
 import Results from '../../components/Results/'
 import SearchBar from '../../components/SearchBar'
 import SearchNotFound from '../../components/SearchNotFound'
+import Footer from '../../components/Footer'
 
 import api from '../../services/api'
 
@@ -56,41 +57,43 @@ export default function SearchResults(props) {
                     : null 
                 } 
             </header>  
-            { loaded ? 
-                <main className="resultsbar">
-                    {
-                        results.length > 0
-                            ? <Results page={page} pageResults={results.dataSearched} time={time/1000} />
-                            : <SearchNotFound
-                                value={props.match.params.query.includes('+') ? props.match.params.query.split('+').join(' ') : props.match.params.query}
-                            />
-                    }
-                    { 
-                        results.length > 0 
-                            ? <MemoryRouter initialEntries={['/search']} initialIndex={0}>
-                                <Route>
-                                    <Pagination
-                                        className="pagination"
-                                        count={results.totalPages}
-                                        page={page}
-                                        onChange={(e, page) => setPage(page)}
-                                        color="primary"
-                                        renderItem={(item) => (
-                                            <PaginationItem
-                                                component={Link}
-                                                to={'/search/' + props.match.params.query.split(' ').join('+') + '/' + item.page}
-                                                {...item}
-                                            />
-                                        )}
-                                    />
-                                </Route>
-                            </MemoryRouter> 
-                            : <Pagination style={{ display: 'none' }} />
-                    }
-                </main> 
-                : null
-            }
-            
+            <main className="resultsbar">
+                { loaded ? 
+                    <div>
+                        {
+                            results.length > 0
+                                ? <Results page={page} pageResults={results.dataSearched} time={time/1000} />
+                                : <SearchNotFound
+                                    value={props.match.params.query.includes('+') ? props.match.params.query.split('+').join(' ') : props.match.params.query}
+                                />
+                        }
+                        { 
+                            results.length > 0 
+                                ? <MemoryRouter initialEntries={['/search']} initialIndex={0}>
+                                    <Route>
+                                        <Pagination
+                                            className="pagination"
+                                            count={results.totalPages}
+                                            page={page}
+                                            onChange={(e, page) => setPage(page)}
+                                            color="primary"
+                                            renderItem={(item) => (
+                                                <PaginationItem
+                                                    component={Link}
+                                                    to={'/search/' + props.match.params.query.split(' ').join('+') + '/' + item.page}
+                                                    {...item}
+                                                />
+                                            )}
+                                        />
+                                    </Route>
+                                </MemoryRouter> 
+                                : <Pagination style={{ display: 'none' }} />
+                        }
+                    </div> 
+                    : <div></div>
+                }
+            </main>
+            <Footer />
         </div>
     )
 }

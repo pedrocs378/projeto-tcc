@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 
-import './styles.css'
-
 import SearchBar from '../../components/SearchBar'
+import Footer from '../../components/Footer'
+
 import api from '../../services/api'
+
+import './styles.css'
 
 export default function Search() {
     const [text, setText] = useState("")
@@ -34,6 +36,7 @@ export default function Search() {
                 <SearchBar hiddenButton onChange={handleSetText} />
                 <input type="button" name="btnK" className="button" value="Pesquisar" onClick={handleSearch} />
             </main>
+            <Footer />
         </div>
     )
 }

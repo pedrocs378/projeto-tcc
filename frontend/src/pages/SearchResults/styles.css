@@ -27,6 +27,7 @@
 
 #results-container .resultsbar {
     margin-left: 3.5rem;
+    height: 95vh;
 }
 
 #results-container .pagination {
@@ -37,7 +38,7 @@
 }
 
 #results-container .loading {
-    margin-left: 1rem;
+    margin-left: 25px;
 }
 
 @media (min-width: 768px) {

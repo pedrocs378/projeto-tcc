@@ -19,7 +19,7 @@ const getStopwords = require('../../utils/getStopwords')
 /**
  * @param {Array} valueTags
  */
-function analyseText(textSplited, textSearched, datas) {
+async function analyseText(textSplited, textSearched, datas) {
 
     const stopwords = getStopwords()
 

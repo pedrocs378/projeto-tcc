@@ -1,6 +1,7 @@
 const NetworkController = require('../neuralNetwork')
 const Url = require('../../models/Url')
 const Network = require('../../models/Network')
+const Stopword = require('../../models/Stopword')
 
 const { 
     alpha, 
@@ -19,9 +20,8 @@ const getStopwords = require('../../utils/getStopwords')
 /**
  * @param {Array} valueTags
  */
-async function analyseText(textSplited, textSearched, datas) {
+function analyseText(textSplited, textSearched, datas, stopwords) {
 
-    const stopwords = getStopwords()
 
     const dataText = textSplited
         .map((tag) => {
@@ -41,21 +41,23 @@ async function analyseText(textSplited, textSearched, datas) {
         .map(data => data.name)
         .join(' ')
 
-    const existsInput = await Network.findOne({ input: inputText })
+    Network
+        .findOne({ input: inputText })
+        .then(input => {
+            // if (input) {
+
+            //     const dataSearch = input.dataSearch
+
+            //     dataSearch.forEach(data => {
+            //         console.log(data.pageId)
+            //     })
+            // }
+        })
 
     let page = 1
     let cont = 0
 
     const dataSearched = []
-
-    if (existsInput) {
-
-        const dataSearch = existsInput.dataSearch
-
-        dataSearch.forEach(data => {
-            console.log(data.pageId)
-        })
-    }
 
     if (textSplited.length > 1) {
 
@@ -137,11 +139,19 @@ async function executeNetwork(datas, textSplited) {
         .map(tag => tag.tagsWithoutStopwords)
         .map((tag) => { return tag.map(({ value }) => value) })
 
-    const stopwords = getStopwords()
+    const stopwords = await Stopword.find({})
+
+    const stopwordsParsed = stopwords
+        .map(({ word }) => {
+            return word
+                .normalize('NFD')
+                .replace(/([\u0300-\u036f]|[^0-9a-zA-Z\s])/g, '')
+                .toLowerCase()
+        })
 
     const dataText = textSplited
         .map((tag) => {
-            if (!(stopwords.includes(tag))) {
+            if (!(stopwordsParsed.includes(tag))) {
                 return {
                     name: tag,
                     value: convertStringToNumber(tag)

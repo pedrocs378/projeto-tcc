@@ -4,7 +4,7 @@ const ObjectId = Schema.Types.ObjectId
 
 const NetworkSchema = new Schema({
     input: {
-        type: Array,
+        type: String,
         required: true
     },
     dataSearch: [{

@@ -530,10 +530,12 @@ class NetworkController {
 		return ressonacia
     }
     
-    saidaDiagnostico(pesoB, entrada, saidaDesejada, yBD, wbd, nmroLinhas){
+    saidaDiagnostico(entrada, saidaDesejada, yBD, wbd, nmroLinhas){
+
+        const colsOutput = this._output[0].length
     
         //pega B sem complemento
-        let tamanho = Math.floor(pesoB[0].length / 2)
+        let tamanho = Math.floor(this._wOutput[0].length / 2)
         let linhasA = new Array(entrada.length).fill(0)
     
         for(let i=0; i<nmroLinhas; i++){
@@ -547,7 +549,12 @@ class NetworkController {
         console.log('LINHAS:', linhasA)
     
         for(let i=0; i<nmroLinhas; i++){
-            wbd[i][0] = saidaDesejada[linhasA[i]][tamanho]         
+            for (let j = 0; j < colsOutput; j++) {
+
+                if (saidaDesejada[linhasA[i]][j] == this._input[linhasA[i]][0]) {
+                    wbd[linhasA[i]][j] = saidaDesejada[linhasA[i]][j]         
+                }
+            }
         }
     
         return wbd
@@ -818,7 +825,7 @@ class NetworkController {
         //Matriz de diagnóstico
         this._wBD = this.criaMatrizDeDiagnostico(wOutput, this._end, rowsInputD, colsOutput)
 
-        let saida = this.saidaDiagnostico(this._wOutput, this._complementA, this._complementB, this._ybd, this._wBD, rowsInputD)
+        let saida = this.saidaDiagnostico(this._complementA, this._output, this._ybd, this._wBD, rowsInputD)
 
         console.log('\n')
         console.log("_______________ SAÍDA D: _______________")

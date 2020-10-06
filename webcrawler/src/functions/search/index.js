@@ -1,6 +1,6 @@
 const NetworkController = require('../neuralNetwork')
 const Url = require('../../models/Url')
-const Stopword = require('../../models/Stopword')
+const Network = require('../../models/Network')
 
 const { 
     alpha, 
@@ -14,17 +14,48 @@ const {
 } = require('../../configs/networkConfig')
 const convertNumber = require('../../utils/convertForZeroToOne')
 const convertStringToNumber = require('../../utils/convertStringToNumber')
-const Network = require('../../models/Network')
+const getStopwords = require('../../utils/getStopwords')
 
 /**
  * @param {Array} valueTags
  */
 function analyseText(textSplited, textSearched, datas) {
 
+    const stopwords = getStopwords()
+
+    const dataText = textSplited
+        .map((tag) => {
+            if (!(stopwords.includes(tag))) {
+                return {
+                    name: tag,
+                    value: convertStringToNumber(tag)
+                }
+            } else {
+                return null
+            }
+        })
+        .filter(el =>
+            (el != null) ? (el.name.trim() != "") ? true : false : false)
+
+    const inputText = dataText
+        .map(data => data.name)
+        .join(' ')
+
+    const existsInput = await Network.findOne({ input: inputText })
+
     let page = 1
     let cont = 0
 
     const dataSearched = []
+
+    if (existsInput) {
+
+        const dataSearch = existsInput.dataSearch
+
+        dataSearch.forEach(data => {
+            console.log(data.pageId)
+        })
+    }
 
     if (textSplited.length > 1) {
 
@@ -99,25 +130,18 @@ function analyseText(textSplited, textSearched, datas) {
 
 }
 
-async function executeNetwork (datas, textSplited) {
+async function executeNetwork(datas, textSplited) {
 
     const tagsWithoutStopwords = await Url.find({}, '-_id tagsWithoutStopwords.value')
     const valueTags = tagsWithoutStopwords
         .map(tag => tag.tagsWithoutStopwords)
         .map((tag) => { return tag.map(({ value }) => value) })
 
-    const stopwords = await Stopword.find({})
-    const stopwordsParsed = stopwords
-        .map(({ word }) => {
-            return word
-                .normalize('NFD')
-                .replace(/([\u0300-\u036f]|[^0-9a-zA-Z\s])/g, '')
-                .toLowerCase()
-        })
+    const stopwords = getStopwords()
 
     const dataText = textSplited
         .map((tag) => {
-            if (!(stopwordsParsed.includes(tag))) {
+            if (!(stopwords.includes(tag))) {
                 return {
                     name: tag,
                     value: convertStringToNumber(tag)
@@ -182,19 +206,44 @@ async function executeNetwork (datas, textSplited) {
         // DIAGNOSTIC
         neuralNetwork.complementD = neuralNetwork.complementA
         let outputDiag = neuralNetwork.diagnostico()
-        console.log('OUTPUT DIAGNOSTIC:\n', outputDiag)
 
-        dataSearch.push({
-            pageId: datas[index]._id,
-            wBD: outputDiag
+        console.log('#########################################################')
+        console.log('VALORES ENCONTRADOS')
+        console.log('#########################################################')
+
+        let found = false
+
+        for (let i = 0; i < neuralNetwork.getInputValues.length; i++) {
+            for (let j = 0; j < outputDiag[0].length; j++) {
+                if (neuralNetwork.getInputValues[i][0] === outputDiag[i][j]) {
+                    console.log(`VALOR ${outputDiag[i][j]} ENCONTRADO:\n`, outputDiag)
+
+                    found = true
+                    dataSearch.push({
+                        pageId: datas[index]._id,
+                        wBD: outputDiag
+                    })
+
+                    break
+                }
+            }
+
+            if (found) {
+                break
+            }
+        }  
+    })
+
+    const inputText = dataText
+        .map(data => data.name)
+        .join(' ')
+
+    Network
+        .create({
+            input: inputText,
+            dataSearch
         })
-     
-    })
-
-    await Network.create({
-        input: dataText,
-        dataSearch
-    })
+        .then(() => console.log(`${dataSearch.length} DADOS INSERIDOS`))
 
 
     console.log('TERMOS DIGITADOS: \n', dataText)

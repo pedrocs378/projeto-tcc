@@ -1,6 +1,6 @@
 const Stopword = require("../models/Stopword")
 
-module.exports = function() {
+module.exports = async function() {
     const stopwords = await Stopword.find({})
     const stopwordsParsed = stopwords
         .map(({ word }) => {

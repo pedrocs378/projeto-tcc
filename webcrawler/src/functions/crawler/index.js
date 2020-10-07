@@ -4,7 +4,7 @@ const Stopword = require('../../models/Stopword')
 const rp = require('request-promise')
 const cheerio = require('cheerio')
 
-const convertString = require('../../utils/convertStringToNumber')
+const { convertStringToNumber, normalizeWord } = require('../../utils/wordUtils')
 const filterByProperty = require('../../utils/filterByProperty')
 
 module.exports = async function handleRunCrawler(page, callback) {
@@ -44,10 +44,7 @@ async function getDataInfoAndPushToArray(itemData, cb) {
     console.log('getDataInfoAndPushToArray - FUNCAO INICIADA')
     const stopwords = await Stopword.find({})
     const stopwordsParsed = stopwords.map(({ word }) => {
-        return word
-            .normalize('NFD')
-            .replace(/([\u0300-\u036f]|[^0-9a-zA-Z\s])/g, '')
-            .toLowerCase()
+        return normalizeWord(word)
     })
 
     let i = 0
@@ -67,10 +64,7 @@ async function getDataInfoAndPushToArray(itemData, cb) {
                                 .replace(/([\n{2,}]|[\t{2,}]|[→{1,}])/g, ' ')
                                 .replace(/\s{2,}/g, ' ')
                             // const textInfo = $('.item-page').find('p').text()
-                            const textInfoParsed = textInfo
-                                .normalize('NFD')
-                                .replace(/([\u0300-\u036f]|[^0-9a-zA-Z\s])/g, '')
-                                .toLowerCase()
+                            const textInfoParsed = normalizeWord(textInfo)
                             
                             const textInfoTags = textInfoParsed.split(' ')
 
@@ -78,7 +72,7 @@ async function getDataInfoAndPushToArray(itemData, cb) {
                                 if (!(stopwordsParsed.includes(tag))) {
                                     return { 
                                         name: tag, 
-                                        value: convertString(tag)
+                                        value: convertStringToNumber(tag)
                                     }
                                 } else {
                                     return null

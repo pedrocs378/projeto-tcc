@@ -3,7 +3,6 @@ const Stopword = require('../models/Stopword')
 
 const puppeteer = require('puppeteer')
 
-const sites = require('../../sites.json')
 const handleRunCrawler = require('../functions/crawler')
 const addStopwords = require('../functions/stopwords')
 

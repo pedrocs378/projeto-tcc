@@ -14,8 +14,7 @@ const {
     phase 
 } = require('../../configs/networkConfig')
 const convertNumber = require('../../utils/convertForZeroToOne')
-const convertStringToNumber = require('../../utils/convertStringToNumber')
-const getStopwords = require('../../utils/getStopwords')
+const { convertStringToNumber, normalizeWord } = require('../../utils/wordUtils')
 
 /**
  * @param {Array} valueTags
@@ -63,10 +62,7 @@ function analyseText(textSplited, textSearched, datas, stopwords) {
 
         datas.forEach(data => {
 
-            const textInfoParsed = data.textInfo
-                .normalize('NFD')
-                .replace(/([\u0300-\u036f]|[^0-9a-zA-Z\s])/g, '')
-                .toLowerCase()
+            const textInfoParsed = normalizeWord(data.textInfo)
 
             if (textInfoParsed.includes(textSearched)) {
                 const indexTextInfo = textInfoParsed.indexOf(textSearched)
@@ -97,10 +93,7 @@ function analyseText(textSplited, textSearched, datas, stopwords) {
 
             if (tags.includes(textSearched)) {
                 const indexTag = data.tags.indexOf(textSearched)
-                const textInfoParsed = data.textInfo
-                    .normalize('NFD')
-                    .replace(/([\u0300-\u036f]|[^0-9a-zA-Z\s])/g, '')
-                    .toLowerCase()
+                const textInfoParsed = normalizeWord(data.textInfo)
                 const indexTextInfo = textInfoParsed.indexOf(textSearched)
 
                 dataSearched.push({
@@ -143,10 +136,7 @@ async function executeNetwork(datas, textSplited) {
 
     const stopwordsParsed = stopwords
         .map(({ word }) => {
-            return word
-                .normalize('NFD')
-                .replace(/([\u0300-\u036f]|[^0-9a-zA-Z\s])/g, '')
-                .toLowerCase()
+            return normalizeWord(word)
         })
 
     const dataText = textSplited

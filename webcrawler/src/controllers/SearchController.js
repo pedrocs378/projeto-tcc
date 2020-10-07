@@ -2,9 +2,7 @@ const async = require('async')
 const Url = require('../models/Url')
 const Stopword = require('../models/Stopword')
 
-const convertString = require('../utils/convertStringToNumber')
 const { analyseText, executeNetwork } = require('../functions/search')
-const Network = require('../models/Network')
 
 module.exports = {
     async search(req, res) {

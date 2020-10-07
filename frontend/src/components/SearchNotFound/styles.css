@@ -1,15 +1,15 @@
-#not-found-container {
+.warning-card {
     width: 100%;
 }
 
-#not-found-container .warning-card p {
+.warning-card p {
     display: block;
     margin: 1.6rem 0;
     font-size: medium;
     font-weight: normal;
 }
 
-#not-found-container .warning-card p em {
+.warning-card p em {
     font-weight: bold;
     font-style: normal;
 }

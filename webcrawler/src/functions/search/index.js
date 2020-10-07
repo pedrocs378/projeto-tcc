@@ -1,4 +1,5 @@
 const Network = require('../../models/Network')
+const Url = require('../../models/Url')
 
 const { convertStringToNumber, normalizeWord } = require('../../utils/wordUtils')
 
@@ -6,7 +7,6 @@ const { convertStringToNumber, normalizeWord } = require('../../utils/wordUtils'
  * @param {Array} valueTags
  */
 function analyseText(textSplited, textSearched, datas, stopwords) {
-
 
     const dataText = textSplited
         .map((tag) => {
@@ -26,88 +26,162 @@ function analyseText(textSplited, textSearched, datas, stopwords) {
         .map(data => data.name)
         .join(' ')
 
-    Network
-        .findOne({ input: inputText })
-        .then(input => {
-            // if (input) {
-
-            //     const dataSearch = input.dataSearch
-
-            //     dataSearch.forEach(data => {
-            //         console.log(data.pageId)
-            //     })
-            // }
-        })
-
-    let page = 1
+    let contPages = 1
     let cont = 0
 
     const dataSearched = []
 
-    if (textSplited.length > 1) {
+    Network
+        .findOne({ input: inputText })
+        .then(input => {
 
-        datas.forEach(data => {
+            if (input) {
 
-            const textInfoParsed = normalizeWord(data.textInfo)
+                async function findPages(dataSearch) {
+                    const pages = []
+                    for (let i = 0; i < dataSearch.length; i++) {
+                        const page = await Url.findById(dataSearch[i].pageId)
 
-            if (textInfoParsed.includes(textSearched)) {
-                const indexTextInfo = textInfoParsed.indexOf(textSearched)
+                        pages.push(page)
+                    }
 
-                dataSearched.push({
-                    _id: data._id,
-                    tags: textSplited,
-                    title: data.title,
-                    url: data.url,
-                    host: data.host,
-                    textInfo: data.textInfo.substring(indexTextInfo - 100, indexTextInfo + 100) + ' ...',
-                    page
-                })
-
-                if (cont === 9) {
-                    page++
-                    cont = 0
+                    return pages
                 }
 
-                cont++
+                const dataSearch = input.dataSearch
+
+                const pages = findPages(dataSearch)
+
+                return { pages, found: true }
+            } else {
+                console.log('NADA ENCONTRADO')
+
+                return { pages: datas, found: false }
             }
 
         })
-    } else {
-        datas.forEach(data => {
-            const tagsWithoutStopwords = data.tagsWithoutStopwords
-            const tags = tagsWithoutStopwords.map(tag => tag.name)
+        // .then(({ pages, found }) => {
 
-            if (tags.includes(textSearched)) {
-                const indexTag = data.tags.indexOf(textSearched)
-                const textInfoParsed = normalizeWord(data.textInfo)
-                const indexTextInfo = textInfoParsed.indexOf(textSearched)
+        //     async function returnPages(pages, found) {
+        //         if (found) {
+        //             pages.forEach(page => {
+        //                 dataSearched.push({
+        //                     _id: page._id,
+        //                     tags: textSplited,
+        //                     title: page.title,
+        //                     url: page.url,
+        //                     host: page.host,
+        //                     textInfo: page.textInfo.substring(0, 200) + ' ...',
+        //                     page: contPages
+        //                 })
+        
+        //                 if (cont === 9) {
+        //                     contPages++
+        //                     cont = 0
+        //                 }
+        
+        //                 cont++   
+        //             })
+        //         } else {
+        //             pages.forEach(page => {
+    
+        //                 const textInfoParsed = normalizeWord(page.textInfo)
+    
+        //                 if (textInfoParsed.includes(textSearched)) {
+        //                     const indexTextInfo = textInfoParsed.indexOf(textSearched)
+    
+        //                     dataSearched.push({
+        //                         _id: page._id,
+        //                         tags: textSplited,
+        //                         title: page.title,
+        //                         url: page.url,
+        //                         host: page.host,
+        //                         textInfo: page.textInfo.substring(indexTextInfo - 100, indexTextInfo + 100) + ' ...',
+        //                         page: contPages
+        //                     })
+    
+        //                     if (cont === 9) {
+        //                         contPages++
+        //                         cont = 0
+        //                     }
+    
+        //                     cont++
+        //                 }
+    
+        //             })
+        //         }
 
-                dataSearched.push({
-                    _id: data._id,
-                    tags: textSplited,
-                    title: data.title,
-                    url: data.url,
-                    host: data.host,
-                    textInfo: data.textInfo.substring(indexTextInfo - 100, indexTextInfo + 100) + ' ...',
-                    page
-                })
+        //         return dataSearched
+        //     }
 
-                cont++
+        //     return returnPages(pages, found)
 
-                if (cont >= 10) {
-                    page++
-                    cont = 0
-                }
+        // })
 
-            }
-
-        })   
-    }
-
-    const totalPages = cont === 0 ? page - 1 : page
+    const totalPages = cont === 0 ? contPages - 1 : contPages
     const length = dataSearched.length
 
     return { dataSearched, totalPages, length }
+
+    // if (textSplited.length > 1) {
+
+    //     datas.forEach(data => {
+
+    //         const textInfoParsed = normalizeWord(data.textInfo)
+
+    //         if (textInfoParsed.includes(textSearched)) {
+    //             const indexTextInfo = textInfoParsed.indexOf(textSearched)
+
+    //             dataSearched.push({
+    //                 _id: data._id,
+    //                 tags: textSplited,
+    //                 title: data.title,
+    //                 url: data.url,
+    //                 host: data.host,
+    //                 textInfo: data.textInfo.substring(indexTextInfo - 100, indexTextInfo + 100) + ' ...',
+    //                 page: contPages
+    //             })
+
+    //             if (cont === 9) {
+    //                 contPages++
+    //                 cont = 0
+    //             }
+
+    //             cont++
+    //         }
+
+    //     })
+    // } else {
+    //     datas.forEach(data => {
+    //         const tagsWithoutStopwords = data.tagsWithoutStopwords
+    //         const tags = tagsWithoutStopwords.map(tag => tag.name)
+
+    //         if (tags.includes(textSearched)) {
+    //             const indexTag = data.tags.indexOf(textSearched)
+    //             const textInfoParsed = normalizeWord(data.textInfo)
+    //             const indexTextInfo = textInfoParsed.indexOf(textSearched)
+
+    //             dataSearched.push({
+    //                 _id: data._id,
+    //                 tags: textSplited,
+    //                 title: data.title,
+    //                 url: data.url,
+    //                 host: data.host,
+    //                 textInfo: data.textInfo.substring(indexTextInfo - 100, indexTextInfo + 100) + ' ...',
+    //                 page: contPages
+    //             })
+
+    //             cont++
+
+    //             if (cont >= 10) {
+    //                 contPages++
+    //                 cont = 0
+    //             }
+
+    //         }
+
+    //     })   
+    // }
 
 }
 

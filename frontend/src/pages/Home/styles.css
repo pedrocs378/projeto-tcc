@@ -1,5 +1,4 @@
-#page-home {
-    width: 100vw; 
+#page-home { 
     height: 100vh;
     display: flex;
     flex-direction: column;
@@ -9,10 +8,14 @@
 
 #page-home main {
     height: 95%;
+    width: 100%;
     display: flex;
     flex-direction: column;   
     align-items: center;
     justify-content: center;
+
+    overflow: hidden;
+    animation: fade 800ms;
 }
 
 #page-home main h1 {
@@ -22,6 +25,14 @@
     display: flex;
     justify-content: center;
     align-items: center;
+
+    animation: move 500ms;
+}
+
+#page-home .box-search {
+    animation: move 400ms;
+    animation-delay: 100ms;
+    animation-fill-mode: backwards;
 }
 
 #page-home .button {
@@ -31,6 +42,10 @@
     border-radius: 0.7rem;
     cursor: pointer;
     height: 45px;
+
+    animation: move 400ms;
+    animation-delay: 250ms;
+    animation-fill-mode: backwards;  
 }
 
 #page-home .button:hover {
@@ -44,4 +59,26 @@
         font-size: 4rem;
     }
 
+}
+
+@keyframes fade {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes move {
+    from {
+        opacity: 0;
+        transform: translateX(-35%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0%);
+    }
 }

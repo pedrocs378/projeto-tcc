@@ -1,10 +1,13 @@
 .warning-card {
     width: 100%;
+    height: 85vh;
+
+    animation: fall 400ms;
 }
 
 .warning-card p {
     display: block;
-    margin: 1.6rem 0;
+    margin: 50px 20px;
     font-size: medium;
     font-weight: normal;
 }
@@ -12,4 +15,17 @@
 .warning-card p em {
     font-weight: bold;
     font-style: normal;
+}
+
+@keyframes fall {
+    0% {
+        transform: translateY(-35%);
+    }
+    35%,
+    100% {
+        transform: translateY(0);
+    }
+    70% {
+        transform: translateY(-5%);
+    }
 }

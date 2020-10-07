@@ -5,6 +5,9 @@
     overflow: hidden;
     color: var(--color-results-found);
     font-size: 0.875rem;
+
+    animation: fade 300ms;
+    
 }
 
 .results ul li {
@@ -16,6 +19,10 @@
     box-shadow: 0 1px 10px rgb(185, 185, 185);
     border-radius: 10px;
     padding: 10px 20px;
+
+    animation: fade 500ms;
+    animation-delay: 250ms;
+    animation-fill-mode: backwards;
 
 }
 
@@ -54,5 +61,15 @@
     .results ul li {
         margin-left: 50px;
         width: 800px;
+    }
+}
+
+@keyframes fade {
+    from {
+        opacity: (0);
+    }
+
+    to {
+        opacity: (1);
     }
 }

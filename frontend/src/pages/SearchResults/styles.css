@@ -29,12 +29,18 @@
     height: 90vh;
 }
 
+#results-container .resultsbar {
+    overflow: hidden;
+}
+
 #results-container .pagination {
     width: 100%;
     height: 4.375rem;
     display: block;
     margin-top: 1.875rem;
     margin-left: 15px;
+
+    animation: fade 300ms;
 }
 
 #results-container .loading {
@@ -45,6 +51,16 @@
 
     #results-container .pagination {
         margin-left: 50px;
+    }
+}
+
+@keyframes fade {
+    from {
+        opacity: (0);
+    }
+
+    to {
+        opacity: (1);
     }
 }
 

@@ -1,6 +1,7 @@
 const Network = require("../../models/Network")
 const Stopword = require("../../models/Stopword")
 const Url = require('../../models/Url')
+const NetworkController = require('./index')
 
 const {
     alpha,

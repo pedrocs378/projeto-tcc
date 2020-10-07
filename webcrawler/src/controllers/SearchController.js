@@ -1,8 +1,11 @@
 const async = require('async')
+
 const Url = require('../models/Url')
 const Stopword = require('../models/Stopword')
 
-const { analyseText, executeNetwork } = require('../functions/search')
+const { analyseText } = require('../functions/search')
+
+const executeNetwork = require('../functions/neuralNetwork/executeNetwork')
 
 module.exports = {
     async search(req, res) {

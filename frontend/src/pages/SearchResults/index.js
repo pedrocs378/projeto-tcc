@@ -57,7 +57,7 @@ export default function SearchResults(props) {
                     : null 
                 } 
             </header>  
-            <main className="resultsbar">
+            <main className={loaded ? "resultsbar" : "nocontent"}>
                 { loaded ? 
                     <div>
                         {
@@ -90,7 +90,7 @@ export default function SearchResults(props) {
                                 : <Pagination style={{ display: 'none' }} />
                         }
                     </div> 
-                    : <div></div>
+                    : null
                 }
             </main>
             <Footer />

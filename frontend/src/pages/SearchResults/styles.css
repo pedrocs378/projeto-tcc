@@ -27,7 +27,10 @@
 
 #results-container .resultsbar {
     margin-left: 3.5rem;
-    height: 95vh;
+}
+
+#results-container .nocontent {
+    height: 90vh;
 }
 
 #results-container .pagination {

@@ -4,7 +4,6 @@ const Url = require('../models/Url')
 const Stopword = require('../models/Stopword')
 const Network = require('../models/Network')
 
-const { analyseText } = require('../functions/search')
 const { convertStringToNumber, normalizeWord } = require('../utils/wordUtils')
 const executeNetwork = require('../functions/neuralNetwork/executeNetwork')
 

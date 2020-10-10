@@ -1,5 +1,4 @@
 #results-container {
-    /* height: 100%; */
     position: relative;
     min-height: 100%;
 }
@@ -25,6 +24,8 @@
     border-radius: 0.938rem;
     padding: 0.625rem;
     transition: background-color 0.3s;
+
+    box-shadow: 0 1px 10px rgb(156, 156, 156);
 }
 
 #results-container .menubar .arrow-left-icon .button:hover {
@@ -46,7 +47,7 @@
     height: 3rem;
     margin: 20px 15px;
 
-    animation: fade 300ms;
+    animation: moveResults 300ms;
 }
 
 #results-container .loading {
@@ -57,16 +58,6 @@
 
     #results-container .pagination {
         margin-left: 50px;
-    }
-}
-
-@keyframes fade {
-    from {
-        opacity: (0);
-    }
-
-    to {
-        opacity: (1);
     }
 }
 

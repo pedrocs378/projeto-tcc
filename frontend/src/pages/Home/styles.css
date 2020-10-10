@@ -27,11 +27,11 @@
     justify-content: center;
     align-items: center;
 
-    animation: move 500ms;
+    animation: moveHome 500ms;
 }
 
 #page-home .box-search {
-    animation: move 400ms;
+    animation: moveHome 400ms;
     animation-delay: 100ms;
     animation-fill-mode: backwards;
 }
@@ -44,13 +44,19 @@
     cursor: pointer;
     height: 45px;
 
-    animation: move 400ms;
+    transition: background-color 0.4s;
+
+    animation: moveHome 400ms;
     animation-delay: 250ms;
     animation-fill-mode: backwards;  
 }
 
 #page-home .button:hover {
     border: 1px solid var(--color-button-search-hover);
+}
+
+#page-home .button:active {
+    background-color: var(--color-button-search-hover);
 }
 
 
@@ -62,24 +68,4 @@
 
 }
 
-@keyframes fade {
-    from {
-        opacity: 0;
-        transform: scale(0.9);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
 
-@keyframes move {
-    from {
-        opacity: 0;
-        transform: translateX(-35%);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0%);
-    }
-}

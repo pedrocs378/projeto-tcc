@@ -5,8 +5,8 @@
 
   --color-logo-search: #023e8a;
   --color-button-search: #343a40;
-  --color-button-background-search: #f3f3f3;
-  --color-button-search-hover: #dadada;
+  --color-button-background-search: #dfdfdf;
+  --color-button-search-hover: #bbbbbb;
   --color-search-bar: #ffffff;
   --color-link-result: #1a0dab;
   --color-arrow-icon: #c2bebe; 
@@ -29,10 +29,44 @@
 }
 
 html, body, #root {
-  height: 100vh;
+  height: 100%;
 }
 
 
 input, button, h1, h3, p, span, cite {
   font: 400 15px Roboto, sans-serif;
+}
+
+@keyframes fade {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes moveHome {
+    from {
+        opacity: 0;
+        transform: translateX(-35%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0%);
+    }
+}
+
+@keyframes moveResults {
+    from {
+        opacity: (0);
+        transform: translateX(-120%);
+    }
+
+    to {
+        opacity: (1);
+        transform: translateX(0);
+    }
 }

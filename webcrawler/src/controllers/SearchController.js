@@ -4,8 +4,7 @@ const Url = require('../models/Url')
 const Stopword = require('../models/Stopword')
 const Network = require('../models/Network')
 
-const { analyseText } = require('../functions/search')
-const { convertStringToNumber, normalizeWord } = require('../utils/wordUtils')
+const { normalizeWord } = require('../utils/wordUtils')
 const executeNetwork = require('../functions/neuralNetwork/executeNetwork')
 
 
@@ -18,31 +17,20 @@ module.exports = {
         const stopwordsParsed = stopwords
             .map(({ word }) => normalizeWord(word))
 
-        const textSearched = q.normalize('NFD')
-            .replace(/([\u0300-\u036f]|[^0-9a-zA-Z\s])/g, '')
-            .toLowerCase()
+        const textSearched = normalizeWord(q)
 
         if (textSearched) {
 
             const textSplited = textSearched.split(' ')
 
             const dataText = textSplited
-                .map((tag) => {
+                .filter((tag) => {
                     if (!(stopwordsParsed.includes(tag))) {
-                        return {
-                            name: tag,
-                            value: convertStringToNumber(tag)
-                        }
-                    } else {
-                        return null
+                        return true
                     }
                 })
-                .filter(el =>
-                    (el != null) ? (el.name.trim() != "") ? true : false : false)
-
-            const inputText = dataText
-                .map(data => data.name)
-                .join(' ')
+                
+            const inputText = dataText.join(' ')
 
             let found = false
             const pages = []
@@ -50,12 +38,35 @@ module.exports = {
 
             if (existsInput) {
                 const dataSearch = existsInput.dataSearch 
-                
-                for (let i = 0; i < dataSearch.length; i++) {
-                    const page = await Url.findById(dataSearch[i].pageId)
+                const dataSorted = dataSearch
+                    .map(data => {
+                        let totalTags = 0
 
-                    pages.push(page)
-                }   
+                        for (let i = 0; i < data.tagsPerPage.length; i++) {
+                            totalTags += data.tagsPerPage[i]
+                        }
+
+                        return {
+                            totalTags,
+                            indexComumTag: data.tagsPerPage.indexOf(Math.max(...data.tagsPerPage)),
+                            pageId: data.pageId
+                        }
+                    })
+                    .sort((a, b) => b.totalTags - a.totalTags)
+                
+                for (let i = 0; i < dataSorted.length; i++) {
+                    const page = await Url.findById(dataSorted[i].pageId)
+
+                    pages.push({
+                        _id: page._id,
+                        title: page.title,
+                        url: page.url,
+                        host: page.host,
+                        textInfo: page.textInfo,
+                        indexComumTag: dataSorted[i].indexComumTag
+                    })
+                }  
+                
                 found = true
             }
 
@@ -75,7 +86,7 @@ module.exports = {
                                 title: page.title,
                                 url: page.url,
                                 host: page.host,
-                                textInfo: page.textInfo.substring(0, 200) + ' ...',
+                                textInfo: setDescription(page.textInfo, inputText, page.indexComumTag),
                                 page: contPages
                             })
 
@@ -130,7 +141,7 @@ module.exports = {
 
                     callback()
                 }
-            ], function(err, results) {
+            ], function(_, results) {
 
                 return res.json({
                     dataSearched: results[0].dataSearched,
@@ -142,4 +153,33 @@ module.exports = {
         }
         
     }
+}
+
+/**
+ * @param {String} textInfo
+ */
+function setDescription(textInfo, inputText, indexTag) {
+    const inputArray = inputText.split(' ')
+    const stringSearch = inputArray[indexTag]
+    const regex = new RegExp(`${stringSearch}`, 'i')
+    const index = textInfo.search(regex)
+
+    let newStart = 0
+    for (let i = index-20; i > 0; i--) {
+        if (isUpperCase(textInfo[i])) {
+            newStart = i
+            break
+        }
+    }
+
+    newStart = newStart <= 0 ? index-20 : newStart
+
+    const newDescription = textInfo.substring(newStart, index+200) + ' ...'
+
+    return newDescription
+
+}
+
+function isUpperCase(str) {
+    return str !== str.toLowerCase();
 }

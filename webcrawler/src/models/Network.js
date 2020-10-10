@@ -12,10 +12,10 @@ const NetworkSchema = new Schema({
             type: ObjectId,
             required: true
         },
-        wBD: {
+        tagsPerPage: {
             type: Array,
             required: true
-        },
+        }
     }]
     
 })

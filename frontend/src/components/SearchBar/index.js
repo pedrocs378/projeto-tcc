@@ -34,12 +34,12 @@ export default function SearchBar(props) {
 
     return (
         <div className="box-search">
-            <div 
+            <span 
                 className={ props.hiddenIcon ? "icon-hidden" : "icon-search" }
                 style={ !props.hiddenIcon ? { marginLeft: -10 } : null }
             >
                 <FiSearch size={16} color="#9AA0A6" />
-            </div>
+            </span>
             <div className="search-term" style={ !props.hiddenIcon ? { marginLeft: -50 } : null }  >  
                 <input 
                     type="text" 
@@ -47,7 +47,7 @@ export default function SearchBar(props) {
                     autoFocus
                     autoComplete="off"
                     title="Pesquisar"
-                    placeholder="Digite Algo..." 
+                    placeholder="Digite algo..." 
                     value={text}
                     onChange={handleDigit} 
                     onKeyPress={onPressEnter} 

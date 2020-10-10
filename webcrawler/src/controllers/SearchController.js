@@ -42,20 +42,31 @@ module.exports = {
                     .map(data => {
                         let totalTags = 0
 
-                        data.tagsPerPage.forEach(value => totalTags += value)
+                        for (let i = 0; i < data.tagsPerPage.length; i++) {
+                            totalTags += data.tagsPerPage[i]
+                        }
 
                         return {
-                        totalTags,
-                        pageId: data.pageId
+                            totalTags,
+                            indexComumTag: data.tagsPerPage.indexOf(Math.max(...data.tagsPerPage)),
+                            pageId: data.pageId
                         }
                     })
                     .sort((a, b) => b.totalTags - a.totalTags)
                 
-                for (let i = 0; i < dataSearch.length; i++) {
+                for (let i = 0; i < dataSorted.length; i++) {
                     const page = await Url.findById(dataSorted[i].pageId)
 
-                    pages.push(page)
-                }   
+                    pages.push({
+                        _id: page._id,
+                        title: page.title,
+                        url: page.url,
+                        host: page.host,
+                        textInfo: page.textInfo,
+                        indexComumTag: dataSorted[i].indexComumTag
+                    })
+                }  
+                
                 found = true
             }
 
@@ -75,7 +86,7 @@ module.exports = {
                                 title: page.title,
                                 url: page.url,
                                 host: page.host,
-                                textInfo: page.textInfo.substring(0, 200) + ' ...',
+                                textInfo: setDescription(page.textInfo, inputText, page.indexComumTag),
                                 page: contPages
                             })
 
@@ -142,4 +153,33 @@ module.exports = {
         }
         
     }
+}
+
+/**
+ * @param {String} textInfo
+ */
+function setDescription(textInfo, inputText, indexTag) {
+    const inputArray = inputText.split(' ')
+    const stringSearch = inputArray[indexTag]
+    const regex = new RegExp(`${stringSearch}`, 'i')
+    const index = textInfo.search(regex)
+
+    let newStart = 0
+    for (let i = index-20; i > 0; i--) {
+        if (isUpperCase(textInfo[i])) {
+            newStart = i
+            break
+        }
+    }
+
+    newStart = newStart <= 0 ? index-20 : newStart
+
+    const newDescription = textInfo.substring(newStart, index+200) + ' ...'
+
+    return newDescription
+
+}
+
+function isUpperCase(str) {
+    return str !== str.toLowerCase();
 }

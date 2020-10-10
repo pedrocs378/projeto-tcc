@@ -93,7 +93,7 @@ export default function SearchResults(props) {
                     : null
                 }
             </main>
-            <Footer />
+            <Footer className="footer" />
         </div>
     )
 }

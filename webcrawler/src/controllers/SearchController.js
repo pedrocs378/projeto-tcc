@@ -4,7 +4,7 @@ const Url = require('../models/Url')
 const Stopword = require('../models/Stopword')
 const Network = require('../models/Network')
 
-const { convertStringToNumber, normalizeWord } = require('../utils/wordUtils')
+const { normalizeWord } = require('../utils/wordUtils')
 const executeNetwork = require('../functions/neuralNetwork/executeNetwork')
 
 
@@ -17,31 +17,20 @@ module.exports = {
         const stopwordsParsed = stopwords
             .map(({ word }) => normalizeWord(word))
 
-        const textSearched = q.normalize('NFD')
-            .replace(/([\u0300-\u036f]|[^0-9a-zA-Z\s])/g, '')
-            .toLowerCase()
+        const textSearched = normalizeWord(q)
 
         if (textSearched) {
 
             const textSplited = textSearched.split(' ')
 
             const dataText = textSplited
-                .map((tag) => {
+                .filter((tag) => {
                     if (!(stopwordsParsed.includes(tag))) {
-                        return {
-                            name: tag,
-                            value: convertStringToNumber(tag)
-                        }
-                    } else {
-                        return null
+                        return true
                     }
                 })
-                .filter(el =>
-                    (el != null) ? (el.name.trim() != "") ? true : false : false)
-
-            const inputText = dataText
-                .map(data => data.name)
-                .join(' ')
+                
+            const inputText = dataText.join(' ')
 
             let found = false
             const pages = []
@@ -49,9 +38,21 @@ module.exports = {
 
             if (existsInput) {
                 const dataSearch = existsInput.dataSearch 
+                const dataSorted = dataSearch
+                    .map(data => {
+                        let totalTags = 0
+
+                        data.tagsPerPage.forEach(value => totalTags += value)
+
+                        return {
+                        totalTags,
+                        pageId: data.pageId
+                        }
+                    })
+                    .sort((a, b) => b.totalTags - a.totalTags)
                 
                 for (let i = 0; i < dataSearch.length; i++) {
-                    const page = await Url.findById(dataSearch[i].pageId)
+                    const page = await Url.findById(dataSorted[i].pageId)
 
                     pages.push(page)
                 }   
@@ -129,7 +130,7 @@ module.exports = {
 
                     callback()
                 }
-            ], function(err, results) {
+            ], function(_, results) {
 
                 return res.json({
                     dataSearched: results[0].dataSearched,

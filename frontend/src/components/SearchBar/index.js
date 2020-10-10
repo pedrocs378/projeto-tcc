@@ -24,7 +24,11 @@ export default function SearchBar(props) {
     function handleSearch() {
         if (text) {
             const textToSearch = text.split(' ').join('+')
-            history.push('/search/' + textToSearch)
+            if (textToSearch === props.params) {
+                window.location.reload(false)
+            } else {
+                history.push('/search/' + textToSearch)
+            }
         }
     }
 

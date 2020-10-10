@@ -51,7 +51,7 @@ export default function SearchResults(props) {
                         <FiArrowLeft size={25} color="black" />
                     </Link>
                 </div>
-                <SearchBar hiddenIcon />    
+                <SearchBar hiddenIcon params={props.match.params.query} />    
                 { !loaded 
                     ? <ReactLoading className="loading" type="spinningBubbles" color="gray" height={35} width={35} /> 
                     : null 

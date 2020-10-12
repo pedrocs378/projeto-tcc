@@ -68,21 +68,21 @@ async function getDataInfoAndPushToArray(itemData, cb) {
                             
                             const textInfoTags = textInfoParsed.split(' ')
 
-                            const tagsWithoutStopwords = textInfoTags.map((tag) => {
-                                if (!(stopwordsParsed.includes(tag))) {
-                                    return { 
-                                        name: tag, 
-                                        value: convertStringToNumber(tag)
+                            const tagsWithoutStopwords = textInfoTags
+                                .map((tag) => {
+                                    if (!(stopwordsParsed.includes(tag))) {
+                                        return { 
+                                            name: tag, 
+                                            value: convertStringToNumber(tag)
+                                        }
+                                    } else {
+                                        return null
                                     }
-                                } else {
-                                    return null
-                                }
-                            }) 
+                                }) 
+                                .filter(el =>
+                                    (el != null) ? (el.name.trim() != "") ? true : false : false)
 
-                            const tagsWithoutNulls = tagsWithoutStopwords.filter(el => 
-                                (el != null) ? (el.name.trim() != "") ? true : false : false)
-
-                            const tagsWthtStpwrdsFiltered = filterByProperty(tagsWithoutNulls, 'name')
+                            const tagsWthtStpwrdsFiltered = filterByProperty(tagsWithoutStopwords, 'name')
 
                             if (title && textInfo) {
                                 await Url.create({

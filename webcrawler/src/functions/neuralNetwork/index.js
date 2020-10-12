@@ -189,15 +189,51 @@ class NetworkController {
         return entrada
     }
 
+    normalizaDados(entrada, nmroLinhas, nmroColunas) {
+
+        let total = 0
+        let normaliza = false
+
+        if (nmroLinhas === 0) {
+            for (let i = 0; i < nmroColunas; i++) {
+                if (entrada[i] < 0 || entrada[i] > 1) {
+                    normaliza = true
+                }
+                total += entrada[i]
+            }
+            if (normaliza) {
+                for (let i = 0; i < nmroColunas; i++) {
+                    entrada[i] /= total
+                }
+            }
+        }
+        else {
+            for (let i = 0; i < nmroLinhas; i++) {
+                for (let j = 0; j < nmroColunas; j++) {
+                    if (entrada[i][j] < 0 || entrada[i][j] > 1) {
+                        normaliza = true
+                    }
+                    total += entrada[i][j]
+                }
+            }
+            if (normaliza) {
+                for (let i = 0; i < nmroLinhas; i++) {
+                    for (let j = 0; j < nmroColunas; j++) {
+                        entrada[i][j] /= total
+                    }
+                }
+            }
+        }
+
+        return entrada
+    }
+
     realizaComplemento(entrada, nmroLinhas, nmroColunas) {
 
-        let aux
-        let complemento
+        let aux, complemento
 
-        //Vetor
         if (nmroLinhas === 0) {
 
-            //Inicializa matriz com linhas da quantidade de colunas do vetor original
             complemento = new Array(nmroColunas)
 
             for (let i = 0; i < nmroColunas; i++) {
@@ -221,7 +257,7 @@ class NetworkController {
                 }
             }
         }
-        else { //Matriz
+        else {
             complemento = new Array(nmroLinhas)
 
             for (let i = 0; i < nmroLinhas; i++) {
@@ -254,46 +290,6 @@ class NetworkController {
         }
 
         return complemento
-    }
-
-    normalizaDados(entrada, nmroLinhas, nmroColunas) {
-
-        let total = 0
-        let normaliza = false
-
-        //Vetor
-        if (nmroLinhas === 0) {
-            for (let i = 0; i < nmroColunas; i++) {
-                if (entrada[i] < 0 || entrada[i] > 1) {
-                    normaliza = true
-                }
-                total += entrada[i]
-            }
-            if (normaliza) {
-                for (let i = 0; i < nmroColunas; i++) {
-                    entrada[i] /= total
-                }
-            }
-        }
-        else { //Matriz
-            for (let i = 0; i < nmroLinhas; i++) {
-                for (let j = 0; j < nmroColunas; j++) {
-                    if (entrada[i][j] < 0 || entrada[i][j] > 1) {
-                        normaliza = true
-                    }
-                    total += entrada[i][j]
-                }
-            }
-            if (normaliza) {
-                for (let i = 0; i < nmroLinhas; i++) {
-                    for (let j = 0; j < nmroColunas; j++) {
-                        entrada[i][j] /= total
-                    }
-                }
-            }
-        }
-
-        return entrada
     }
 
 	somaColunas(linha, entrada, nmroColunas) {
@@ -534,8 +530,6 @@ class NetworkController {
 
         const colsOutput = this._output[0].length
     
-        //pega B sem complemento
-        let tamanho = Math.floor(this._wOutput[0].length / 2)
         let linhasA = new Array(entrada.length).fill(0)
     
         for(let i=0; i<nmroLinhas; i++){
@@ -566,8 +560,7 @@ class NetworkController {
 		
 		const rowsOutput = this._complementB.length
 		const colsOutput = this._complementB[0].length
-        const colsYb     = this._complementB.length 
-        
+        const colsYb     = this._complementB.length     
         const output = this._complementB
 
         for (let i = 0; i < rowsOutput; i++) {

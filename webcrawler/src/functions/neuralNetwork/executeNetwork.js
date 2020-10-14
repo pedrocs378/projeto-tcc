@@ -14,25 +14,19 @@ const {
     phase
 } = require('../../configs/networkConfig')
 const convertNumber = require('../../utils/convertForZeroToOne')
-const { convertStringToNumber, normalizeWord } = require('../../utils/wordUtils')
+const { convertStringToNumber } = require('../../utils/wordUtils')
 
 
-module.exports = async function(datas, textSplited) {
+module.exports = async function(datas, textSplited, stopwords) {
 
     const tagsWithoutStopwords = await Url.find({}, '-_id tagsWithoutStopwords.value')
     const valueTags = tagsWithoutStopwords
         .map(tag => tag.tagsWithoutStopwords)
         .map((tag) => { return tag.map(({ value }) => value) })
 
-    const stopwords = await Stopword.find({})
-    const stopwordsParsed = stopwords
-        .map(({ word }) => {
-            return normalizeWord(word)
-        })
-
     const dataText = textSplited
         .map((tag) => {
-            if (!(stopwordsParsed.includes(tag))) {
+            if (!(stopwords.includes(tag))) {
                 return {
                     name: tag,
                     value: convertStringToNumber(tag)
@@ -140,7 +134,7 @@ module.exports = async function(datas, textSplited) {
         })
 
     } else {
-        console.log('ITEM EXISTENTE')
+        console.log('executeNetwork - ITEM EXISTENTE')
     }
 
     console.log('TERMOS DIGITADOS: \n', dataText)

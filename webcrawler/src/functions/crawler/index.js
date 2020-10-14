@@ -42,10 +42,8 @@ module.exports = async function handleRunCrawler(page, callback) {
 async function getDataInfoAndPushToArray(itemData, cb) {
 
     console.log('getDataInfoAndPushToArray - FUNCAO INICIADA')
-    const stopwords = await Stopword.find({})
-    const stopwordsParsed = stopwords.map(({ word }) => {
-        return normalizeWord(word)
-    })
+    const stopwordsData = await Stopword.find({})
+    const stopwords = stopwordsData.map(data => data.word)
 
     let i = 0
     async function next() {
@@ -70,7 +68,7 @@ async function getDataInfoAndPushToArray(itemData, cb) {
 
                             const tagsWithoutStopwords = textInfoTags
                                 .map((tag) => {
-                                    if (!(stopwordsParsed.includes(tag))) {
+                                    if (!(stopwords.includes(tag))) {
                                         return { 
                                             name: tag, 
                                             value: convertStringToNumber(tag)
@@ -82,7 +80,7 @@ async function getDataInfoAndPushToArray(itemData, cb) {
                                 .filter(el =>
                                     (el != null) ? (el.name.trim() != "") ? true : false : false)
 
-                            const tagsWthtStpwrdsFiltered = filterByProperty(tagsWithoutStopwords, 'name')
+                            // const tagsWthtStpwrdsFiltered = filterByProperty(tagsWithoutStopwords, 'name')
 
                             if (title && textInfo) {
                                 await Url.create({
@@ -91,7 +89,7 @@ async function getDataInfoAndPushToArray(itemData, cb) {
                                     host: itemData[i].host,
                                     textInfo,
                                     tags: textInfoTags,
-                                    tagsWithoutStopwords: tagsWthtStpwrdsFiltered
+                                    tagsWithoutStopwords
                                 })                      
                             }
                             

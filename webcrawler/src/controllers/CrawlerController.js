@@ -50,7 +50,7 @@ module.exports = {
 
         if (stopwords.length === 0 ) {
             console.log('addStopwords - INSERINDO STOPWORDS...')
-            addStopwords()
+            await addStopwords()
         }
 
         const browser = await puppeteer.launch();

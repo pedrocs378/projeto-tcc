@@ -11,11 +11,10 @@ const executeNetwork = require('../functions/neuralNetwork/executeNetwork')
 module.exports = {
     async search(req, res) {
         const { q = "" } = req.query
-        const allDatas = await Url.find({})
+        console.log('search - INICIANDO PESQUISA DO TERMO:', q)
 
-        const stopwords = await Stopword.find({})
-        const stopwordsParsed = stopwords
-            .map(({ word }) => normalizeWord(word))
+        const stopwordsData = await Stopword.find({})
+        const stopwords = stopwordsData.map(data => data.word)
 
         const textSearched = normalizeWord(q)
 
@@ -25,18 +24,19 @@ module.exports = {
 
             const dataText = textSplited
                 .filter((tag) => {
-                    if (!(stopwordsParsed.includes(tag))) {
+                    if (!(stopwords.includes(tag))) {
                         return true
                     }
                 })
                 
             const inputText = dataText.join(' ')
 
-            let found = false
             const pages = []
             const existsInput = await Network.findOne({ input: inputText })
 
             if (existsInput) {
+                console.log('search - TERMO ENCONTRADO NA REDE... FAZENDO AJUSTES')
+
                 const dataSearch = existsInput.dataSearch 
                 const dataSorted = dataSearch
                     .map(data => {
@@ -53,7 +53,7 @@ module.exports = {
                         }
                     })
                     .sort((a, b) => b.totalTags - a.totalTags)
-                
+
                 for (let i = 0; i < dataSorted.length; i++) {
                     const page = await Url.findById(dataSorted[i].pageId)
 
@@ -63,14 +63,24 @@ module.exports = {
                         url: page.url,
                         host: page.host,
                         textInfo: page.textInfo,
-                        indexComumTag: dataSorted[i].indexComumTag
+                        indexComumTag: dataSorted[i].indexComumTag,
                     })
-                }  
+                }
                 
-                found = true
             }
 
             async.parallel([
+                function (callback) {
+                    console.log('search:executeNetwork - EXECUTANDO REDE.....')
+
+                    Url.find({})
+                        .then(datas => {
+
+                            executeNetwork(datas, textSplited, stopwords)
+
+                            callback()
+                        })
+                },
                 function (callback) {
                                                    
                     let contPages = 1
@@ -78,15 +88,17 @@ module.exports = {
 
                     const dataSearched = []
 
-                    if (found) {
-                        pages.forEach(page => {
+                    if (existsInput) {
+                        console.log('search:return - INSERINDO DADOS DO RETORNO DA REDE')
+
+                        for (let i = 0; i < pages.length; i++) {
                             dataSearched.push({
-                                _id: page._id,
+                                _id: pages[i]._id,
                                 tags: textSplited,
-                                title: page.title,
-                                url: page.url,
-                                host: page.host,
-                                textInfo: setDescription(page.textInfo, inputText, page.indexComumTag),
+                                title: pages[i].title,
+                                url: pages[i].url,
+                                host: pages[i].host,
+                                textInfo: setDescription(pages[i].textInfo, inputText, pages[i].indexComumTag),
                                 page: contPages
                             })
 
@@ -95,58 +107,68 @@ module.exports = {
                                 cont = 0
                             }
 
-                            cont++   
+                            cont++ 
+                        }
+
+                        const totalPages = cont === 0 ? contPages - 1 : contPages
+                        const length = dataSearched.length
+
+                        callback(null, {
+                            dataSearched,
+                            totalPages,
+                            length
                         })
                     } else {
+                        console.log('search:return - TERMO NAO ENCONTRADO... PROCURANDO NA BASE DE DADOS')
 
-                        allDatas.forEach(data => {
-                            const textInfoParsed = normalizeWord(data.textInfo)
+                        Url.find({})
+                            .then(datas => {
+                                datas.forEach(data => {
+                                    const textInfoParsed = normalizeWord(data.textInfo)
 
-                            if (textInfoParsed.includes(textSearched)) {
-                                const indexTextInfo = textInfoParsed.indexOf(textSearched)
+                                    if (textInfoParsed.includes(textSearched)) {
+                                        const indexTextInfo = textInfoParsed.indexOf(textSearched)
 
-                                dataSearched.push({
-                                    _id: data._id,
-                                    tags: textSplited,
-                                    title: data.title,
-                                    url: data.url,
-                                    host: data.host,
-                                    textInfo: data.textInfo.substring(indexTextInfo - 100, indexTextInfo + 100) + ' ...',
-                                    page: contPages
+                                        dataSearched.push({
+                                            _id: data._id,
+                                            tags: textSplited,
+                                            title: data.title,
+                                            url: data.url,
+                                            host: data.host,
+                                            textInfo: setDescription(data.textInfo, inputText, null),
+                                            page: contPages
+                                        })
+
+                                        if (cont === 9) {
+                                            contPages++
+                                            cont = 0
+                                        }
+
+                                        cont++
+                                    }
+
                                 })
 
-                                if (cont === 9) {
-                                    contPages++
-                                    cont = 0
-                                }
+                                const totalPages = cont === 0 ? contPages - 1 : contPages
+                                const length = dataSearched.length
 
-                                cont++
-                            }
+                                callback(null, {
+                                    dataSearched,
+                                    totalPages,
+                                    length
+                                })
+                            })
 
-                        })
                     }
-                    const totalPages = cont === 0 ? contPages - 1 : contPages
-                    const length = dataSearched.length
 
-                    callback(null, {
-                        dataSearched,
-                        totalPages,
-                        length
-                    })
-
-                },
-                function(callback) {
-                    console.log('EXECUTANDO REDE.....')
-                    executeNetwork(allDatas, textSplited)
-
-                    callback()
                 }
             ], function(_, results) {
 
+                console.log('search:return - RETORNANDO DADOS')
                 return res.json({
-                    dataSearched: results[0].dataSearched,
-                    totalPages: results[0].totalPages,
-                    length: results[0].length
+                    dataSearched: results[1].dataSearched,
+                    totalPages: results[1].totalPages,
+                    length: results[1].length
                 })
             })
         
@@ -159,22 +181,29 @@ module.exports = {
  * @param {String} textInfo
  */
 function setDescription(textInfo, inputText, indexTag) {
-    const inputArray = inputText.split(' ')
-    const stringSearch = inputArray[indexTag]
+    let stringSearch = ""
+
+    if (indexTag) {
+        const inputArray = inputText.split(' ')
+        stringSearch = inputArray[indexTag]
+    } else {
+        stringSearch = inputText     
+    }
+
     const regex = new RegExp(`${stringSearch}`, 'i')
     const index = textInfo.search(regex)
 
     let newStart = 0
-    for (let i = index-20; i > 0; i--) {
+    for (let i = index - 20; i > 0; i--) {
         if (isUpperCase(textInfo[i])) {
             newStart = i
             break
         }
     }
 
-    newStart = newStart <= 0 ? index-20 : newStart
+    newStart = newStart <= 0 ? index - 20 : newStart
 
-    const newDescription = textInfo.substring(newStart, index+200) + ' ...'
+    const newDescription = textInfo.substring(newStart, index + 200) + ' ...'
 
     return newDescription
 

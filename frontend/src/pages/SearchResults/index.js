@@ -62,7 +62,12 @@ export default function SearchResults(props) {
                     <div>
                         {
                             results.length > 0
-                                ? <Results page={page} pageResults={results.dataSearched} time={time/1000} />
+                                ? <Results 
+                                    page={page} 
+                                    pageResults={results.dataSearched} 
+                                    time={time / 1000} 
+                                    search={props.match.params.query} 
+                                />
                                 : <SearchNotFound
                                     value={props.match.params.query.includes('+') ? props.match.params.query.split('+').join(' ') : props.match.params.query}
                                 />

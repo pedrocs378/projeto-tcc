@@ -2,7 +2,7 @@ import React from 'react'
 
 import './styles.css'
 
-export default function Results({ pageResults, page, time }) {
+export default function Results({ pageResults, page, time, search }) {
     function handleConvertNumber(number) {
         return number.toLocaleString('pt-BR')
     }
@@ -28,6 +28,40 @@ export default function Results({ pageResults, page, time }) {
         }
     }
 
+    function handleSetDescription(textInfo) {
+        const textInfoArr = textInfo.split(' ')
+        const searchArr = search.split('+')
+        console.log(textInfoArr)
+
+        const newDescription = textInfoArr
+            .map(word => {
+                for (let i = 0; i < searchArr.length; i++) {
+                    if (word.toLowerCase() === searchArr[i].toLowerCase()) {
+                        return `///${word}///`
+                    } else {
+                        return word
+                    }
+                }
+            })
+            .join(' ') 
+
+        return (
+            <span>
+                {
+                    newDescription
+                        .split('///')
+                        .map((word, index) => {
+                            return (
+                                index % 2 !== 0
+                                    ? <strong key={index}>{word}</strong>
+                                    : word
+                            )
+                        })
+                }
+            </span>
+        )
+    }
+
     return (
         <div className="results">
             <p>Found {handleConvertNumber(pageResults.length)} results ({handleConvertTime(time)} seconds) </p>
@@ -44,15 +78,8 @@ export default function Results({ pageResults, page, time }) {
                                         <h3>
                                             { handleConvertTitle(result.title) }
                                         </h3>
-                                    </a>    
-                                    <span>
-                                        {result.textInfo}
-                                        {/* {result.textInfo.substring(0, result.textInfo.indexOf(result.tags))}
-                                        <strong>
-                                            {result.textInfo.substring(result.textInfo.indexOf(result.tags), result.textInfo.indexOf(result.tags) + result.tags.length)}
-                                        </strong>
-                                        {result.textInfo.substring(result.textInfo.indexOf(result.tags) + result.tags.length)} */}
-                                    </span>
+                                    </a>   
+                                    {handleSetDescription(result.textInfo)}
                                 </li> : null 
                         )                       
                     })

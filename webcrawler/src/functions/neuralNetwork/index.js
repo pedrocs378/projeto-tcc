@@ -564,16 +564,15 @@ class NetworkController {
         const output = this._complementB
 
         for (let i = 0; i < rowsOutput; i++) {
-
             let wB = this._wOutput
 
             //Cria categorias
-			let Tb = this.criaCategorias(output, wB, i, rowsOutput, colsOutput)
+            let Tb = this.criaCategorias(output, wB, i, rowsOutput, colsOutput)
             // console.log("Categorias B (" + i + ") criadas:")
             // console.log(Tb)
 
 			//Retorna maior categoria
-			this._K = this.retornaCategoriaVencedora(Tb)
+            this._K = this.retornaCategoriaVencedora(Tb)
 			// console.log("Categoria vencedora (" + i + "): " + this._K)
 
 			//Envia valor de K para o Art A
@@ -584,7 +583,7 @@ class NetworkController {
             // console.log("Teste de vigilancia B (" + i + "): " + tVigilanciaB)
 
             while (tVigilanciaB[i] <= this._pB) {
-
+                // console.log('RECRIANDO CATEGORIAS', tVigilanciaB[i])
                 //Recria categorias
                 Tb[this._K] = 0
 				this.valueK = this.retornaCategoriaVencedora(Tb)
@@ -598,12 +597,13 @@ class NetworkController {
 
             //Vigilancia para atualizar pesos (AND)
             let andB = this.realizaAndMinimo(output, wB, i, this._K, rowsOutput, colsOutput)
-            
+
             //Atualiza o peso Wb
             this._wOutput = this.atualizaPeso(wB, andB, this._K, i, colsOutput)
 
             //Matriz de Atividades B
-			let ybAux = this.criaMatrizDeAtividades(this._yb, this._K, i)
+            let ybAux = this.criaMatrizDeAtividades(this._yb, this._K, i)
+            
 
 			for (let j = 0; j < colsYb; j++) {
                 this._yb[i][j] = ybAux[i][j]
@@ -759,7 +759,6 @@ class NetworkController {
 		const colsInputD = this._complementD[0].length
 
 		const wOutput = this._wOutput
-		const rowsOutput = this._complementB.length
 		const colsOutput = this._complementB[0].length
 
         const rowsWAB = this._wAB.length

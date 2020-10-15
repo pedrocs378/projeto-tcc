@@ -47,13 +47,14 @@ module.exports = async function(datas, textSplited, stopwords) {
     if (!itemExists) {
         const valuesText = dataText.map(data => data.value)
         const valuesNormalized = convertNumber(valuesText)
+        console.log('search:executeNetwork - VALORES ENTRADA', valuesNormalized)
     
         const dataSearch = []
         
         // NETWORK
     
         valueTags.forEach((values, index) => {
-            // console.log('\n\nURL ACESSADA:', datas[index].url)
+            // console.log('\n\nsearch:executeNetwork - URL ACESSADA:', datas[index].url)
             const neuralNetwork = new NetworkController(pA, pB, pAB, pD, alpha, beta, epsilon, phase)
     
             // SET INPUTS
@@ -83,6 +84,8 @@ module.exports = async function(datas, textSplited, stopwords) {
             neuralNetwork.weightOutput = wOutput
             // console.log('WEIGHT OUTPUT:\n', neuralNetwork.weightOutput)
     
+
+            // console.log('INICIALIZA VARIAVEIS')
             // INITIALIZE VARIABLES (ya, yb, yd...)
             neuralNetwork.initVariables()
     

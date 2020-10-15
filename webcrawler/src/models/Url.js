@@ -23,7 +23,7 @@ const UrlSchema = new Schema({
     },
     tagsWithoutStopwords: [{
         name: String,
-        value: Number
+        value: String
     }]
 })
 

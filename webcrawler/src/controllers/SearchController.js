@@ -64,6 +64,7 @@ module.exports = {
                         host: page.host,
                         textInfo: page.textInfo,
                         indexComumTag: dataSorted[i].indexComumTag,
+                        totalTags: dataSorted[i].totalTags
                     })
                 }
                 
@@ -92,6 +93,7 @@ module.exports = {
                         console.log('search:return - INSERINDO DADOS DO RETORNO DA REDE')
 
                         for (let i = 0; i < pages.length; i++) {
+                            console.log(pages[i].totalTags)
                             dataSearched.push({
                                 _id: pages[i]._id,
                                 tags: textSplited,

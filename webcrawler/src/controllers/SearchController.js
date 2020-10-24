@@ -32,10 +32,14 @@ module.exports = {
             const inputText = dataText.join(' ')
 
             const pages = []
+            const dataSearched = []
+
             const existsInput = await Network.findOne({ input: inputText })
 
             if (existsInput) {
-                console.log('search - TERMO ENCONTRADO NA REDE... FAZENDO AJUSTES')
+                // console.log('search - TERMO ENCONTRADO NA REDE... FAZENDO AJUSTES')
+                let contPages = 1
+                let cont = 0
 
                 const dataSearch = existsInput.dataSearch 
                 const dataSorted = dataSearch
@@ -57,122 +61,91 @@ module.exports = {
                 for (let i = 0; i < dataSorted.length; i++) {
                     const page = await Url.findById(dataSorted[i].pageId)
 
-                    pages.push({
+                    dataSearched.push({
                         _id: page._id,
+                        tags: textSplited,
                         title: page.title,
                         url: page.url,
                         host: page.host,
-                        textInfo: page.textInfo,
-                        indexComumTag: dataSorted[i].indexComumTag,
-                        totalTags: dataSorted[i].totalTags
+                        textInfo: setDescription(page.textInfo, inputText, dataSorted[i].indexComumTag),
+                        page: contPages
                     })
-                }
-                
-            }
 
-            async.parallel([
-                function (callback) {
-                    console.log('search:executeNetwork - EXECUTANDO REDE.....')
-
-                    Url.find({})
-                        .then(datas => {
-
-                            executeNetwork(datas, textSplited, stopwords)
-
-                            callback()
-                        })
-                },
-                function (callback) {
-                                                   
-                    let contPages = 1
-                    let cont = 0
-
-                    const dataSearched = []
-
-                    if (existsInput) {
-                        console.log('search:return - INSERINDO DADOS DO RETORNO DA REDE')
-
-                        for (let i = 0; i < pages.length; i++) {
-                            console.log(pages[i].totalTags)
-                            dataSearched.push({
-                                _id: pages[i]._id,
-                                tags: textSplited,
-                                title: pages[i].title,
-                                url: pages[i].url,
-                                host: pages[i].host,
-                                textInfo: setDescription(pages[i].textInfo, inputText, pages[i].indexComumTag),
-                                page: contPages
-                            })
-
-                            if (cont === 9) {
-                                contPages++
-                                cont = 0
-                            }
-
-                            cont++ 
-                        }
-
-                        const totalPages = cont === 0 ? contPages - 1 : contPages
-                        const length = dataSearched.length
-
-                        callback(null, {
-                            dataSearched,
-                            totalPages,
-                            length
-                        })
-                    } else {
-                        console.log('search:return - TERMO NAO ENCONTRADO... PROCURANDO NA BASE DE DADOS')
-
-                        Url.find({})
-                            .then(datas => {
-                                datas.forEach(data => {
-                                    const textInfoParsed = normalizeWord(data.textInfo)
-
-                                    if (textInfoParsed.includes(textSearched)) {
-                                        const indexTextInfo = textInfoParsed.indexOf(textSearched)
-
-                                        dataSearched.push({
-                                            _id: data._id,
-                                            tags: textSplited,
-                                            title: data.title,
-                                            url: data.url,
-                                            host: data.host,
-                                            textInfo: setDescription(data.textInfo, inputText, null),
-                                            page: contPages
-                                        })
-
-                                        if (cont === 9) {
-                                            contPages++
-                                            cont = 0
-                                        }
-
-                                        cont++
-                                    }
-
-                                })
-
-                                const totalPages = cont === 0 ? contPages - 1 : contPages
-                                const length = dataSearched.length
-
-                                callback(null, {
-                                    dataSearched,
-                                    totalPages,
-                                    length
-                                })
-                            })
-
+                    if (cont === 9) {
+                        contPages++
+                        cont = 0
                     }
 
+                    cont++ 
                 }
-            ], function(_, results) {
 
-                console.log('search:return - RETORNANDO DADOS')
+                const totalPages = cont === 0 ? contPages - 1 : contPages
+                const length = dataSearched.length
+
                 return res.json({
-                    dataSearched: results[1].dataSearched,
-                    totalPages: results[1].totalPages,
-                    length: results[1].length
+                    dataSearched,
+                    totalPages,
+                    length
                 })
-            })
+                
+            } else {
+                const datas = await Url.find({})
+
+                await executeNetwork(datas, textSplited, stopwords)
+
+                const dataNetwork = await Network.findOne({ input: inputText })
+                
+                let contPages = 1
+                let cont = 0
+
+                const dataSearch = dataNetwork.dataSearch
+                const dataSorted = dataSearch
+                    .map(data => {
+                        let totalTags = 0
+
+                        for (let i = 0; i < data.tagsPerPage.length; i++) {
+                            totalTags += data.tagsPerPage[i]
+                        }
+
+                        return {
+                            totalTags,
+                            indexComumTag: data.tagsPerPage.indexOf(Math.max(...data.tagsPerPage)),
+                            pageId: data.pageId
+                        }
+                    })
+                    .sort((a, b) => b.totalTags - a.totalTags)
+
+                for (let i = 0; i < dataSorted.length; i++) {
+                    const page = await Url.findById(dataSorted[i].pageId)
+
+                    dataSearched.push({
+                        _id: page._id,
+                        tags: textSplited,
+                        title: page.title,
+                        url: page.url,
+                        host: page.host,
+                        textInfo: setDescription(page.textInfo, inputText, dataSorted[i].indexComumTag),
+                        page: contPages
+                    })
+
+                    if (cont === 9) {
+                        contPages++
+                        cont = 0
+                    }
+
+                    cont++
+                    
+                }
+
+                const totalPages = cont === 0 ? contPages - 1 : contPages
+                const length = dataSearched.length
+
+                return res.json({
+                    dataSearched,
+                    totalPages,
+                    length
+                })
+            }
         
         }
         

@@ -131,10 +131,12 @@ module.exports = async function(datas, textSplited, stopwords) {
         })
     
     
-        Network.create({
+        await Network.create({
             input: inputText,
             dataSearch
         })
+
+        console.log('DADOS INSERIDOS')
 
     } else {
         console.log('executeNetwork - ITEM EXISTENTE')

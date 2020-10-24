@@ -53,7 +53,7 @@ export default function Results({ pageResults, page, time, search }) {
                         .map((word, index) => {
                             return (
                                 index % 2 !== 0
-                                    ? <strong key={index}>{word}</strong>
+                                    ? <strong key={Math.random()}>{word}</strong>
                                     : word
                             )
                         })

@@ -1,5 +1,3 @@
-const async = require('async')
-
 const Url = require('../models/Url')
 const Stopword = require('../models/Stopword')
 const Network = require('../models/Network')

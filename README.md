@@ -29,4 +29,7 @@ Abaixo estão o layout das duas telas desenvolvidas.
     <br />
     <img alt="Results" src=".github/results.png" width="700">
 </p>
+
+---
+Feito com :blue_heart: by [Pedro](https://github.com/pedrocs378/) e [Lucas](https://github.com/feernando998)
   

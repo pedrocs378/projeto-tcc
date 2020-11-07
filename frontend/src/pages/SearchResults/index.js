@@ -28,7 +28,6 @@ export default function SearchResults(props) {
             setLoaded(false)
 
             const { data } = await api.get('/search?q=' + props.match.params.query)
-            console.log(data.dataSearched)
             setResults(data)
 
             setLoaded(true)
